@@ -1,0 +1,12 @@
+﻿#Unreal gitignore
+/Binaries
+/Build
+/DerivedDataCache
+/Intermediate
+/Saved
+*.VC.opendb
+*.VC.db
+*.sdf
+*.sln
+/Content/StarterContent
+/.vs
