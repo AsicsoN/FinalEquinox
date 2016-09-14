@@ -42,4 +42,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	EGLRotation Rotation = EGLRotation::Normal;
 
+	UFUNCTION(BlueprintCallable, Category = "Position")
+	int32 GetXMin();
+
+	UFUNCTION(BlueprintCallable, Category = "Position")
+	int32 GetXMax();
+
+	UFUNCTION(BlueprintCallable, Category = "Position")
+	int32 GetYMin();
+
+	UFUNCTION(BlueprintCallable, Category = "Position")
+	int32 GetYMax();
+
 };

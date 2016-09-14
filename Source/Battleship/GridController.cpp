@@ -41,10 +41,17 @@ bool AGridController::IsSquareOccupied(AShipPawnBase* ship, int32 x, int32 y)
 		{
 			UE_LOG(LogTemp, Error, TEXT("Found ShipPawn %s"), *ActorItr->GetName());
 			UGridLocation* loc = ActorItr->FindComponentByClass<UGridLocation>();
-			if (loc->LocationX == x && loc->LocationY == y)
+
+			for (int xtile = loc->GetXMin(); xtile <= loc->GetXMax(); xtile++)
 			{
-				return true;
-			}
+				for (int ytile = loc->GetYMin(); ytile <= loc->GetYMax(); ytile++)
+				{
+					if (xtile == x && ytile == y)
+					{
+						return true;
+					}
+				}
+			}			
 		}
 	}
 
@@ -196,8 +203,8 @@ void AGridController::RotateClockwise(AShipPawnBase* ship)
 		if (loc->Rotation == EGLRotation::Clockwise25) newYaw = 90.0f;
 		else if (loc->Rotation == EGLRotation::Clockwise50) newYaw = 180.0f;
 		else if (loc->Rotation == EGLRotation::Clockwise75) newYaw = -90.0f;
-		FRotator newRotation = FRotator(0.0f, newYaw, 0.0f);
-		ship->SetActorRotation(newRotation);
+		FRotator newRotator = FRotator(0.0f, newYaw, 0.0f);
+		ship->SetActorRotation(newRotator);
 	}
 }
 
@@ -247,7 +254,7 @@ void AGridController::RotateCounterClockwise(AShipPawnBase* ship)
 		if (loc->Rotation == EGLRotation::Clockwise25) newYaw = 90.0f;
 		else if (loc->Rotation == EGLRotation::Clockwise50) newYaw = 180.0f;
 		else if (loc->Rotation == EGLRotation::Clockwise75) newYaw = -90.0f;
-		FRotator newRotation = FRotator(0.0f, newYaw, 0.0f);
-		ship->SetActorRotation(newRotation);
+		FRotator newRotator = FRotator(0.0f, newYaw, 0.0f);
+		ship->SetActorRotation(newRotator);
 	}
 }
