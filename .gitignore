@@ -10,3 +10,5 @@
 *.sln
 /Content/StarterContent
 /.vs
+/Plugins/DialoguePlugin/Intermediate
+/Plugins/DialoguePlugin/Binaries
