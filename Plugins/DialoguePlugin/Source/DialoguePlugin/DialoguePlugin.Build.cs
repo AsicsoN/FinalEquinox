@@ -12,7 +12,8 @@ namespace UnrealBuildTool.Rules
 					"Core",
 					"CoreUObject",
                   	"Engine",
-                    "SlateCore"
+                    "SlateCore",
+                    "Battleship"
                 }
 			);
 			

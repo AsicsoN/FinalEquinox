@@ -9,7 +9,10 @@ USTRUCT(Blueprintable)
 struct FDialogueEvents
 {
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue Event")
-	UAnimMontage* AnimationMontage = nullptr;
+	bool SetCharacterOption = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue Event", meta = (EditCondition = "SetCharacterOption"))
+	FString OptionId;
 
 	GENERATED_USTRUCT_BODY()
 };
@@ -21,7 +24,16 @@ USTRUCT(Blueprintable)
 struct FDialogueConditions 
 {
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue Condition")
+	bool MoneyCondition;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue Condition", meta = (EditCondition = "MoneyCondition"))
 	int32 Money = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue Condition")
+	bool OptionIdCondition;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue Condition", meta = (EditCondition = "OptionIdCondition"))
+	FString OptionId;
 
 	GENERATED_USTRUCT_BODY()
 };
