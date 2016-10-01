@@ -14,6 +14,9 @@ struct FDialogueEvents
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue Event", meta = (EditCondition = "SetCharacterOption"))
 	FString OptionId;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue Event")
+	bool EndDialogue = false;
+
 	GENERATED_USTRUCT_BODY()
 };
 
