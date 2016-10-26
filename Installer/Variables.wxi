@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include>
+
+  <?define SourceDir="$(var.SolutionDir)..\Output\" ?>
+  <?define Win64SourceDir="$(var.SourceDir)\Win64\WindowsNoEditor\" ?>
+  <?define Win32SourceDir="$(var.SourceDir)\Win32\WindowsNoEditor\" ?>
+
+  <?define CompanyName="Frozen Wasteland Entertainment" ?>
+  <?define DisplayName="Battleship Project" ?>
+
+</Include>

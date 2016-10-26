@@ -1,0 +1,22 @@
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+  <?include ..\Variables.wxi ?>
+
+  <Bundle Name="$(var.DisplayName)" Version="$(var.Version)" Manufacturer="$(var.CompanyName)" UpgradeCode="{A9434C2E-3275-4963-8957-7DCDAA7A6873}" Copyright="$(var.DisplayName) is a registered trademark of $(var.CompanyName)" >
+    <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.HyperlinkLicense">
+      <bal:WixStandardBootstrapperApplication
+      LicenseUrl=""
+      xmlns:bal="http://schemas.microsoft.com/wix/BalExtension" />
+    </BootstrapperApplicationRef>
+
+    <Chain>
+      <ExePackage Id="UE4PrereqSetup_x64" SourceFile="$(var.SourceDir)\Win64\WindowsNoEditor\Engine\Extras\Redist\en-us\UE4PrereqSetup_x64.exe" InstallCommand="/install /quiet" Permanent="yes" InstallCondition="VersionNT64" />
+      <ExePackage Id="UE4PrereqSetup_x86" SourceFile="$(var.SourceDir)\Win32\WindowsNoEditor\Engine\Extras\Redist\en-us\UE4PrereqSetup_x86.exe" InstallCommand="/install /quiet" Permanent="yes" InstallCondition="NOT VersionNT64" />
+
+      <RollbackBoundary />
+
+      <MsiPackage Id="MSI64" SourceFile="$(var.MSI64.TargetPath)" Vital="yes" InstallCondition="VersionNT64" />
+      <MsiPackage Id="MSI32" SourceFile="$(var.MSI32.TargetPath)" Vital="yes" InstallCondition="NOT VersionNT64" />
+    </Chain>
+  </Bundle>
+</Wix>

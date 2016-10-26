@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<?include ..\Variables.wxi ?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="EngineShaders">
+      <Directory Id="StandaloneRenderer" Name="StandaloneRenderer">
+        <Directory Id="D3D" Name="D3D">
+          <Component Id="GammaCorrectionCommon.hlsl" Guid="{39330A0A-DBCF-4F86-AB12-3ECDF27C3A8C}" Win64='no'>
+            <File Id="GammaCorrectionCommon.hlsl" KeyPath="yes" Source="$(var.Win32SourceDir)\Engine\Shaders\StandaloneRenderer\D3D\GammaCorrectionCommon.hlsl" />
+          </Component>
+          <Component Id="SlateDefaultVertexShader.hlsl" Guid="{82E9207D-D360-4325-905B-E330C8419CF3}" Win64='no'>
+            <File Id="SlateDefaultVertexShader.hlsl" KeyPath="yes" Source="$(var.Win32SourceDir)\Engine\Shaders\StandaloneRenderer\D3D\SlateDefaultVertexShader.hlsl" />
+          </Component>
+          <Component Id="SlateElementPixelShader.hlsl" Guid="{C3A46918-FF79-4131-8C1E-83EEBE741EF3}" Win64='no'>
+            <File Id="SlateElementPixelShader.hlsl" KeyPath="yes" Source="$(var.Win32SourceDir)\Engine\Shaders\StandaloneRenderer\D3D\SlateElementPixelShader.hlsl" />
+          </Component>
+        </Directory>
+        <Directory Id="OpenGL" Name="OpenGL">
+          <Component Id="SlateElementPixelShader.glsl" Guid="{AE573212-933A-418F-BEE6-756A3F9CCB46}" Win64='no'>
+            <File Id="SlateElementPixelShader.glsl" KeyPath="yes" Source="$(var.Win32SourceDir)\Engine\Shaders\StandaloneRenderer\OpenGL\SlateElementPixelShader.glsl" />
+          </Component>
+          <Component Id="SlateVertexShader.glsl" Guid="{07E5110D-9869-4155-B45B-1E2137B73C86}" Win64='no'>
+            <File Id="SlateVertexShader.glsl" KeyPath="yes" Source="$(var.Win32SourceDir)\Engine\Shaders\StandaloneRenderer\OpenGL\SlateVertexShader.glsl" />
+          </Component>
+          <Component Id="SplashFragmentShader.glsl" Guid="{8BCEBE10-4CB0-47F3-8244-5821BBBB02E9}" Win64='no'>
+            <File Id="SplashFragmentShader.glsl" KeyPath="yes" Source="$(var.Win32SourceDir)\Engine\Shaders\StandaloneRenderer\OpenGL\SplashFragmentShader.glsl" />
+          </Component>
+          <Component Id="SplashVertexShader.glsl" Guid="{35C1F2C2-5166-4A60-8ED9-C405A5BA3182}" Win64='no'>
+            <File Id="SplashVertexShader.glsl" KeyPath="yes" Source="$(var.Win32SourceDir)\Engine\Shaders\StandaloneRenderer\OpenGL\SplashVertexShader.glsl" />
+          </Component>
+        </Directory>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="EngineShaders">
+      <ComponentRef Id="GammaCorrectionCommon.hlsl" />
+      <ComponentRef Id="SlateDefaultVertexShader.hlsl" />
+      <ComponentRef Id="SlateElementPixelShader.hlsl" />
+      <ComponentRef Id="SlateElementPixelShader.glsl" />
+      <ComponentRef Id="SlateVertexShader.glsl" />
+      <ComponentRef Id="SplashFragmentShader.glsl" />
+      <ComponentRef Id="SplashVertexShader.glsl" />
+    </ComponentGroup>
+  </Fragment>
+</Wix>

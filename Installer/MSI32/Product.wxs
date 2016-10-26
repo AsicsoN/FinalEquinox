@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='Windows-1252'?>
+
+<?include ..\Variables.wxi ?>
+
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+  <Product Name='$(var.ProjectName)' Manufacturer='$(var.CompanyName)'
+      Id='*'
+      UpgradeCode='{29054044-2BA4-4793-B2A6-0162579D2748}'
+      Language='1033' Version='$(var.Version)'>
+
+    <Package Id='*' Keywords='Installer' Description="$(var.ProjectName) setup" Platform="x86"
+        Comments='$(var.ProjectName) is a registered trademark of $(var.CompanyName)' Manufacturer='$(var.CompanyName)'
+        InstallerVersion='200' Compressed='yes' InstallScope='perMachine' />
+
+    <Media Id='1' Cabinet='battleship.cab' EmbedCab='yes' />
+
+    <Directory Id='TARGETDIR' Name='SourceDir'>
+
+      <Directory Id='ProgramFilesFolder' Name='PFiles'>
+        <Directory Id='CDIR' Name='$(var.CompanyName)'>
+          <Directory Id='INSTALLDIR' Name='Battleship'>
+            <Directory Id='Battleship' Name='Battleship' />
+            <Directory Id='Engine' Name='Engine'>
+              <Directory Id='EngineBinaries' Name='Binaries' />
+              <Directory Id='EngineBuild' Name='Build' />
+              <Directory Id='EngineContent' Name='Content' />
+              <Directory Id='EnginePrograms' Name='Programs' />
+              <Directory Id='EngineShaders' Name='Shaders' />
+            </Directory>
+          </Directory>
+        </Directory>
+      </Directory>
+
+    </Directory>
+
+    <Feature Id='Complete' Level='1'>
+      <ComponentGroupRef Id='Base' />
+      <ComponentGroupRef Id='Battleship' />
+      <ComponentGroupRef Id='EngineBinaries' />
+      <ComponentGroupRef Id='EngineBuild' />
+      <ComponentGroupRef Id='EngineContent' />
+      <ComponentGroupRef Id='EnginePrograms' />
+      <ComponentGroupRef Id='EngineShaders' />
+    </Feature>
+  </Product>
+</Wix>

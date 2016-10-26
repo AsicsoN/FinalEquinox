@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<?include ..\Variables.wxi ?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="Battleship">
+      <Directory Id="Binaries" Name="Binaries">
+        <Directory Id="BS_BIN_Win32" Name="Win32">
+          <Component Id="Battleship_Win32_Shipping.exe" Guid="{A82DA9E2-5870-4CE2-896E-2D148632C6CA}" Win64='no'>
+            <File Id="Battleship_Win32_Shipping.exe" KeyPath="yes" Source="$(var.Win32SourceDir)\Battleship\Binaries\Win32\Battleship-Win32-Shipping.exe" />
+          </Component>
+        </Directory>
+      </Directory>
+      <Directory Id="Content" Name="Content">
+        <Directory Id="Paks" Name="Paks">
+          <Component Id="Battleship_WindowsNoEditor.pak" Guid="{E325F1EB-4F19-4224-AFB9-DFA67A913E7B}" Win64='no'>
+            <File Id="Battleship_WindowsNoEditor.pak" KeyPath="yes" Source="$(var.Win32SourceDir)\Battleship\Content\Paks\Battleship-WindowsNoEditor.pak" />
+          </Component>
+        </Directory>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="Battleship">
+      <ComponentRef Id="Battleship_Win32_Shipping.exe" />
+      <ComponentRef Id="Battleship_WindowsNoEditor.pak" />
+    </ComponentGroup>
+  </Fragment>
+</Wix>

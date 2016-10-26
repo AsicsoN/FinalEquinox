@@ -4,6 +4,8 @@
 /DerivedDataCache
 /Intermediate
 /Saved
+bin/
+obj/
 *.VC.opendb
 *.VC.db
 *.sdf
@@ -12,3 +14,4 @@
 /.vs
 /Plugins/DialoguePlugin/Intermediate
 /Plugins/DialoguePlugin/Binaries
+/Output

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<?include ..\Variables.wxi ?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="EngineBinaries">
+      <Directory Id="ThirdParty" Name="ThirdParty">
+        <Directory Id="Ogg" Name="Ogg">
+          <Directory Id="Win64" Name="Win64">
+            <Directory Id="VS2015" Name="VS2015">
+              <Component Id="libogg_64.dll" Guid="{D69F4DBC-5098-4DDF-8129-51C6B372DBB1}" Win64='yes'>
+                <File Id="libogg_64.dll" KeyPath="yes" Source="$(var.Win64SourceDir)\Engine\Binaries\ThirdParty\Ogg\Win64\VS2015\libogg_64.dll" />
+              </Component>
+            </Directory>
+          </Directory>
+        </Directory>
+        <Directory Id="OpenVR" Name="OpenVR">
+          <Directory Id="OpenVRv1_0_2" Name="OpenVRv1_0_2">
+            <Directory Id="Win64_1" Name="Win64">
+              <Component Id="openvr_api.dll" Guid="{2CCC0535-1386-4C39-9C88-7887C7F2675E}" Win64='yes'>
+                <File Id="openvr_api.dll" KeyPath="yes" Source="$(var.Win64SourceDir)\Engine\Binaries\ThirdParty\OpenVR\OpenVRv1_0_2\Win64\openvr_api.dll" />
+              </Component>
+            </Directory>
+          </Directory>
+        </Directory>
+        <Directory Id="PhysX" Name="PhysX">
+          <Directory Id="APEX_1.3" Name="APEX-1.3">
+            <Directory Id="Win64_2" Name="Win64">
+              <Directory Id="VS2015_1" Name="VS2015">
+                <Component Id="ApexFrameworkPROFILE_x64.dll" Guid="{8ECE2E77-C4EC-44C0-9AAE-2F670FBC8E3C}" Win64='yes'>
+                  <File Id="ApexFrameworkPROFILE_x64.dll" KeyPath="yes" Source="$(var.Win64SourceDir)\Engine\Binaries\ThirdParty\PhysX\APEX-1.3\Win64\VS2015\ApexFrameworkPROFILE_x64.dll" />
+                </Component>
+                <Component Id="APEX_ClothingPROFILE_x64.dll" Guid="{BBCA989D-2843-4087-8599-A6903E54A127}" Win64='yes'>
+                  <File Id="APEX_ClothingPROFILE_x64.dll" KeyPath="yes" Source="$(var.Win64SourceDir)\Engine\Binaries\ThirdParty\PhysX\APEX-1.3\Win64\VS2015\APEX_ClothingPROFILE_x64.dll" />
+                </Component>
+                <Component Id="APEX_DestructiblePROFILE_x64.dll" Guid="{94F2700D-210B-49FE-80ED-98EE554A10AE}" Win64='yes'>
+                  <File Id="APEX_DestructiblePROFILE_x64.dll" KeyPath="yes" Source="$(var.Win64SourceDir)\Engine\Binaries\ThirdParty\PhysX\APEX-1.3\Win64\VS2015\APEX_DestructiblePROFILE_x64.dll" />
+                </Component>
+                <Component Id="APEX_LegacyPROFILE_x64.dll" Guid="{DAC8B027-2B65-49F6-B486-8271FC742612}" Win64='yes'>
+                  <File Id="APEX_LegacyPROFILE_x64.dll" KeyPath="yes" Source="$(var.Win64SourceDir)\Engine\Binaries\ThirdParty\PhysX\APEX-1.3\Win64\VS2015\APEX_LegacyPROFILE_x64.dll" />
+                </Component>
+              </Directory>
+            </Directory>
+          </Directory>
+          <Directory Id="PhysX_3.3" Name="PhysX-3.3">
+            <Directory Id="Win64_3" Name="Win64">
+              <Directory Id="VS2015_2" Name="VS2015">
+                <Component Id="glut32.dll" Guid="{19D9E27B-4EC1-4850-82D4-EFD60DF58909}" Win64='yes'>
+                  <File Id="glut32.dll" KeyPath="yes" Source="$(var.Win64SourceDir)\Engine\Binaries\ThirdParty\PhysX\PhysX-3.3\Win64\VS2015\glut32.dll" />
+                </Component>
+                <Component Id="nvToolsExt64_1.dll" Guid="{76E2AE02-E000-440A-8F1D-4AC68B3DB381}" Win64='yes'>
+                  <File Id="nvToolsExt64_1.dll" KeyPath="yes" Source="$(var.Win64SourceDir)\Engine\Binaries\ThirdParty\PhysX\PhysX-3.3\Win64\VS2015\nvToolsExt64_1.dll" />
+                </Component>
+                <Component Id="PhysX3CommonPROFILE_x64.dll" Guid="{B7035176-0B51-4EF2-A3DE-81B41AE58DD9}" Win64='yes'>
+                  <File Id="PhysX3CommonPROFILE_x64.dll" KeyPath="yes" Source="$(var.Win64SourceDir)\Engine\Binaries\ThirdParty\PhysX\PhysX-3.3\Win64\VS2015\PhysX3CommonPROFILE_x64.dll" />
+                </Component>
+                <Component Id="PhysX3CookingPROFILE_x64.dll" Guid="{857B75F9-637E-43DF-8882-060468474EF4}" Win64='yes'>
+                  <File Id="PhysX3CookingPROFILE_x64.dll" KeyPath="yes" Source="$(var.Win64SourceDir)\Engine\Binaries\ThirdParty\PhysX\PhysX-3.3\Win64\VS2015\PhysX3CookingPROFILE_x64.dll" />
+                </Component>
+                <Component Id="PhysX3PROFILE_x64.dll" Guid="{5DB5956B-AA45-4EE4-99D2-8B61698C4B79}" Win64='yes'>
+                  <File Id="PhysX3PROFILE_x64.dll" KeyPath="yes" Source="$(var.Win64SourceDir)\Engine\Binaries\ThirdParty\PhysX\PhysX-3.3\Win64\VS2015\PhysX3PROFILE_x64.dll" />
+                </Component>
+              </Directory>
+            </Directory>
+          </Directory>
+        </Directory>
+        <Directory Id="Vorbis" Name="Vorbis">
+          <Directory Id="Win64_4" Name="Win64">
+            <Directory Id="VS2015_3" Name="VS2015">
+              <Component Id="libvorbisfile_64.dll" Guid="{CC617F30-6DF2-4BC9-A4EB-7BEA3B0B20DC}" Win64='yes'>
+                <File Id="libvorbisfile_64.dll" KeyPath="yes" Source="$(var.Win64SourceDir)\Engine\Binaries\ThirdParty\Vorbis\Win64\VS2015\libvorbisfile_64.dll" />
+              </Component>
+              <Component Id="libvorbis_64.dll" Guid="{DA708EA3-FBF0-4CC3-9A39-D5ED26DB8795}" Win64='yes'>
+                <File Id="libvorbis_64.dll" KeyPath="yes" Source="$(var.Win64SourceDir)\Engine\Binaries\ThirdParty\Vorbis\Win64\VS2015\libvorbis_64.dll" />
+              </Component>
+            </Directory>
+          </Directory>
+        </Directory>
+      </Directory>
+      <Directory Id="Win64_5" Name="Win64">
+        <Component Id="CrashReportClient.exe" Guid="{BAAE661A-33FE-47D8-810A-E2CA9D52130A}" Win64='yes'>
+          <File Id="CrashReportClient.exe" KeyPath="yes" Source="$(var.Win64SourceDir)\Engine\Binaries\Win64\CrashReportClient.exe" />
+        </Component>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="EngineBinaries">
+      <ComponentRef Id="libogg_64.dll" />
+      <ComponentRef Id="openvr_api.dll" />
+      <ComponentRef Id="ApexFrameworkPROFILE_x64.dll" />
+      <ComponentRef Id="APEX_ClothingPROFILE_x64.dll" />
+      <ComponentRef Id="APEX_DestructiblePROFILE_x64.dll" />
+      <ComponentRef Id="APEX_LegacyPROFILE_x64.dll" />
+      <ComponentRef Id="glut32.dll" />
+      <ComponentRef Id="nvToolsExt64_1.dll" />
+      <ComponentRef Id="PhysX3CommonPROFILE_x64.dll" />
+      <ComponentRef Id="PhysX3CookingPROFILE_x64.dll" />
+      <ComponentRef Id="PhysX3PROFILE_x64.dll" />
+      <ComponentRef Id="libvorbisfile_64.dll" />
+      <ComponentRef Id="libvorbis_64.dll" />
+      <ComponentRef Id="CrashReportClient.exe" />
+    </ComponentGroup>
+  </Fragment>
+</Wix>

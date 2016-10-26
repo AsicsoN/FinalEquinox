@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<?include ..\Variables.wxi ?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="EngineBuild">
+      <Component Id="Build.version" Guid="{70FFEC8C-FF3D-4075-8C80-1920B7114736}" Win64='yes'>
+        <File Id="Build.version" KeyPath="yes" Source="$(var.Win64SourceDir)\Engine\Build\Build.version" />
+      </Component>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="EngineBuild">
+      <ComponentRef Id="Build.version" />
+    </ComponentGroup>
+  </Fragment>
+</Wix>
