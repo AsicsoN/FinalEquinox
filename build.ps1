@@ -17,7 +17,7 @@ function BuildInstaller
 	param([string]$buildNum)
 	$pathToMSBuild = "C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe"
 	$pathToSolution = "`"$PSScriptRoot\Installer\BattleshipInstaller.sln`""
-	$parameters = "$pathToSolution", "/p:Version=$buildNum"
+	$parameters = "$pathToSolution", "/p:Version=$buildNum", "/p:Configuration=Release", "/p:Platform=x86"
 	$msbuild = Start-Process -FilePath $pathToMSBuild -ArgumentList $parameters -PassThru -Wait -NoNewWindow
 	if ($msbuild.ExitCode -ne 0) {
 		exit $msbuild.ExitCode
