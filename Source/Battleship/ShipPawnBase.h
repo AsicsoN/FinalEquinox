@@ -14,6 +14,9 @@ public:
 	// Sets default values for this pawn's properties
 	AShipPawnBase();
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int32 Initiative = -1;
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	

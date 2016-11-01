@@ -16,6 +16,8 @@ AShipPawnBase::AShipPawnBase()
 void AShipPawnBase::BeginPlay()
 {
 	Super::BeginPlay();
+
+	Initiative = FMath::RandRange(0, 20);
 	
 }
 
