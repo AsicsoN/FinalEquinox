@@ -29,6 +29,8 @@ void ASpaceCombatGameMode::BeginPlay()
 	{
 		UE_LOG(LogTemp, Error, TEXT("Initiative: %d"), Ship->Initiative);
 	}
+
+	SelectShip(ShipArray[0]);
 }
 
 // Called every frame
@@ -36,6 +38,11 @@ void ASpaceCombatGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ASpaceCombatGameMode::SelectShip(AShipPawnBase* Ship)
+{
+	SelectedShip = Ship;
 }
 
 void ASpaceCombatGameMode::EndCombat()

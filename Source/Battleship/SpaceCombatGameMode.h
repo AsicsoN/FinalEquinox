@@ -15,6 +15,8 @@ class BATTLESHIP_API ASpaceCombatGameMode : public AGameMode
 	
 public:
 
+	AShipPawnBase* SelectedShip;
+
 	ASpaceCombatGameMode();
 
 	// Called when the game starts or when spawned
@@ -25,6 +27,9 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
 	void EndCombat();
+
+	UFUNCTION(BlueprintCallable, Category = "Gameplay")
+	void SelectShip(AShipPawnBase* Ship);
 
 private:
 	AGridController* GridController = nullptr;
