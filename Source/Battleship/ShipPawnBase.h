@@ -26,6 +26,7 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 
-	
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Actions")
+	bool Fire(AShipPawnBase* EnemyShip);
 	
 };
