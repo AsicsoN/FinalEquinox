@@ -3,15 +3,9 @@
 #pragma once
 
 #include "Object.h"
+#include "Race.h"
+#include "Crew.h"
 #include "CharacterSheet.generated.h"
-
-UENUM(BlueprintType)
-enum class ERace : uint8
-{
-	Human UMETA(DisplayName = "Human"),
-	Malderian UMETA(DisplayName = "Malderian"),
-	Krum UMETA(DisplayName = "Krum")
-};
 
 /**
  * 
