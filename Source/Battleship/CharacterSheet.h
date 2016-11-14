@@ -4,7 +4,7 @@
 
 #include "Object.h"
 #include "Race.h"
-#include "Crew.h"
+#include "Ship.h"
 #include "CharacterSheet.generated.h"
 
 /**
@@ -24,6 +24,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
 	bool GenderIsMale = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fleet")
+	TArray<UShip*> Fleet;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighting")
 	int32 Brawling = 0;

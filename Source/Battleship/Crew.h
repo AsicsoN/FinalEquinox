@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(BlueprintType)
 class BATTLESHIP_API UCrew : public UObject
 {
 	GENERATED_BODY()
