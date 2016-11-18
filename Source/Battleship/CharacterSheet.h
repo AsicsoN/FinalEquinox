@@ -7,6 +7,16 @@
 #include "Ship.h"
 #include "CharacterSheet.generated.h"
 
+UENUM(BlueprintType)
+enum class ECharacterBackground : uint8
+{
+	Noble UMETA(DisplayName = "Noble"),
+	Outerworlds UMETA(DisplayName = "Outerworlds"),
+	Innerworlds UMETA(DisplayName = "Innerworlds"),
+	Military UMETA(DisplayName = "Military"),
+	Trader UMETA(DisplayName = "Trader")
+};
+
 /**
  * 
  */
@@ -16,11 +26,22 @@ class BATTLESHIP_API UCharacterSheet : public UObject
 	GENERATED_BODY()
 	
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
-	FString PlayerName = "Player";
+	UCharacterSheet();
+
+	UFUNCTION(BlueprintCallable, Category = "Options")
+	void SetCharacterOption(FString option);
+
+	UFUNCTION(BlueprintCallable, Category = "Options")
+	bool GetCharacterOption(FString option);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
-	ERace PlayerRace = ERace::Human;
+	FString Name = "Player";
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
+	ERace Race = ERace::Human;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
+	ECharacterBackground Background = ECharacterBackground::Outerworlds;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
 	bool GenderIsMale = true;
@@ -63,6 +84,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "World Knowledge")
 	int32 Explosives = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "World Knowledge")
+	int32 Language = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ship Knowledge")
 	int32 Mechanics = 0;
