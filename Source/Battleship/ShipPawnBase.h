@@ -3,6 +3,7 @@
 #pragma once
 
 #include "GameFramework/Pawn.h"
+#include "Crew.h"
 #include "ShipPawnBase.generated.h"
 
 UCLASS()
@@ -14,8 +15,32 @@ public:
 	// Sets default values for this pawn's properties
 	AShipPawnBase();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
+	FString Name;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int32 Initiative = -1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crew")
+	UCrew* Captain = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crew")
+	UCrew* NavigationOfficer = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crew")
+	UCrew* WeaponsOfficer = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crew")
+	UCrew* ScienceOfficer = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crew")
+	UCrew* Engineer = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crew")
+	UCrew* CAG = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crew")
+	TArray<UCrew*> Passengers;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

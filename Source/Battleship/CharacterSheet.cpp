@@ -215,3 +215,70 @@ bool UCharacterSheet::GetCharacterOption(FString option)
 		return false;
 	}
 }
+
+void UCharacterSheet::SetDefaultFleet()
+{
+	UShip* flagship = NewObject<UShip>();
+	flagship->Captain = NewObject<UCrew>();
+	flagship->NavigationOfficer = NewObject<UCrew>();
+	flagship->WeaponsOfficer = NewObject<UCrew>();
+	flagship->ScienceOfficer = NewObject<UCrew>();
+	flagship->Engineer = NewObject<UCrew>();
+	flagship->CAG = NewObject<UCrew>();
+
+	flagship->Captain->CrewName = "Ixa Rkeok";
+	flagship->Captain->CrewRace = ERace::Malderian;
+	flagship->Captain->IsMale = false;
+	flagship->Captain->Leadership = 7;
+	flagship->Captain->Piloting = 4;
+	flagship->Captain->Gunnery = 3;
+	flagship->Captain->Mechanics = 5;
+	flagship->Captain->Hacking = 1;
+
+	flagship->NavigationOfficer->CrewName = "Edvin Tjaard";
+	flagship->NavigationOfficer->CrewRace = ERace::Human;
+	flagship->NavigationOfficer->IsMale = true;
+	flagship->NavigationOfficer->Leadership = 2;
+	flagship->NavigationOfficer->Piloting = 6;
+	flagship->NavigationOfficer->Gunnery = 4;
+	flagship->NavigationOfficer->Mechanics = 1;
+	flagship->NavigationOfficer->Hacking = 3;
+
+	flagship->WeaponsOfficer->CrewName = "Tu'Vol Strogonar";
+	flagship->WeaponsOfficer->CrewRace = ERace::Krum;
+	flagship->WeaponsOfficer->IsMale = true;
+	flagship->WeaponsOfficer->Leadership = 4;
+	flagship->WeaponsOfficer->Piloting = 4;
+	flagship->WeaponsOfficer->Gunnery = 7;
+	flagship->WeaponsOfficer->Mechanics = 4;
+	flagship->WeaponsOfficer->Hacking = 1;
+
+	flagship->ScienceOfficer->CrewName = "Mar-Tun";
+	flagship->ScienceOfficer->CrewRace = ERace::Malderian;
+	flagship->ScienceOfficer->IsMale = true;
+	flagship->ScienceOfficer->Leadership = 7;
+	flagship->ScienceOfficer->Piloting = 4;
+	flagship->ScienceOfficer->Gunnery = 3;
+	flagship->ScienceOfficer->Mechanics = 5;
+	flagship->ScienceOfficer->Hacking = 7;
+
+	flagship->Engineer->CrewName = "Sheldon Matthäus";
+	flagship->Engineer->CrewRace = ERace::Human;
+	flagship->Engineer->IsMale = true;
+	flagship->Engineer->Leadership = 2;
+	flagship->Engineer->Piloting = 6;
+	flagship->Engineer->Gunnery = 2;
+	flagship->Engineer->Mechanics = 7;
+	flagship->Engineer->Hacking = 5;
+
+	flagship->CAG->CrewName = "Jaylen Arthur";
+	flagship->CAG->CrewRace = ERace::Human;
+	flagship->CAG->IsMale = false;
+	flagship->CAG->Leadership = 6;
+	flagship->CAG->Piloting = 4;
+	flagship->CAG->Gunnery = 5;
+	flagship->CAG->Mechanics = 2;
+	flagship->CAG->Hacking = 2;
+
+	Fleet.Add(flagship);
+}

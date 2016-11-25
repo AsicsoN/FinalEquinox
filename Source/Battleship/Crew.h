@@ -20,6 +20,9 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
 	ERace CrewRace = ERace::Human;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
+	bool IsMale = true;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 	int32 Leadership = 0;
