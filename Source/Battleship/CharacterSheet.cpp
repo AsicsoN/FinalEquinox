@@ -216,9 +216,11 @@ bool UCharacterSheet::GetCharacterOption(FString option)
 	}
 }
 
-void UCharacterSheet::SetDefaultFleet()
+void UCharacterSheet::SetDefaultFleet(TSubclassOf<class AShipPawnBase> BattleshipPawnClass, TSubclassOf<class AShipPawnBase> DestroyerPawnClass)
 {
 	UShip* flagship = NewObject<UShip>();
+	flagship->Name = "GCS Odysseus";
+	flagship->PawnClass = BattleshipPawnClass;
 	flagship->Captain = NewObject<UCrew>();
 	flagship->NavigationOfficer = NewObject<UCrew>();
 	flagship->WeaponsOfficer = NewObject<UCrew>();
@@ -281,4 +283,70 @@ void UCharacterSheet::SetDefaultFleet()
 	flagship->CAG->Hacking = 2;
 
 	Fleet.Add(flagship);
+
+	UShip* destroyer = NewObject<UShip>();
+	destroyer->Name = "GCS Selene";
+	destroyer->PawnClass = DestroyerPawnClass;
+	destroyer->Captain = NewObject<UCrew>();
+	destroyer->NavigationOfficer = NewObject<UCrew>();
+	destroyer->WeaponsOfficer = NewObject<UCrew>();
+	destroyer->ScienceOfficer = NewObject<UCrew>();
+	destroyer->Engineer = NewObject<UCrew>();
+	destroyer->CAG = NewObject<UCrew>();
+
+	destroyer->Captain->CrewName = "Ixa Rkeok";
+	destroyer->Captain->CrewRace = ERace::Malderian;
+	destroyer->Captain->IsMale = false;
+	destroyer->Captain->Leadership = 7;
+	destroyer->Captain->Piloting = 4;
+	destroyer->Captain->Gunnery = 3;
+	destroyer->Captain->Mechanics = 5;
+	destroyer->Captain->Hacking = 1;
+
+	destroyer->NavigationOfficer->CrewName = "Edvin Tjaard";
+	destroyer->NavigationOfficer->CrewRace = ERace::Human;
+	destroyer->NavigationOfficer->IsMale = true;
+	destroyer->NavigationOfficer->Leadership = 2;
+	destroyer->NavigationOfficer->Piloting = 6;
+	destroyer->NavigationOfficer->Gunnery = 4;
+	destroyer->NavigationOfficer->Mechanics = 1;
+	destroyer->NavigationOfficer->Hacking = 3;
+
+	destroyer->WeaponsOfficer->CrewName = "Tu'Vol Strogonar";
+	destroyer->WeaponsOfficer->CrewRace = ERace::Krum;
+	destroyer->WeaponsOfficer->IsMale = true;
+	destroyer->WeaponsOfficer->Leadership = 4;
+	destroyer->WeaponsOfficer->Piloting = 4;
+	destroyer->WeaponsOfficer->Gunnery = 7;
+	destroyer->WeaponsOfficer->Mechanics = 4;
+	destroyer->WeaponsOfficer->Hacking = 1;
+
+	destroyer->ScienceOfficer->CrewName = "Mar-Tun";
+	destroyer->ScienceOfficer->CrewRace = ERace::Malderian;
+	destroyer->ScienceOfficer->IsMale = true;
+	destroyer->ScienceOfficer->Leadership = 7;
+	destroyer->ScienceOfficer->Piloting = 4;
+	destroyer->ScienceOfficer->Gunnery = 3;
+	destroyer->ScienceOfficer->Mechanics = 5;
+	destroyer->ScienceOfficer->Hacking = 7;
+
+	destroyer->Engineer->CrewName = "Sheldon Matthäus";
+	destroyer->Engineer->CrewRace = ERace::Human;
+	destroyer->Engineer->IsMale = true;
+	destroyer->Engineer->Leadership = 2;
+	destroyer->Engineer->Piloting = 6;
+	destroyer->Engineer->Gunnery = 2;
+	destroyer->Engineer->Mechanics = 7;
+	destroyer->Engineer->Hacking = 5;
+
+	destroyer->CAG->CrewName = "Jaylen Arthur";
+	destroyer->CAG->CrewRace = ERace::Human;
+	destroyer->CAG->IsMale = false;
+	destroyer->CAG->Leadership = 6;
+	destroyer->CAG->Piloting = 4;
+	destroyer->CAG->Gunnery = 5;
+	destroyer->CAG->Mechanics = 2;
+	destroyer->CAG->Hacking = 2;
+
+	Fleet.Add(destroyer);
 }

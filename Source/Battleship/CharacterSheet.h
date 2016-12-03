@@ -29,7 +29,7 @@ public:
 	UCharacterSheet();
 
 	UFUNCTION(BlueprintCallable, Category = "Initialization")
-	void SetDefaultFleet();
+	void SetDefaultFleet(TSubclassOf<class AShipPawnBase> BattleshipPawnClass, TSubclassOf<class AShipPawnBase> DestroyerPawnClass);
 
 	UFUNCTION(BlueprintCallable, Category = "Options")
 	void SetCharacterOption(FString option);
