@@ -5,6 +5,11 @@
 #include "ShipPawnBase.h"
 #include "GridController.generated.h"
 
+struct gridLocation {
+	int x, y;
+	EGLRotation rotation;
+};
+
 UCLASS(Blueprintable)
 class BATTLESHIP_API AGridController : public AActor
 {
@@ -47,14 +52,23 @@ public:
 	FVector ConvertSquareIdToPosition(int32 x, int32 y);
 
 	UFUNCTION(BlueprintCallable, Category = "Movement")
-	void Move(AShipPawnBase* ship, int32 direction);
+	void Move(AShipPawnBase* ship, int32 direction);	
+
+	UFUNCTION(BlueprintCallable, Category = "Movement")
+	bool CanRotateClockwise(AShipPawnBase* ship);
 
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 	void RotateClockwise(AShipPawnBase* ship);
 
 	UFUNCTION(BlueprintCallable, Category = "Movement")
+	bool CanRotateCounterClockwise(AShipPawnBase* ship);
+
+	UFUNCTION(BlueprintCallable, Category = "Movement")
 	void RotateCounterClockwise(AShipPawnBase* ship);
 
 private:
+	gridLocation CalculateClockwiseRotation(AShipPawnBase* ship);
+	
+	gridLocation CalculateCounterClockwiseRotation(AShipPawnBase* ship);
 
 };

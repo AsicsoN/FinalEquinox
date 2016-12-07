@@ -162,43 +162,64 @@ void AGridController::Move(AShipPawnBase* ship, int32 direction)
 	}
 }
 
-void AGridController::RotateClockwise(AShipPawnBase* ship)
+gridLocation AGridController::CalculateClockwiseRotation(AShipPawnBase* ship)
 {
 	UGridLocation* loc = ship->FindComponentByClass<UGridLocation>();
 	int32 incrementAmount = loc->Length - 1;
 
-	int32 newLocationX = loc->LocationX;
-	int32 newLocationY = loc->LocationY;
-	EGLRotation newRotation = loc->Rotation;
+	gridLocation newGridLocation;
+	newGridLocation.x = loc->LocationX;
+	newGridLocation.y = loc->LocationY;
+	newGridLocation.rotation = loc->Rotation;
 
 	if (loc->Rotation == EGLRotation::Normal)
 	{
-		newRotation = EGLRotation::Clockwise25;
-		newLocationX += incrementAmount;
+		newGridLocation.rotation = EGLRotation::Clockwise25;
+		newGridLocation.x += incrementAmount;
 	}
 	else if (loc->Rotation == EGLRotation::Clockwise25)
 	{
-		newRotation = EGLRotation::Clockwise50;
-		newLocationY += incrementAmount;
+		newGridLocation.rotation = EGLRotation::Clockwise50;
+		newGridLocation.y += incrementAmount;
 	}
 	else if (loc->Rotation == EGLRotation::Clockwise50)
 	{
-		newRotation = EGLRotation::Clockwise75;
-		newLocationX -= incrementAmount;
+		newGridLocation.rotation = EGLRotation::Clockwise75;
+		newGridLocation.x -= incrementAmount;
 	}
 	else if (loc->Rotation == EGLRotation::Clockwise75)
 	{
-		newRotation = EGLRotation::Normal;
-		newLocationY -= incrementAmount;
+		newGridLocation.rotation = EGLRotation::Normal;
+		newGridLocation.y -= incrementAmount;
 	}
 
-	if (IsPositionValid(ship, newLocationX, newLocationY, loc->Width, loc->Length, newRotation))
+	return newGridLocation;
+}
+
+bool AGridController::CanRotateClockwise(AShipPawnBase* ship)
+{	
+	gridLocation newLocation = CalculateClockwiseRotation(ship);
+	UGridLocation* loc = ship->FindComponentByClass<UGridLocation>();
+
+	if (IsPositionValid(ship, newLocation.x, newLocation.y, loc->Width, loc->Length, newLocation.rotation))
 	{
-		FVector newLocationVector = FVector(newLocationX * Multiplier, newLocationY * Multiplier, 0.0f);
+		return true;
+	}
+	return false;
+}
+
+void AGridController::RotateClockwise(AShipPawnBase* ship)
+{	
+	if (CanRotateClockwise(ship))
+	{
+		gridLocation newLocation = CalculateClockwiseRotation(ship);
+		UGridLocation* loc = ship->FindComponentByClass<UGridLocation>();
+
+		FVector newLocationVector = FVector(newLocation.x * Multiplier, newLocation.y * Multiplier, 0.0f);
 		ship->SetActorLocation(newLocationVector);
-		loc->Rotation = newRotation;
-		loc->LocationX = newLocationX;
-		loc->LocationY = newLocationY;
+		loc->Rotation = newLocation.rotation;
+		loc->LocationX = newLocation.x;
+		loc->LocationY = newLocation.y;
 		float newYaw = 0.0f;
 		if (loc->Rotation == EGLRotation::Clockwise25) newYaw = 90.0f;
 		else if (loc->Rotation == EGLRotation::Clockwise50) newYaw = 180.0f;
@@ -208,48 +229,69 @@ void AGridController::RotateClockwise(AShipPawnBase* ship)
 	}
 }
 
-void AGridController::RotateCounterClockwise(AShipPawnBase* ship)
+gridLocation AGridController::CalculateCounterClockwiseRotation(AShipPawnBase* ship)
 {
 	UGridLocation* loc = ship->FindComponentByClass<UGridLocation>();
 	int32 incrementAmount = loc->Length - loc->Width;
 	int32 adjustmentAmount = loc->Width - 1;
 
-	int32 newLocationX = loc->LocationX;
-	int32 newLocationY = loc->LocationY;
-	EGLRotation newRotation = loc->Rotation;
+	gridLocation newGridLocation;
+	newGridLocation.x = loc->LocationX;
+	newGridLocation.y = loc->LocationY;
+	newGridLocation.rotation = loc->Rotation;
 
 	if (loc->Rotation == EGLRotation::Normal)
 	{
-		newRotation = EGLRotation::Clockwise75;
-		newLocationX -= incrementAmount;
-		newLocationY += adjustmentAmount;
+		newGridLocation.rotation = EGLRotation::Clockwise75;
+		newGridLocation.x -= incrementAmount;
+		newGridLocation.y += adjustmentAmount;
 	}
 	else if (loc->Rotation == EGLRotation::Clockwise25)
 	{
-		newRotation = EGLRotation::Normal;
-		newLocationX -= adjustmentAmount;
-		newLocationY -= incrementAmount;
+		newGridLocation.rotation = EGLRotation::Normal;
+		newGridLocation.x -= adjustmentAmount;
+		newGridLocation.y -= incrementAmount;
 	}
 	else if (loc->Rotation == EGLRotation::Clockwise50)
 	{
-		newRotation = EGLRotation::Clockwise25;
-		newLocationX += incrementAmount;
-		newLocationY -= adjustmentAmount;
+		newGridLocation.rotation = EGLRotation::Clockwise25;
+		newGridLocation.x += incrementAmount;
+		newGridLocation.y -= adjustmentAmount;
 	}
 	else if (loc->Rotation == EGLRotation::Clockwise75)
 	{
-		newRotation = EGLRotation::Clockwise50;
-		newLocationX += adjustmentAmount;
-		newLocationY += incrementAmount;
+		newGridLocation.rotation = EGLRotation::Clockwise50;
+		newGridLocation.x += adjustmentAmount;
+		newGridLocation.y += incrementAmount;
 	}
 
-	if (IsPositionValid(ship, newLocationX, newLocationY, loc->Width, loc->Length, newRotation))
+	return newGridLocation;
+}
+
+bool AGridController::CanRotateCounterClockwise(AShipPawnBase* ship)
+{
+	gridLocation newLocation = CalculateCounterClockwiseRotation(ship);
+	UGridLocation* loc = ship->FindComponentByClass<UGridLocation>();
+
+	if (IsPositionValid(ship, newLocation.x, newLocation.y, loc->Width, loc->Length, newLocation.rotation))
 	{
-		FVector newLocationVector = FVector(newLocationX * Multiplier, newLocationY * Multiplier, 0.0f);
+		return true;
+	}
+	return false;
+}
+
+void AGridController::RotateCounterClockwise(AShipPawnBase* ship)
+{
+	if (CanRotateCounterClockwise(ship))
+	{
+		gridLocation newLocation = CalculateCounterClockwiseRotation(ship);
+		UGridLocation* loc = ship->FindComponentByClass<UGridLocation>();
+
+		FVector newLocationVector = FVector(newLocation.x * Multiplier, newLocation.y * Multiplier, 0.0f);
 		ship->SetActorLocation(newLocationVector);
-		loc->Rotation = newRotation;
-		loc->LocationX = newLocationX;
-		loc->LocationY = newLocationY;
+		loc->Rotation = newLocation.rotation;
+		loc->LocationX = newLocation.x;
+		loc->LocationY = newLocation.y;
 		float newYaw = 0.0f;
 		if (loc->Rotation == EGLRotation::Clockwise25) newYaw = 90.0f;
 		else if (loc->Rotation == EGLRotation::Clockwise50) newYaw = 180.0f;
