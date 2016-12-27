@@ -264,7 +264,7 @@ void UCharacterSheet::SetDefaultFleet(TSubclassOf<class AShipPawnBase> Battleshi
 	flagship->ScienceOfficer->Mechanics = 5;
 	flagship->ScienceOfficer->Hacking = 7;
 
-	flagship->Engineer->CrewName = "Sheldon Matthäus";
+	flagship->Engineer->CrewName = "Sheldon Matthaus";
 	flagship->Engineer->CrewRace = ERace::Human;
 	flagship->Engineer->IsMale = true;
 	flagship->Engineer->Leadership = 2;
@@ -330,7 +330,7 @@ void UCharacterSheet::SetDefaultFleet(TSubclassOf<class AShipPawnBase> Battleshi
 	destroyer->ScienceOfficer->Mechanics = 5;
 	destroyer->ScienceOfficer->Hacking = 7;
 
-	destroyer->Engineer->CrewName = "Sheldon Matthäus";
+	destroyer->Engineer->CrewName = "Sheldon Matthaus";
 	destroyer->Engineer->CrewRace = ERace::Human;
 	destroyer->Engineer->IsMale = true;
 	destroyer->Engineer->Leadership = 2;
