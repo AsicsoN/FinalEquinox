@@ -1,5 +1,3 @@
-
-
 #include "Battleship.h"
 #include "ShipPawnBase.h"
 
@@ -17,8 +15,11 @@ void AShipPawnBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Initiative = FMath::RandRange(0, 20);
-	
+	if (NavigationOfficer != nullptr)
+	{
+		Initiative = NavigationOfficer->Piloting + FMath::RandRange(1, 20) + Speed;
+	}
+
 }
 
 // Called every frame
@@ -35,3 +36,12 @@ void AShipPawnBase::SetupPlayerInputComponent(class UInputComponent* InputCompon
 
 }
 
+// Calculate action points
+void AShipPawnBase::CalculateActionPoints(int32 Tactics)
+{	
+	ActionPoints = NavigationOfficer->Piloting + Tactics + FMath::RandRange(1, 8) + PowerLevel;
+	CurrentActionPoints = ActionPoints;
+
+	MovementPoints = Speed + FMath::RandRange(1, 4) + Tactics;
+	CurrentMovementPoints = MovementPoints;
+}

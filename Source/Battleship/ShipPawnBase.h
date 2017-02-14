@@ -1,5 +1,3 @@
-
-
 #pragma once
 
 #include "GameFramework/Pawn.h"
@@ -19,7 +17,25 @@ public:
 	FString Name;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int32 Speed = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int32 PowerLevel = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int32 Initiative = -1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 ActionPoints = -1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 CurrentActionPoints = -1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 MovementPoints = -1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 CurrentMovementPoints = -1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crew")
 	UCrew* Captain = nullptr;
@@ -54,4 +70,6 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Actions")
 	bool Fire(AShipPawnBase* EnemyShip);
 	
+	UFUNCTION(BlueprintCallable, Category = "Instantiation")
+	void CalculateActionPoints(int32 Tactics);
 };
