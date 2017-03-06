@@ -146,30 +146,30 @@ void FDialogueEditor::PostRedo(bool bSuccess)
 }
 
 
-void FDialogueEditor::RegisterTabSpawners(const TSharedRef<class FTabManager>& TabManager)
+void FDialogueEditor::RegisterTabSpawners(const TSharedRef<class FTabManager>& InTabManager)
 {
-	WorkspaceMenuCategory = TabManager->AddLocalWorkspaceMenuCategory(LOCTEXT("WorkspaceMenu_DialogueEditor", "Dialogue Editor"));
+	WorkspaceMenuCategory = InTabManager->AddLocalWorkspaceMenuCategory(LOCTEXT("WorkspaceMenu_DialogueEditor", "Dialogue Editor"));
 	auto WorkspaceMenuCategoryRef = WorkspaceMenuCategory.ToSharedRef();
 
-	FAssetEditorToolkit::RegisterTabSpawners(TabManager);
+	FAssetEditorToolkit::RegisterTabSpawners(InTabManager);
 
-	TabManager->RegisterTabSpawner(FDialogueEditorTabs::ViewportID, FOnSpawnTab::CreateSP(this, &FDialogueEditor::SpawnTab_Viewport))
+	InTabManager->RegisterTabSpawner(FDialogueEditorTabs::ViewportID, FOnSpawnTab::CreateSP(this, &FDialogueEditor::SpawnTab_Viewport))
 		.SetDisplayName( LOCTEXT("ViewportTab", "Viewport") )
 		.SetGroup(WorkspaceMenuCategoryRef)
 		.SetIcon(FSlateIcon(FEditorStyle::GetStyleSetName(), "LevelEditor.Tabs.Viewports"));
 
-	TabManager->RegisterTabSpawner(FDialogueEditorTabs::DetailsID, FOnSpawnTab::CreateSP(this, &FDialogueEditor::SpawnTab_Details))
+	InTabManager->RegisterTabSpawner(FDialogueEditorTabs::DetailsID, FOnSpawnTab::CreateSP(this, &FDialogueEditor::SpawnTab_Details))
 		.SetDisplayName( LOCTEXT("DetailsTabLabel", "Details") )
 		.SetGroup(WorkspaceMenuCategoryRef)
 		.SetIcon(FSlateIcon(FEditorStyle::GetStyleSetName(), "LevelEditor.Tabs.Details"));
 }
 
-void FDialogueEditor::UnregisterTabSpawners(const TSharedRef<class FTabManager>& TabManager)
+void FDialogueEditor::UnregisterTabSpawners(const TSharedRef<class FTabManager>& InTabManager)
 {
-	FAssetEditorToolkit::UnregisterTabSpawners(TabManager);
+	FAssetEditorToolkit::UnregisterTabSpawners(InTabManager);
 
-	TabManager->UnregisterTabSpawner(FDialogueEditorTabs::ViewportID);
-	TabManager->UnregisterTabSpawner(FDialogueEditorTabs::DetailsID);
+	InTabManager->UnregisterTabSpawner(FDialogueEditorTabs::ViewportID);
+	InTabManager->UnregisterTabSpawner(FDialogueEditorTabs::DetailsID);
 	
 }
 

@@ -7,6 +7,7 @@
 #include "Dialogue.h"
 #include "Runtime/Slate/Public/Widgets/Layout/SConstraintCanvas.h"
 #include "Editor/UnrealEd/Public/ScopedTransaction.h"
+#include "GraphEditorSettings.h"
 
 #define LOCTEXT_NAMESPACE "SDialogueViewportWidget"
 
