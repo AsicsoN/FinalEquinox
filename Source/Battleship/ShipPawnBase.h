@@ -72,4 +72,7 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = "Instantiation")
 	void CalculateActionPoints(int32 Tactics);
+
+	UFUNCTION(BlueprintCallable, Category = "Instantiation")
+	void Instantiate(int32 Tactics);
 };
