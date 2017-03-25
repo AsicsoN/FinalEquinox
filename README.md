@@ -18,7 +18,7 @@ Note: You may need to temporarily disable your anti virus software when installi
 
 ### Contribution guidelines
 
-* Look at our [Trello](https://trello.com/b/JUmcsz5f/battleship) to see what needs to be done
+* Look at our [HacknPlan](https://app.hacknplan.com/p/16781/) to see what needs to be done
 * Make sure your repository is up to date by pulling any changes
 * Make a change
 * Commit to your repository
