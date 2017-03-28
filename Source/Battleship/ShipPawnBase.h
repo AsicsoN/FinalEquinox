@@ -37,6 +37,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 CurrentMovementPoints = -1;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 HitPoints = -1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 CurrentHitPoints = -1;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crew")
 	UCrew* Captain = nullptr;
 
@@ -69,6 +75,9 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Actions")
 	bool Fire(AShipPawnBase* EnemyShip);
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Actions")
+	int32 CalculateLaserDamage();
 	
 	UFUNCTION(BlueprintCallable, Category = "Instantiation")
 	void CalculateActionPoints(int32 Tactics);

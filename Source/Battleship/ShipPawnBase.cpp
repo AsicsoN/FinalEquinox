@@ -32,6 +32,8 @@ void AShipPawnBase::Instantiate(int32 Tactics)
 
 	MovementPoints = Speed + FMath::RandRange(1, 4) + Tactics;
 	CurrentMovementPoints = MovementPoints;
+
+	CurrentHitPoints = HitPoints;
 }
 
 // Called every frame
