@@ -43,6 +43,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 CurrentHitPoints = -1;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool ForceTurnEnd = false;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crew")
 	UCrew* Captain = nullptr;
 
@@ -84,4 +87,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Instantiation")
 	void Instantiate(int32 Tactics);
+
+	UFUNCTION(BlueprintCallable, Category = "Game State")
+	bool IsTurnOver();
 };

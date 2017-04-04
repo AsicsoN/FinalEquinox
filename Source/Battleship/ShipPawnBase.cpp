@@ -59,3 +59,10 @@ void AShipPawnBase::CalculateActionPoints(int32 Tactics)
 	MovementPoints = Speed + FMath::RandRange(1, 4) + Tactics;
 	CurrentMovementPoints = MovementPoints;*/
 }
+
+bool AShipPawnBase::IsTurnOver()
+{
+	if (CurrentMovementPoints <= 0 && CurrentActionPoints <= 0) return true;
+	
+	return ForceTurnEnd;
+}
