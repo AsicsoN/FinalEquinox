@@ -162,6 +162,38 @@ void AGridController::Move(AShipPawnBase* ship, int32 direction)
 	}
 }
 
+bool AGridController::CanMoveForward(AShipPawnBase* ship)
+{
+	if (ship == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("nullptr passed in to CanMoveForward"));
+		return false;
+	}
+
+	UGridLocation* loc = ship->FindComponentByClass<UGridLocation>();
+	int32 newLocationX = loc->LocationX;
+	int32 newLocationY = loc->LocationY;
+
+	if (loc->Rotation == EGLRotation::Normal)
+	{
+		--newLocationY;
+	}
+	else if (loc->Rotation == EGLRotation::Clockwise25)
+	{
+		++newLocationX;
+	}
+	else if (loc->Rotation == EGLRotation::Clockwise50)
+	{
+		++newLocationY;
+	}
+	else // EGLRotation::Clockwise75
+	{
+		--newLocationX;
+	}
+
+	return IsPositionValid(ship, newLocationX, newLocationY, loc->Width, loc->Length, loc->Rotation);
+}
+
 gridLocation AGridController::CalculateClockwiseRotation(AShipPawnBase* ship)
 {
 	UGridLocation* loc = ship->FindComponentByClass<UGridLocation>();

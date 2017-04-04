@@ -66,6 +66,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 	void RotateCounterClockwise(AShipPawnBase* ship);
 
+	UFUNCTION(BlueprintCallable, Category = "Movement")
+	bool CanMoveForward(AShipPawnBase* ship);
+
 private:
 	gridLocation CalculateClockwiseRotation(AShipPawnBase* ship);
 	
