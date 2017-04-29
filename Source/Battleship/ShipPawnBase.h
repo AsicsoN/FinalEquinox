@@ -4,6 +4,13 @@
 #include "Crew.h"
 #include "ShipPawnBase.generated.h"
 
+UENUM(BlueprintType)
+enum class EFaction : uint8
+{
+	Player UMETA(DisplayName = "Player"),
+	Enemy1 UMETA(DisplayName = "Enemy1")
+};
+
 UCLASS()
 class BATTLESHIP_API AShipPawnBase : public APawn
 {
@@ -12,6 +19,9 @@ class BATTLESHIP_API AShipPawnBase : public APawn
 public:
 	// Sets default values for this pawn's properties
 	AShipPawnBase();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EFaction Faction = EFaction::Player;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
 	FString Name;
@@ -76,14 +86,10 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Actions")
-	bool Fire(AShipPawnBase* EnemyShip);
+	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser);
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Actions")
 	int32 CalculateLaserDamage();
-	
-	UFUNCTION(BlueprintCallable, Category = "Instantiation")
-	void CalculateActionPoints(int32 Tactics);
 
 	UFUNCTION(BlueprintCallable, Category = "Instantiation")
 	void Instantiate(int32 Tactics);

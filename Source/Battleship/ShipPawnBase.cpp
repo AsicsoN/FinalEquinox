@@ -14,12 +14,6 @@ AShipPawnBase::AShipPawnBase()
 void AShipPawnBase::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (NavigationOfficer != nullptr)
-	{
-		//Initiative = NavigationOfficer->Piloting + FMath::RandRange(1, 20) + Speed;
-	}
-
 }
 
 // Calculate ship stats
@@ -50,14 +44,22 @@ void AShipPawnBase::SetupPlayerInputComponent(class UInputComponent* InputCompon
 
 }
 
-// Don't use this anymore
-void AShipPawnBase::CalculateActionPoints(int32 Tactics)
-{	
-	/*ActionPoints = NavigationOfficer->Piloting + Tactics + FMath::RandRange(1, 8) + PowerLevel;
-	CurrentActionPoints = ActionPoints;
+float AShipPawnBase::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser)
+{
+	// Call the base class - this will tell us how much damage to apply  
+	const float ActualDamage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 
-	MovementPoints = Speed + FMath::RandRange(1, 4) + Tactics;
-	CurrentMovementPoints = MovementPoints;*/
+	int32 damage = ActualDamage;
+
+	CurrentHitPoints = CurrentHitPoints - damage;
+
+	if (CurrentHitPoints <= 0)
+	{
+		// TODO
+		UE_LOG(LogTemp, Error, TEXT("TODO - destroy pawn"));
+	}
+
+	return damage;
 }
 
 bool AShipPawnBase::IsTurnOver()
