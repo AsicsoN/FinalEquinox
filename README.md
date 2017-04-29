@@ -13,6 +13,7 @@ The Battleship project is targeting the Windows platform.
 * Download and install the [Windows SDK v8.1](https://developer.microsoft.com/en-us/windows/downloads/windows-8-1-sdk)
 * (Optional) Download and install [SourceTree](https://www.sourcetreeapp.com/) or any other Git front end
 * Clone
+* Open the project folder in File Explorer, right-click on Battleship.uproject and select "Generate Visual Studio project files"
 * Open the project in Unreal Engine
 
 Note: You may need to temporarily disable your anti virus software when installing Visual Studio.
