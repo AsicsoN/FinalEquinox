@@ -13,10 +13,12 @@ void ASpaceCombatGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
-	for (TActorIterator<AGridController> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+	/*for (TActorIterator<AGridController> ActorItr(GetWorld()); ActorItr; ++ActorItr)
 	{
 		GridController = *ActorItr;
 	}
+
+	SpawnShips();
 
 	for (TActorIterator<AShipPawnBase> ActorItr(GetWorld()); ActorItr; ++ActorItr)
 	{
@@ -27,10 +29,16 @@ void ASpaceCombatGameMode::BeginPlay()
 
 	for (auto& Ship : ShipArray)
 	{
+
 		UE_LOG(LogTemp, Error, TEXT("Initiative: %d"), Ship->Initiative);
 	}
 
-	SelectShip(ShipArray[0]);
+	SelectShip(ShipArray[0]);*/
+}
+
+void ASpaceCombatGameMode::SortShipPawnArrayByInitiative(TArray<AShipPawnBase*> PawnArrayIn)
+{
+	PawnArrayIn.Sort(SortShipPawnBase);
 }
 
 // Called every frame
@@ -40,14 +48,53 @@ void ASpaceCombatGameMode::Tick(float DeltaTime)
 
 }
 
+/*void ASpaceCombatGameMode::SpawnShips()
+{
+	TArray<ASpawnLocation*> SpawnLocations;
+	for (TActorIterator<ASpawnLocation> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+	{
+		SpawnLocations.Add(*ActorItr);
+	}
+
+	for (int32 i = 0; i < ShipsArray.Length; i++)
+	{
+		FVector Location(0.0f, 0.0f, 0.0f);
+		FRotator Rotation(0.0f, 0.0f, 0.0f);
+		FActorSpawnParameters SpawnInfo;
+		GetWorld()->SpawnActor<AShipPawnBase>(Location, Rotation, SpawnInfo);
+	}
+}
+
 void ASpaceCombatGameMode::SelectShip(AShipPawnBase* Ship)
 {
 	SelectedShip = Ship;
+}*/
+
+void ASpaceCombatGameMode::EndCombat(bool PlayerWon)
+{
+	bDidPlayerWin = PlayerWon;
+	bIsCombatEnded = true;
 }
 
-void ASpaceCombatGameMode::EndCombat()
+bool ASpaceCombatGameMode::DidPlayerWin()
 {
+	return bDidPlayerWin;
+}
 
+UCrew* ASpaceCombatGameMode::GenerateRandomCrewMember()
+{
+	UCrew* crew = NewObject<UCrew>();
+	//UCrew* crew = ConstructObject<UCrew>(UCrew::StaticClass());
+	crew->CrewName = "John Smith";
+	crew->CrewRace = ERace::Human;
+	crew->IsMale = true;
+	crew->Leadership = 3;
+	crew->Piloting = 3;
+	crew->Gunnery = 3;
+	crew->Mechanics = 3;
+	crew->Hacking = 3;
+
+	return crew;
 }
 
 

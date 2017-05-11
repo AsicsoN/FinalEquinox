@@ -38,9 +38,9 @@ void AShipPawnBase::Tick( float DeltaTime )
 }
 
 // Called to bind functionality to input
-void AShipPawnBase::SetupPlayerInputComponent(class UInputComponent* InputComponent)
+void AShipPawnBase::SetupPlayerInputComponent(class UInputComponent* InputComp)
 {
-	Super::SetupPlayerInputComponent(InputComponent);
+	Super::SetupPlayerInputComponent(InputComp);
 
 }
 
