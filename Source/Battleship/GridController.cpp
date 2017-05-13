@@ -33,13 +33,13 @@ int32 AGridController::GetSquareId(int32 x, int32 y)
 bool AGridController::IsSquareOccupied(AShipPawnBase* ship, int32 x, int32 y)
 {
 	FString shipName = ship->GetName();
-	UE_LOG(LogTemp, Error, TEXT("ShipName: %s"), *shipName);
+	//UE_LOG(LogTemp, Error, TEXT("ShipName: %s"), *shipName);
 
 	for (TActorIterator<AShipPawnBase> ActorItr(GetWorld()); ActorItr; ++ActorItr)
 	{
 		if (!shipName.Equals(ActorItr->GetName()))
 		{
-			UE_LOG(LogTemp, Error, TEXT("Found ShipPawn %s"), *ActorItr->GetName());
+			//UE_LOG(LogTemp, Error, TEXT("Found ShipPawn %s"), *ActorItr->GetName());
 			UGridLocation* loc = ActorItr->FindComponentByClass<UGridLocation>();
 
 			for (int xtile = loc->GetXMin(); xtile <= loc->GetXMax(); xtile++)
@@ -102,12 +102,12 @@ bool AGridController::IsPositionValid(AShipPawnBase* ship, int32 x, int32 y, int
 		{
 			if (IsSquareOutOfBounds(xtile, ytile))
 			{
-				UE_LOG(LogTemp, Error, TEXT("xtile: %d ytile: %d out of bounds"), xtile, ytile);
+				//UE_LOG(LogTemp, Error, TEXT("xtile: %d ytile: %d out of bounds"), xtile, ytile);
 				return false;
 			}
 			else if (IsSquareOccupied(ship, xtile, ytile))
 			{
-				UE_LOG(LogTemp, Error, TEXT("xtile: %d ytile: %d is occupied"), xtile, ytile);
+				//UE_LOG(LogTemp, Error, TEXT("xtile: %d ytile: %d is occupied"), xtile, ytile);
 				return false;
 			}
 		}

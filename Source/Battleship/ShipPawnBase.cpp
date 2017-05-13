@@ -1,4 +1,5 @@
 #include "Battleship.h"
+#include "SpaceCombatGameMode.h"
 #include "ShipPawnBase.h"
 
 
@@ -14,12 +15,6 @@ AShipPawnBase::AShipPawnBase()
 void AShipPawnBase::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (NavigationOfficer != nullptr)
-	{
-		//Initiative = NavigationOfficer->Piloting + FMath::RandRange(1, 20) + Speed;
-	}
-
 }
 
 // Calculate ship stats
@@ -44,20 +39,28 @@ void AShipPawnBase::Tick( float DeltaTime )
 }
 
 // Called to bind functionality to input
-void AShipPawnBase::SetupPlayerInputComponent(class UInputComponent* InputComponent)
+void AShipPawnBase::SetupPlayerInputComponent(class UInputComponent* InputComp)
 {
-	Super::SetupPlayerInputComponent(InputComponent);
+	Super::SetupPlayerInputComponent(InputComp);
 
 }
 
-// Don't use this anymore
-void AShipPawnBase::CalculateActionPoints(int32 Tactics)
-{	
-	/*ActionPoints = NavigationOfficer->Piloting + Tactics + FMath::RandRange(1, 8) + PowerLevel;
-	CurrentActionPoints = ActionPoints;
+float AShipPawnBase::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser)
+{
+	// Call the base class - this will tell us how much damage to apply  
+	const float ActualDamage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 
-	MovementPoints = Speed + FMath::RandRange(1, 4) + Tactics;
-	CurrentMovementPoints = MovementPoints;*/
+	int32 damage = ActualDamage;
+
+	CurrentHitPoints = CurrentHitPoints - damage;
+
+	if (CurrentHitPoints <= 0)
+	{
+		ASpaceCombatGameMode* GameMode = Cast<ASpaceCombatGameMode>(GetWorld()->GetAuthGameMode());
+		GameMode->DestroyPawn(this);
+	}
+
+	return damage;
 }
 
 bool AShipPawnBase::IsTurnOver()
