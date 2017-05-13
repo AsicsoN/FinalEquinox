@@ -1,4 +1,5 @@
 #include "Battleship.h"
+#include "SpaceCombatGameMode.h"
 #include "ShipPawnBase.h"
 
 
@@ -55,8 +56,8 @@ float AShipPawnBase::TakeDamage(float Damage, struct FDamageEvent const& DamageE
 
 	if (CurrentHitPoints <= 0)
 	{
-		// TODO
-		UE_LOG(LogTemp, Error, TEXT("TODO - destroy pawn"));
+		ASpaceCombatGameMode* GameMode = Cast<ASpaceCombatGameMode>(GetWorld()->GetAuthGameMode());
+		GameMode->DestroyPawn(this);
 	}
 
 	return damage;
