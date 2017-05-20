@@ -25,7 +25,7 @@ void AShipPawnBase::Instantiate(int32 Tactics)
 	ActionPoints = NavigationOfficer->Piloting + Tactics + FMath::RandRange(1, 8) + PowerLevel;
 	CurrentActionPoints = ActionPoints;
 
-	MovementPoints = Speed + FMath::RandRange(1, 4) + Tactics;
+	MovementPoints = Speed + FMath::RandRange(1, 4) + Tactics + 5;
 	CurrentMovementPoints = MovementPoints;
 
 	CurrentHitPoints = HitPoints;
