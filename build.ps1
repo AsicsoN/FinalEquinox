@@ -1,7 +1,11 @@
 function BuildUnreal
 {
 	param([string]$Platform)
-	$pathToUAT = "C:\Program Files\Epic Games\4.13\Engine\Build\BatchFiles\RunUAT.bat"
+	
+	$engineVersion = GetUnrealVersion
+	$pathToEngine = (Get-Item env:unreal_$engineVersion).Value
+	
+	$pathToUAT = "$pathToEngine\Engine\Build\BatchFiles\RunUAT.bat"
 	$parameters = "-ScriptsForProject=`"$PSScriptRoot\Battleship.uproject`"", "BuildCookRun", "-nocompile", "-nocompileeditor", "-installed", "-nop4",
 	 "-project=`"$PSScriptRoot\Battleship.uproject`"", "-cook", "-stage", "-archive", "-archivedirectory=`"$PSScriptRoot\Output\$Platform`"", "-package", 
 	 "-clientconfig=Shipping", "-ue4exe=UE4Editor-Cmd.exe", "-clean", "-pak", "-prereqs", "-distribution", "-nodebuginfo", "-targetplatform=$Platform",
@@ -40,6 +44,14 @@ function SetUnrealBuildNumber
 	param([string]$unrealBuildNumber)
 	$filepath = "$PSScriptRoot\Config\DefaultGame.ini"
 	(Get-Content ($filepath)) | Foreach-Object {$_ -replace '^ProjectVersion=.+$', ("ProjectVersion=" + $unrealBuildNumber)} | Set-Content ($filepath)
+}
+
+function GetUnrealVersion
+{
+	$projectFile = "$PSScriptRoot\Battleship.uproject"	
+	$battleship = Get-Content $projectFile | Out-String | ConvertFrom-Json
+	
+	return $battleship.EngineAssociation
 }
 
 #Clean up output from previous build
