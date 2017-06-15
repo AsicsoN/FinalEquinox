@@ -27,7 +27,7 @@
           </Directory>
         </Directory>
         <Directory Id="OpenVR" Name="OpenVR">
-          <Directory Id="OpenVRv1_0_2" Name="OpenVRv1_0_2">
+          <Directory Id="OpenVRv1_0_6" Name="OpenVRv1_0_6">
             <Directory Id="Win32_1" Name="Win32">
               <Component Id="openvr_api.dll" Guid="{486AC64A-DCE2-419D-9542-D263F7B1641D}" Win64='no'>
                 <File Id="openvr_api.dll" KeyPath="yes" Source="$(var.Win32SourceDir)\Engine\Binaries\ThirdParty\OpenVR\OpenVRv1_0_6\Win32\openvr_api.dll" />
