@@ -97,4 +97,8 @@ UCrew* ASpaceCombatGameMode::GenerateRandomCrewMember()
 	return crew;
 }
 
+void ASpaceCombatGameMode::WriteToCombatLog(FText message)
+{
+	OnCombatEvent.Broadcast(message);
+}
 

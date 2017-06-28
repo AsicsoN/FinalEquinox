@@ -2,6 +2,7 @@
 #include "SpaceCombatGameMode.h"
 #include "ShipPawnBase.h"
 
+#define LOCTEXT_NAMESPACE "SpaceCombat" 
 
 // Sets default values
 AShipPawnBase::AShipPawnBase()
@@ -47,6 +48,9 @@ void AShipPawnBase::SetupPlayerInputComponent(class UInputComponent* InputComp)
 
 float AShipPawnBase::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser)
 {
+	ASpaceCombatGameMode* GameMode = Cast<ASpaceCombatGameMode>(GetWorld()->GetAuthGameMode());
+	AShipPawnBase* DamageCauserPawn = Cast<AShipPawnBase>(DamageCauser);
+	
 	// Call the base class - this will tell us how much damage to apply  
 	const float ActualDamage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 
@@ -54,9 +58,26 @@ float AShipPawnBase::TakeDamage(float Damage, struct FDamageEvent const& DamageE
 
 	CurrentHitPoints = CurrentHitPoints - damage;
 
+	if (DamageCauserPawn != nullptr)
+	{
+		FFormatNamedArguments Arguments;
+		Arguments.Add(TEXT("DamageCauser"), FText::FromString(DamageCauserPawn->Name));
+		Arguments.Add(TEXT("Name"), FText::FromString(*Name));
+		Arguments.Add(TEXT("Damage"), FText::AsNumber(damage));
+
+		GameMode->WriteToCombatLog(FText::Format(LOCTEXT("TakeDamage", "{DamageCauser} dealt {Damage} damage to {Name}"), Arguments));
+	}
+	else
+	{
+		FFormatNamedArguments Arguments;
+		Arguments.Add(TEXT("Name"), FText::FromString(*Name));
+		Arguments.Add(TEXT("Damage"), FText::AsNumber(damage));
+
+		GameMode->WriteToCombatLog(FText::Format(LOCTEXT("TakeDamage", "{Name} was dealt {Damage} damage"), Arguments));
+	}
+
 	if (CurrentHitPoints <= 0)
 	{
-		ASpaceCombatGameMode* GameMode = Cast<ASpaceCombatGameMode>(GetWorld()->GetAuthGameMode());
 		GameMode->DestroyPawn(this);
 	}
 

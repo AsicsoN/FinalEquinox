@@ -14,8 +14,13 @@ UCLASS()
 class BATTLESHIP_API ASpaceCombatGameMode : public AGameMode
 {
 	GENERATED_BODY()
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCombatLogDelegate, FText, Message);
 	
 public:
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FCombatLogDelegate OnCombatEvent;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
 	AShipPawnBase* SelectedShip;
 
@@ -44,6 +49,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Instantiation")
 	UCrew* GenerateRandomCrewMember();
+
+	UFUNCTION(BlueprintCallable, Category = "Gameplay")
+	void WriteToCombatLog(FText message);
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Instantiation")
 	bool SpawnShips();
