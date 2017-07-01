@@ -102,3 +102,68 @@ void ASpaceCombatGameMode::WriteToCombatLog(FText message)
 	OnCombatEvent.Broadcast(message);
 }
 
+float ASpaceCombatGameMode::CalculateHitChance(AShipPawnBase* TargetShip)
+{
+	float toReturn = 0.0f;
+
+	// base hit chance: y = -5x + 100
+	toReturn = (-5 * CalculateDistance(SelectedShip, TargetShip)) + 100;
+
+	// speed difference modifier: y = 5x
+	toReturn += 5 * (SelectedShip->Speed - TargetShip->Speed);
+
+	// selected ship WeaponsOfficer's gunnery skill modifier: y = 7x
+	toReturn += 7 * (SelectedShip->WeaponsOfficer->Gunnery);
+
+	// target ship NavigationOfficer's piloting skill modifier: y = -7x
+	toReturn += -7 * (TargetShip->NavigationOfficer->Piloting);
+
+	return toReturn;
+}
+
+float ASpaceCombatGameMode::CalculateDistance(AShipPawnBase* Ship1, AShipPawnBase* Ship2)
+{
+	float toReturn = 0.0f;
+
+	UGridLocation* loc1 = Ship1->FindComponentByClass<UGridLocation>();
+	UGridLocation* loc2 = Ship2->FindComponentByClass<UGridLocation>();
+
+	int32 ship1XMin = loc1->GetXMin();
+	int32 ship1XMax = loc1->GetXMax();
+	int32 ship2XMin = loc2->GetXMin();
+	int32 ship2XMax = loc2->GetXMax();
+
+	int32 ship1YMin = loc1->GetYMin();
+	int32 ship1YMax = loc1->GetYMax();
+	int32 ship2YMin = loc2->GetYMin();
+	int32 ship2YMax = loc2->GetYMax();
+
+	int32 difx = 0;
+	if (ship2XMin > ship1XMax)
+	{
+		difx = ship2XMin - ship1XMax;
+	}
+	else if (ship1XMin > ship2XMax)
+	{
+		difx = ship1XMin - ship2XMax;
+	}
+	// all others difx = 0
+
+	int32 dify = 0;
+	if (ship2YMin > ship1YMax)
+	{
+		dify = ship2YMin - ship1YMax;
+	}
+	else if (ship1YMin > ship2YMax)
+	{
+		dify = ship1YMin - ship2YMax;
+	}
+	// all others dify = 0
+
+	// Pythagorean theorem
+	float csquared = (difx * difx) + (dify * dify);
+
+	toReturn = sqrt(csquared);
+
+	return toReturn;
+}

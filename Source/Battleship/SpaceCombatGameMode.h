@@ -53,6 +53,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
 	void WriteToCombatLog(FText message);
 
+	UFUNCTION(BlueprintCallable, Category = "Gameplay")
+	float CalculateHitChance(AShipPawnBase* TargetShip);
+
+	UFUNCTION(BlueprintCallable, Category = "Gameplay")
+	float CalculateDistance(AShipPawnBase* Ship1, AShipPawnBase* Ship2);
+
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Instantiation")
 	bool SpawnShips();
 
