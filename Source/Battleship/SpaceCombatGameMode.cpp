@@ -88,11 +88,11 @@ UCrew* ASpaceCombatGameMode::GenerateRandomCrewMember()
 	crew->CrewName = "John Smith";
 	crew->CrewRace = ERace::Human;
 	crew->IsMale = true;
-	crew->Leadership = 3;
-	crew->Piloting = 3;
-	crew->Gunnery = 3;
-	crew->Mechanics = 3;
-	crew->Hacking = 3;
+	crew->Leadership = 0;
+	crew->Piloting = 0;
+	crew->Gunnery = 0;
+	crew->Mechanics = 0;
+	crew->Hacking = 0;
 
 	return crew;
 }
