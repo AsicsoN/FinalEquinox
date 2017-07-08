@@ -5,7 +5,7 @@
   <Bundle Name="$(var.DisplayName)" Version="$(var.Version)" Manufacturer="$(var.CompanyName)" UpgradeCode="{A9434C2E-3275-4963-8957-7DCDAA7A6873}" Copyright="$(var.DisplayName) is a registered trademark of $(var.CompanyName)" >
     <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.HyperlinkLicense">
       <bal:WixStandardBootstrapperApplication
-      LicenseUrl=""
+      LicenseUrl="" LogoFile="..\feavatar64.png"
       xmlns:bal="http://schemas.microsoft.com/wix/BalExtension" />
     </BootstrapperApplicationRef>
 

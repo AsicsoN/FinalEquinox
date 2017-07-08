@@ -1974,12 +1974,6 @@
           <Component Id="DroidSansMono.ttf" Guid="{D81EE7FB-CB36-4D06-80A8-4E258F12E3E6}" Win64='yes'>
             <File Id="DroidSansMono.ttf" KeyPath="yes" Source="$(var.Win64SourceDir)\Engine\Content\Slate\Fonts\DroidSansMono.ttf" />
           </Component>
-          <Component Id="LastResort.tps" Guid="{ADCA6E8F-EB57-48F1-81B9-44E4DE8A32AE}" Win64='yes'>
-            <File Id="LastResort.tps" KeyPath="yes" Source="$(var.Win64SourceDir)\Engine\Content\Slate\Fonts\LastResort.tps" />
-          </Component>
-          <Component Id="LastResort.ttf" Guid="{65119255-44CA-481C-B2E0-99C57800772B}" Win64='yes'>
-            <File Id="LastResort.ttf" KeyPath="yes" Source="$(var.Win64SourceDir)\Engine\Content\Slate\Fonts\LastResort.ttf" />
-          </Component>
           <Component Id="NanumGothic.tps" Guid="{A4FC5150-7D5C-4455-A1E6-1844673B8B3C}" Win64='yes'>
             <File Id="NanumGothic.tps" KeyPath="yes" Source="$(var.Win64SourceDir)\Engine\Content\Slate\Fonts\NanumGothic.tps" />
           </Component>
@@ -2843,8 +2837,6 @@
       <ComponentRef Id="DroidSans.tps" />
       <ComponentRef Id="DroidSansFallback.ttf" />
       <ComponentRef Id="DroidSansMono.ttf" />
-      <ComponentRef Id="LastResort.tps" />
-      <ComponentRef Id="LastResort.ttf" />
       <ComponentRef Id="NanumGothic.tps" />
       <ComponentRef Id="NanumGothic.ttf" />
       <ComponentRef Id="Noto.tps" />

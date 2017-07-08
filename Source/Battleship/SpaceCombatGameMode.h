@@ -3,6 +3,8 @@
 #include "GameFramework/GameMode.h"
 #include "ShipPawnBase.h"
 #include "GridController.h"
+#include "Crew.h"
+#include "SpawnLocation.h"
 #include "SpaceCombatGameMode.generated.h"
 
 /**
@@ -12,10 +14,18 @@ UCLASS()
 class BATTLESHIP_API ASpaceCombatGameMode : public AGameMode
 {
 	GENERATED_BODY()
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCombatLogDelegate, FText, Message);
 	
 public:
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FCombatLogDelegate OnCombatEvent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
 	AShipPawnBase* SelectedShip;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
+	bool bIsCombatEnded = false;
 
 	ASpaceCombatGameMode();
 
@@ -26,12 +36,50 @@ public:
 	virtual void Tick(float DeltaSeconds) override;	
 	
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
-	void EndCombat();
+	void EndCombat(bool PlayerWon);
 
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
-	void SelectShip(AShipPawnBase* Ship);
+	bool DidPlayerWin();
+
+	//UFUNCTION(BlueprintCallable, Category = "Gameplay")
+	//void SelectShip(AShipPawnBase* Ship);
+
+	UFUNCTION(BlueprintCallable, Category = "Gameplay")
+	void SortShipPawnArrayByInitiative(TArray<AShipPawnBase*> PawnArrayIn);
+
+	UFUNCTION(BlueprintCallable, Category = "Instantiation")
+	UCrew* GenerateRandomCrewMember();
+
+	UFUNCTION(BlueprintCallable, Category = "Gameplay")
+	void WriteToCombatLog(FText message);
+
+	UFUNCTION(BlueprintCallable, Category = "Gameplay")
+	float CalculateHitChance(AShipPawnBase* TargetShip);
+
+	UFUNCTION(BlueprintCallable, Category = "Gameplay")
+	float CalculateDistance(AShipPawnBase* Ship1, AShipPawnBase* Ship2);
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Instantiation")
+	bool SpawnShips();
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Gameplay")
+	bool SelectPawn(AShipPawnBase* Pawn);
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Gameplay")
+	bool Forward();
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Gameplay")
+	bool LeftTurn();
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Gameplay")
+	bool RightTurn();
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Gameplay")
+	bool DestroyPawn(AShipPawnBase* Pawn);
 
 private:
+	bool bDidPlayerWin = false;
+
 	AGridController* GridController = nullptr;
 	TArray<AShipPawnBase*> ShipArray;
 

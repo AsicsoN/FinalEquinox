@@ -21,3 +21,6 @@ obj/
 
 # Built data for maps
 *_BuiltData.uasset
+
+# Ignore Save Menu files
+/SaveData

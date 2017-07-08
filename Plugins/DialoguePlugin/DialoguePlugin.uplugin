@@ -10,7 +10,7 @@
 	"DocsURL" : "https://docs.google.com/document/d/1gKlNNxpNIEJ7Fx9cjOdHb6V8GmLwdI3PX8jlOGHZsxU/",
 	"MarketplaceURL" : "com.epicgames.launcher://ue/marketplace/content/847aa65dc3024a37ae83ed89307524bd",
 	"SupportURL" : "",
-	"EnabledByDefault" : true,
+	"EngineVersion" : "4.16.0",
 	"CanContainContent" : true,
 	"IsBetaVersion" : false,
 	"Installed" : true,
