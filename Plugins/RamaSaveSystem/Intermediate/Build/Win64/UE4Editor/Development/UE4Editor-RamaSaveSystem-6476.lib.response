@@ -1,0 +1,14 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UE4Editor-RamaSaveSystem-6476.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"C:\Program Files\Epic Games\UE_4.16\Engine\Intermediate\Build\Win64\UE4Editor\Development\Engine\SharedPCH.Engine.h.obj"
+"C:\Users\hal11\Desktop\GroupProjects\FrozenWasteland\battleship\Plugins\RamaSaveSystem\Intermediate\Build\Win64\UE4Editor\Development\RamaSaveSystem\Module.RamaSaveSystem.cpp.obj"
+"C:\Users\hal11\Desktop\GroupProjects\FrozenWasteland\battleship\Plugins\RamaSaveSystem\Intermediate\Build\Win64\UE4Editor\Development\RamaSaveSystem\RamaSaveSystem.generated.cpp.obj"
+"C:\Program Files\Epic Games\UE_4.16\Engine\Intermediate\Build\Win64\UE4Editor\Development\RamaSaveSystem\PCLaunch.rc.res"
+"C:\Program Files\Epic Games\UE_4.16\Engine\Intermediate\Build\Win64\UE4Editor\Development\ModuleVersionResource.rc.inl.res"
+/OUT:"C:\Users\hal11\Desktop\GroupProjects\FrozenWasteland\battleship\Plugins\RamaSaveSystem\Intermediate\Build\Win64\UE4Editor\Development\UE4Editor-RamaSaveSystem-6476.lib"

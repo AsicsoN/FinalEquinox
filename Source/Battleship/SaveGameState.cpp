@@ -3,28 +3,26 @@
 #include "Battleship.h"
 #include "SaveGameState.h"
 
-void ASaveGameState::runSaveGame() {
-	UE_LOG(LogTemp, Warning, TEXT("runSaveGame!!"));
+ASaveGameState::ASaveGameState()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Welcome to MySaveState!!"));
+}
 
-	FString saveDirectory = FString(FPaths::GameDir()) + FString("/SaveData");		// location of save directory
+FString ASaveGameState::GenerateLatestSave() {
+	UE_LOG(LogTemp, Warning, TEXT("SaveGameState::generateSaveLocation"));
+	FString saveDirectory = FString(FPaths::GameSavedDir()) + FString("SaveGames/");		// location of save directory
 
 																					// save file
-	FString fileSurName = FString("battleshipSave");
-	int fileNum = 0;												// file name number
-	FString fileExtention = FString(".dat");
+	FString fileSurName = FString("save");
+	bool fileExisted = true;					// determines is save file is generated
+	int fileNum = 0;							// file name number
+	FString fileExtention = FString(".sav");
 	FString fileName = FString(fileSurName) +
 		FString::FormatAsNumber(fileNum) +
 		FString(fileExtention);
 
-	// random data to save file
-	FString saveText = FString("Hello battleship!! ") +
-		FString::FormatAsNumber(fileNum);
-	bool fileExisted = true;										// determines is save file is generated
-
 	IPlatformFile& platformFile = FPlatformFileManager::Get().GetPlatformFile();
-	FString absoluteFilePath = saveDirectory + "/" + fileName;;
-
-	UE_LOG(LogTemp, Warning, TEXT("Save text contains %s"), *saveText);
+	FString absolutePath = saveDirectory + fileName;
 
 	while (fileExisted) {
 		// CreateDirectoryTree returns true if the destination
@@ -36,41 +34,15 @@ void ASaveGameState::runSaveGame() {
 			fileName = FString(fileSurName) +
 				FString::FormatAsNumber(fileNum) +
 				FString(fileExtention);
-			absoluteFilePath = saveDirectory + "/" + fileName;
+			absolutePath = saveDirectory + fileName;
 
-			// update text
-			saveText = FString("Hello battleship!! ") +
-				FString::FormatAsNumber(fileNum);
-			UE_LOG(LogTemp, Warning, TEXT("Save text contains %s"), *saveText);
-
-			fileExisted = platformFile.FileExists(*absoluteFilePath);
+			fileExisted = platformFile.FileExists(*absolutePath);
 			// file doesn't already exist
-			if (!fileExisted)
-			{
-				FFileHelper::SaveStringToFile(saveText, *absoluteFilePath);
-			}
-			else {
+			if (fileExisted) {
 				UE_LOG(LogTemp, Warning, TEXT("File existed. Generating a new one."));
 				fileNum++;
 			}
 		}
 	}
-	UE_LOG(LogTemp, Warning, TEXT("Save ."));
+	return absolutePath;
 }
-
-ASaveGameState::ASaveGameState()
-{
-	UE_LOG(LogTemp, Warning, TEXT("Welcome to MySaveState!!"));
-}
-
-void ASaveGameState::SetDataMap(FString key1, FString value1)
-{
-	dataMap.Add(key1, value1);
-}
-
-TMap<FString, FString> ASaveGameState::GetDataMap()
-{
-	return dataMap;
-}
-
-
