@@ -1,4 +1,16 @@
 ### Updates for HL
+* 2017-07-15:
+	* Started on Options Menu
+		* Volume controls work for current game instance
+		* If reset game, the volume goes back to default, so need to apply to Rama Save
+		* Volume changes do not affect sounds currently playing
+	* Changes to Level Design
+		* When level starts, it plays a BGM (magic clock)
+		* BGM plays only one loop
+	* Changes to Project Settings
+		* MyOptionsInstance was created
+			* Currently used to store master volume to keep persistent
+	
 * 2017-07-06:
 	* Produced SaveMenu widget
 		* Pauses game before entering save menu
