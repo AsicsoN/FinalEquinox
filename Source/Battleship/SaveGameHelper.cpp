@@ -3,7 +3,7 @@
 
 FString USaveGameHelper::GetSaveGamesDirectory()
 {
-	return FPaths::Combine(FPaths::GameSavedDir(), FString(TEXT("Battleship")));
+	return FPaths::Combine(FPaths::GameSavedDir(), FString(TEXT("SaveGames")));
 }
 
 TArray<FString> USaveGameHelper::GetSaveGameFiles()
