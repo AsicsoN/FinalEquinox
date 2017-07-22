@@ -30,8 +30,3 @@ ALoadGameState::ALoadGameState()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Welcome to MySaveState!!"));
 }
-<<<<<<< HEAD
-=======
-
-
->>>>>>> pause_menu
