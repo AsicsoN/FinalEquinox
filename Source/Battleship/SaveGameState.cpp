@@ -12,7 +12,6 @@ FString ASaveGameState::GenerateLatestSave() {
 	UE_LOG(LogTemp, Warning, TEXT("SaveGameState::generateSaveLocation"));
 	FString saveDirectory = FString(FPaths::GameSavedDir()) + FString("SaveGames/");		// location of save directory
 
-																					// save file
 	FString fileSurName = FString("save");
 	bool fileExisted = true;					// determines is save file is generated
 	int fileNum = 0;							// file name number

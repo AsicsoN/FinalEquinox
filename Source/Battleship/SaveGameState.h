@@ -23,5 +23,3 @@ public:
 public:
 	ASaveGameState();									// default constructor
 };
-
-	
