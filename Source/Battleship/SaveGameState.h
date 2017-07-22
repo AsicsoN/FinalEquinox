@@ -9,6 +9,7 @@
 /**
 *
 */
+<<<<<<< HEAD
 UCLASS()
 class BATTLESHIP_API ASaveGameState : public AGameStateBase
 {
@@ -26,3 +27,21 @@ public:
 	void SetDataMap(FString key1, FString value1);		// setters
 	TMap<FString, FString> GetDataMap();				// getters	
 };
+=======
+UCLASS(Blueprintable)
+class BATTLESHIP_API ASaveGameState : public AGameStateBase
+{
+	GENERATED_BODY()
+
+
+public:
+	// Allows blueprint to refer to this class
+	UFUNCTION(BlueprintCallable, Category = "MySaveMenu")
+		static FString GenerateLatestSave();
+
+public:
+	ASaveGameState();									// default constructor
+};
+
+	
+>>>>>>> pause_menu
