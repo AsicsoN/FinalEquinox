@@ -1,8 +1,8 @@
 ﻿#Unreal gitignore
-/Binaries
+Binaries/
 /Build
 /DerivedDataCache
-/Intermediate
+Intermediate/
 /Saved
 bin/
 obj/
@@ -21,3 +21,6 @@ obj/
 
 # Built data for maps
 *_BuiltData.uasset
+
+# Ignore Save Menu files
+/SaveData
