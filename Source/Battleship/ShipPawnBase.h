@@ -89,7 +89,7 @@ public:
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser);
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Actions")
-	int32 CalculateLaserDamage();
+	int32 CalculateLaserDamage(bool CriticalHit);
 
 	UFUNCTION(BlueprintCallable, Category = "Instantiation")
 	void Instantiate(int32 Tactics);
