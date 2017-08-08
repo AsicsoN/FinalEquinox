@@ -54,6 +54,12 @@ public:
 	int32 CurrentHitPoints = -1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 ShieldHitPoints = -1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 CurrentShieldHitPoints = -1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool ForceTurnEnd = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crew")

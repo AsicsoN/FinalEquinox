@@ -30,6 +30,7 @@ void AShipPawnBase::Instantiate(int32 Tactics)
 	CurrentMovementPoints = MovementPoints;
 
 	CurrentHitPoints = HitPoints;
+	CurrentShieldHitPoints = ShieldHitPoints;
 }
 
 // Called every frame
@@ -56,29 +57,65 @@ float AShipPawnBase::TakeDamage(float Damage, struct FDamageEvent const& DamageE
 
 	int32 damage = ActualDamage;
 
-	CurrentHitPoints = CurrentHitPoints - damage;
-
-	if (DamageCauserPawn != nullptr)
+	if (DamageEvent.DamageTypeClass->GetDefaultObjectName().ToString().Contains("LaserDamage", ESearchCase::IgnoreCase) && CurrentShieldHitPoints > 0)
 	{
-		FFormatNamedArguments Arguments;
-		Arguments.Add(TEXT("DamageCauser"), FText::FromString(DamageCauserPawn->Name));
-		Arguments.Add(TEXT("Name"), FText::FromString(*Name));
-		Arguments.Add(TEXT("Damage"), FText::AsNumber(damage));
+		CurrentShieldHitPoints = CurrentShieldHitPoints - damage;
 
-		GameMode->WriteToCombatLog(FText::Format(LOCTEXT("TakeDamage", "{DamageCauser} dealt {Damage} damage to {Name}"), Arguments));
+		if (DamageCauserPawn != nullptr)
+		{
+			FFormatNamedArguments Arguments;
+			Arguments.Add(TEXT("DamageCauser"), FText::FromString(DamageCauserPawn->Name));
+			Arguments.Add(TEXT("Name"), FText::FromString(*Name));
+			Arguments.Add(TEXT("Damage"), FText::AsNumber(damage));
+
+			GameMode->WriteToCombatLog(FText::Format(LOCTEXT("TakeDamage", "{DamageCauser} dealt {Damage} shield damage to {Name}"), Arguments));
+		}
+		else
+		{
+			FFormatNamedArguments Arguments;
+			Arguments.Add(TEXT("Name"), FText::FromString(*Name));
+			Arguments.Add(TEXT("Damage"), FText::AsNumber(damage));
+
+			GameMode->WriteToCombatLog(FText::Format(LOCTEXT("TakeDamage", "{Name} was dealt {Damage} shield damage"), Arguments));
+		}
+
+		if (CurrentShieldHitPoints <= 0)
+		{
+			FFormatNamedArguments Arguments;
+			Arguments.Add(TEXT("Name"), FText::FromString(*Name));
+			GameMode->WriteToCombatLog(FText::Format(LOCTEXT("ShieldFailure", "Shield failure on {Name}"), Arguments));
+		}
 	}
 	else
 	{
-		FFormatNamedArguments Arguments;
-		Arguments.Add(TEXT("Name"), FText::FromString(*Name));
-		Arguments.Add(TEXT("Damage"), FText::AsNumber(damage));
+		CurrentHitPoints = CurrentHitPoints - damage;
 
-		GameMode->WriteToCombatLog(FText::Format(LOCTEXT("TakeDamage", "{Name} was dealt {Damage} damage"), Arguments));
-	}
+		if (DamageCauserPawn != nullptr)
+		{
+			FFormatNamedArguments Arguments;
+			Arguments.Add(TEXT("DamageCauser"), FText::FromString(DamageCauserPawn->Name));
+			Arguments.Add(TEXT("Name"), FText::FromString(*Name));
+			Arguments.Add(TEXT("Damage"), FText::AsNumber(damage));
 
-	if (CurrentHitPoints <= 0)
-	{
-		GameMode->DestroyPawn(this);
+			GameMode->WriteToCombatLog(FText::Format(LOCTEXT("TakeDamage", "{DamageCauser} dealt {Damage} damage to {Name}"), Arguments));
+		}
+		else
+		{
+			FFormatNamedArguments Arguments;
+			Arguments.Add(TEXT("Name"), FText::FromString(*Name));
+			Arguments.Add(TEXT("Damage"), FText::AsNumber(damage));
+
+			GameMode->WriteToCombatLog(FText::Format(LOCTEXT("TakeDamage", "{Name} was dealt {Damage} damage"), Arguments));
+		}
+
+		if (CurrentHitPoints <= 0)
+		{
+			FFormatNamedArguments Arguments;
+			Arguments.Add(TEXT("Name"), FText::FromString(*Name));
+			GameMode->WriteToCombatLog(FText::Format(LOCTEXT("Destroyed", "{Name} has been destroyed"), Arguments));
+
+			GameMode->DestroyPawn(this);
+		}
 	}
 
 	return damage;
