@@ -77,6 +77,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Gameplay")
 	bool DestroyPawn(AShipPawnBase* Pawn);
 
+	UFUNCTION(BlueprintCallable, Category = "Gameplay")
+	void RepairShip(AShipPawnBase* Ship);
+
 private:
 	bool bDidPlayerWin = false;
 

@@ -1,6 +1,8 @@
 #include "Battleship.h"
 #include "SpaceCombatGameMode.h"
 
+#define LOCTEXT_NAMESPACE "SpaceCombat" 
+
 // Sets default values
 ASpaceCombatGameMode::ASpaceCombatGameMode()
 {
@@ -166,4 +168,26 @@ float ASpaceCombatGameMode::CalculateDistance(AShipPawnBase* Ship1, AShipPawnBas
 	toReturn = sqrt(csquared);
 
 	return toReturn;
+}
+
+void ASpaceCombatGameMode::RepairShip(AShipPawnBase* Ship)
+{
+	int32 repairAmount = Ship->Engineer->Mechanics + FMath::RandRange(1, 10);
+
+	int32 maxRepairAmount = Ship->HitPoints - Ship->CurrentHitPoints;
+
+	if (repairAmount > maxRepairAmount)
+	{
+		repairAmount = maxRepairAmount;
+	}
+
+	Ship->CurrentHitPoints += repairAmount;
+
+	FFormatNamedArguments Arguments;
+	Arguments.Add(TEXT("Name"), FText::FromString(Ship->Name));
+	Arguments.Add(TEXT("RepairAmount"), FText::AsNumber(repairAmount));
+
+	Ship->ActionPoints = Ship->ActionPoints - 10;
+
+	WriteToCombatLog(FText::Format(LOCTEXT("Repair", "{Name} repaired {RepairAmount} hit points"), Arguments));
 }
