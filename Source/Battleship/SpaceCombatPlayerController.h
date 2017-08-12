@@ -29,6 +29,6 @@ public:
 	bool Fire(AShipPawnBase* TargetShip);
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Gameplay")
-	bool PrepareToFire();
+	bool PrepareToFire(bool FiringLasers);
 	
 };

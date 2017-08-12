@@ -60,6 +60,12 @@ public:
 	int32 CurrentShieldHitPoints = -1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 MaxMissiles = -1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 Missiles = -1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool ForceTurnEnd = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crew")
@@ -96,6 +102,9 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Actions")
 	int32 CalculateLaserDamage(bool CriticalHit);
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Actions")
+	int32 CalculateMissileDamage(bool CriticalHit);
 
 	UFUNCTION(BlueprintCallable, Category = "Instantiation")
 	void Instantiate(int32 Tactics);
