@@ -9,7 +9,6 @@ obj/
 *.VC.opendb
 *.VC.db
 *.sdf
-*.sln
 /Content/StarterContent
 /.vs
 /Plugins/DialoguePlugin/Intermediate
@@ -24,3 +23,4 @@ obj/
 
 # Ignore Save Menu files
 /SaveData
+/Battleship.sln
