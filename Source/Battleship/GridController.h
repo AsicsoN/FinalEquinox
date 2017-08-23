@@ -3,6 +3,7 @@
 #include "GameFramework/Actor.h"
 #include "GridLocation.h"
 #include "ShipPawnBase.h"
+#include "Public/SpaceObject.h"
 #include "GridController.generated.h"
 
 struct gridLocation {
@@ -38,6 +39,12 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Squares")
 	bool IsSquareOccupied(AShipPawnBase* ship, int32 x, int32 y);
+
+	UFUNCTION(BlueprintCallable, Category = "Gameplay")
+	ASpaceObject* GetIntersectingSpaceObject(AShipPawnBase* ship);
+
+	UFUNCTION(BlueprintCallable, Category = "Gameplay")
+	bool IsSpaceObjectIntersectingShip(AShipPawnBase* ship);
 
 	UFUNCTION(BlueprintCallable, Category = "Squares")
 	bool IsSquareOutOfBounds(int32 x, int32 y);

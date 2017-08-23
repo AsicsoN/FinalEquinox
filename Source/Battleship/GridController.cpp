@@ -58,6 +58,62 @@ bool AGridController::IsSquareOccupied(AShipPawnBase* ship, int32 x, int32 y)
 	return false;
 }
 
+bool AGridController::IsSpaceObjectIntersectingShip(AShipPawnBase* ship)
+{
+	for (TActorIterator<ASpaceObject> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+	{
+		UGridLocation* loc = ActorItr->FindComponentByClass<UGridLocation>();
+		UGridLocation* shipLocation = ship->FindComponentByClass<UGridLocation>();
+
+		for (int xtile = loc->GetXMin(); xtile <= loc->GetXMax(); xtile++)
+		{
+			for (int ytile = loc->GetYMin(); ytile <= loc->GetYMax(); ytile++)
+			{
+				for (int shipx = shipLocation->GetXMin(); shipx <= shipLocation->GetXMax(); shipx++)
+				{
+					for (int shipy = shipLocation->GetYMin(); shipy <= shipLocation->GetYMax(); shipy++)
+					{
+						if (xtile == shipx && ytile == shipy)
+						{
+							return true;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return false;
+}
+
+ASpaceObject* AGridController::GetIntersectingSpaceObject(AShipPawnBase* ship)
+{
+	for (TActorIterator<ASpaceObject> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+	{
+		UGridLocation* loc = ActorItr->FindComponentByClass<UGridLocation>();
+		UGridLocation* shipLocation = ship->FindComponentByClass<UGridLocation>();
+
+		for (int xtile = loc->GetXMin(); xtile <= loc->GetXMax(); xtile++)
+		{
+			for (int ytile = loc->GetYMin(); ytile <= loc->GetYMax(); ytile++)
+			{
+				for (int shipx = shipLocation->GetXMin(); shipx <= shipLocation->GetXMax(); shipx++)
+				{
+					for (int shipy = shipLocation->GetYMin(); shipy <= shipLocation->GetYMax(); shipy++)
+					{
+						if (xtile == shipx && ytile == shipy)
+						{
+							return *ActorItr;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return nullptr;
+}
+
 bool AGridController::IsSquareOutOfBounds(int32 x, int32 y)
 {
 	if (x < 1 || y < 1 || x > SizeX || y > SizeY)

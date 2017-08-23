@@ -57,7 +57,20 @@ float AShipPawnBase::TakeDamage(float Damage, struct FDamageEvent const& DamageE
 
 	int32 damage = ActualDamage;
 
-	if (DamageEvent.DamageTypeClass->GetDefaultObjectName().ToString().Contains("LaserDamage", ESearchCase::IgnoreCase) && CurrentShieldHitPoints > 0)
+	if (DamageEvent.DamageTypeClass->GetDefaultObjectName().ToString().Contains("ShieldDamage", ESearchCase::IgnoreCase))
+	{
+		if (CurrentShieldHitPoints > 0)
+		{
+			CurrentShieldHitPoints = CurrentShieldHitPoints - damage;
+
+			FFormatNamedArguments Arguments;
+			Arguments.Add(TEXT("Name"), FText::FromString(*Name));
+			Arguments.Add(TEXT("Damage"), FText::AsNumber(damage));
+
+			GameMode->WriteToCombatLog(FText::Format(LOCTEXT("TakeShieldDamage", "{Name} lost {Damage} shields due to being in an ion cloud."), Arguments));
+		}
+	}
+	else if (DamageEvent.DamageTypeClass->GetDefaultObjectName().ToString().Contains("LaserDamage", ESearchCase::IgnoreCase) && CurrentShieldHitPoints > 0)
 	{
 		CurrentShieldHitPoints = CurrentShieldHitPoints - damage;
 
