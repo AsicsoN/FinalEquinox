@@ -70,6 +70,16 @@ float AShipPawnBase::TakeDamage(float Damage, struct FDamageEvent const& DamageE
 			GameMode->WriteToCombatLog(FText::Format(LOCTEXT("TakeShieldDamage", "{Name} lost {Damage} shields due to being in an ion cloud."), Arguments));
 		}
 	}
+	else if (DamageEvent.DamageTypeClass->GetDefaultObjectName().ToString().Contains("HullDamage", ESearchCase::IgnoreCase))
+	{
+		CurrentHitPoints = CurrentHitPoints - damage;
+
+		FFormatNamedArguments Arguments;
+		Arguments.Add(TEXT("Name"), FText::FromString(*Name));
+		Arguments.Add(TEXT("Damage"), FText::AsNumber(damage));
+
+		GameMode->WriteToCombatLog(FText::Format(LOCTEXT("MitusDamage", "A mitus swarm dealt {Damage} damage to {Name}."), Arguments));
+	}
 	else if (DamageEvent.DamageTypeClass->GetDefaultObjectName().ToString().Contains("LaserDamage", ESearchCase::IgnoreCase) && CurrentShieldHitPoints > 0)
 	{
 		CurrentShieldHitPoints = CurrentShieldHitPoints - damage;
