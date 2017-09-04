@@ -78,7 +78,16 @@ float AShipPawnBase::TakeDamage(float Damage, struct FDamageEvent const& DamageE
 		Arguments.Add(TEXT("Name"), FText::FromString(*Name));
 		Arguments.Add(TEXT("Damage"), FText::AsNumber(damage));
 
-		GameMode->WriteToCombatLog(FText::Format(LOCTEXT("MitusDamage", "A mitus swarm dealt {Damage} damage to {Name}."), Arguments));
+		ASpaceObject* DamageCauserObject = Cast<ASpaceObject>(DamageCauser);
+		if (DamageCauserObject != nullptr)
+		{
+			Arguments.Add(TEXT("DamageCauser"), FText::FromString(DamageCauserObject->ObjectTypeDisplayName));
+			GameMode->WriteToCombatLog(FText::Format(LOCTEXT("HullDamageNamed", "A {DamageCauser} dealt {Damage} damage to {Name}."), Arguments));
+		}
+		else
+		{
+			GameMode->WriteToCombatLog(FText::Format(LOCTEXT("HullDamage", "{Damage} damage was dealt to {Name}."), Arguments));
+		}
 	}
 	else if (DamageEvent.DamageTypeClass->GetDefaultObjectName().ToString().Contains("LaserDamage", ESearchCase::IgnoreCase) && CurrentShieldHitPoints > 0)
 	{

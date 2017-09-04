@@ -28,5 +28,9 @@ public:
 	// Are ships detectable when in this cloud?
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Information")
 	bool bAreShipsDetectable = true;
+
+	// String to display in the combat log when talking about this type of space object
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Information")
+	FString ObjectTypeDisplayName;
 	
 };
