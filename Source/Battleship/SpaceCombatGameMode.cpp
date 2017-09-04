@@ -15,6 +15,11 @@ void ASpaceCombatGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
+	for (TActorIterator<AGridController> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+	{
+		GridController = *ActorItr;
+	}
+
 	/*for (TActorIterator<AGridController> ActorItr(GetWorld()); ActorItr; ++ActorItr)
 	{
 		GridController = *ActorItr;
@@ -119,6 +124,24 @@ float ASpaceCombatGameMode::CalculateHitChance(AShipPawnBase* TargetShip)
 
 	// target ship NavigationOfficer's piloting skill modifier: y = -7x
 	toReturn += -7 * (TargetShip->NavigationOfficer->Piloting);
+
+	if (GridController != nullptr)
+	{
+		if (GridController->IsSpaceObjectIntersectingShip(SelectedShip))
+		{
+			ASpaceObject* object = GridController->GetIntersectingSpaceObject(SelectedShip);
+			toReturn -= object->HitChancePenalty;
+		}
+		if (GridController->IsSpaceObjectIntersectingShip(TargetShip))
+		{
+			ASpaceObject* object = GridController->GetIntersectingSpaceObject(TargetShip);
+			toReturn -= object->HitChancePenalty;
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("GridController is not defined in SpaceCombatGameMode"));
+	}
 
 	return toReturn;
 }

@@ -20,5 +20,13 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	// Hit chance percentage penalty for shooting ships in this cloud as well as shooting out of this cloud
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Information")
+	float HitChancePenalty = 0.0f;
+
+	// Are ships detectable when in this cloud?
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Information")
+	bool bAreShipsDetectable = true;
 	
 };
