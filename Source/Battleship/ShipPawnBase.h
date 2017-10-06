@@ -106,6 +106,12 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Actions")
 	int32 CalculateMissileDamage(bool CriticalHit);
 
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "TurnSequence")
+	bool ShowThisShipActive();
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "TurnSequence")
+	bool ShowThisShipInactive();
+
 	UFUNCTION(BlueprintCallable, Category = "Instantiation")
 	void Instantiate(int32 Tactics);
 
