@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GameFramework/Pawn.h"
+#include "GameFramework/Character.h"
 #include "Crew.h"
 #include "ShipPawnBase.generated.h"
 
@@ -12,7 +12,7 @@ enum class EFaction : uint8
 };
 
 UCLASS()
-class BATTLESHIP_API AShipPawnBase : public APawn
+class BATTLESHIP_API AShipPawnBase : public ACharacter
 {
 	GENERATED_BODY()
 
