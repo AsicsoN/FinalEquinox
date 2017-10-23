@@ -35,6 +35,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int32 Multiplier = 200;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class UInstancedStaticMeshComponent *Tiles;
+
+	UFUNCTION(BlueprintCallable, Category = "Squares")
+	TArray<FTransform> GenerateNavGrid();
+
 	int32 GetSquareId(int32 x, int32 y);
 
 	UFUNCTION(BlueprintCallable, Category = "Squares")
@@ -80,5 +86,4 @@ private:
 	gridLocation CalculateClockwiseRotation(AShipPawnBase* ship);
 	
 	gridLocation CalculateCounterClockwiseRotation(AShipPawnBase* ship);
-
 };

@@ -6,6 +6,12 @@ AGridController::AGridController()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
+
+	// Add Tiles 
+	Tiles = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("Tiles"));
+	Tiles->SetupAttachment(RootComponent);
+
+	RootComponent = Tiles;
 }
 
 // Called when the game starts or when spawned
@@ -19,6 +25,27 @@ void AGridController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+TArray<FTransform> AGridController::GenerateNavGrid() 
+{
+	TArray<FTransform> Locations;
+	FTransform GridLocation;
+	FVector Location;
+	for (int32 x = 1; x < SizeX; x++) {
+		int32 PosX = x * Multiplier;
+		for (int32 y = 1; y < SizeY; y++) {
+			int32 PosY = y * Multiplier;
+			Location = FVector(PosX, PosY, 0);
+			GridLocation.SetLocation(Location);
+
+			Tiles->AddInstance(GridLocation);
+
+			Locations.Push(GridLocation);
+		}
+	}
+
+	return Locations;
 }
 
 int32 AGridController::GetSquareId(int32 x, int32 y)
