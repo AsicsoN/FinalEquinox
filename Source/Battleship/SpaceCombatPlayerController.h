@@ -17,7 +17,7 @@ public:
 	bool bPreparingToFire = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
-	bool bPreparingToMove = false;
+	bool bPreparingToMove = true;
 	
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Gameplay")
 	bool LeftTurn();
