@@ -26,6 +26,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaSeconds) override;
 
+	virtual void OnConstruction(const FTransform & Transform) override;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int32 SizeX = 3;
 
@@ -38,8 +40,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UInstancedStaticMeshComponent *Tiles;
 
-	UFUNCTION(BlueprintCallable, Category = "Squares")
-	TArray<FTransform> GenerateNavGrid();
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<FTransform> GridLocations;
 
 	int32 GetSquareId(int32 x, int32 y);
 
@@ -86,4 +88,6 @@ private:
 	gridLocation CalculateClockwiseRotation(AShipPawnBase* ship);
 	
 	gridLocation CalculateCounterClockwiseRotation(AShipPawnBase* ship);
+
+	TArray<FTransform> GenerateNavGrid();
 };

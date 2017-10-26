@@ -27,6 +27,20 @@ void AGridController::Tick(float DeltaTime)
 
 }
 
+void AGridController::OnConstruction(const FTransform &Transform)
+{
+	Super::OnConstruction(Transform);
+
+	int32 count = Tiles->GetInstanceCount();
+
+	// If sizes haven't changed, don't regenerate the tile grid
+	if ((SizeX - 1) * (SizeY - 1) != count)
+	{
+		Tiles->ClearInstances();
+		GridLocations = GenerateNavGrid();
+	}
+}
+
 TArray<FTransform> AGridController::GenerateNavGrid() 
 {
 	TArray<FTransform> Locations;
@@ -36,7 +50,7 @@ TArray<FTransform> AGridController::GenerateNavGrid()
 		int32 PosX = x * Multiplier;
 		for (int32 y = 1; y < SizeY; y++) {
 			int32 PosY = y * Multiplier;
-			Location = FVector(PosX, PosY, 0);
+			Location = FVector(PosX, PosY, -50.0f);
 			GridLocation.SetLocation(Location);
 
 			Tiles->AddInstance(GridLocation);
