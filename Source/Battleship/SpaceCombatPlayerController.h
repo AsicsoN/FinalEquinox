@@ -15,6 +15,9 @@ class BATTLESHIP_API ASpaceCombatPlayerController : public APlayerController
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	bool bPreparingToFire = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+	bool bPreparingToMove = true;
 	
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Gameplay")
 	bool LeftTurn();
