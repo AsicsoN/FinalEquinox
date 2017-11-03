@@ -16,7 +16,7 @@ public:
 	ADestructibleObject();
 
 	UFUNCTION(BlueprintCallable)
-	inline int32 TakeDamage(int32 Damage) { Health -= Damage; return Health; }
+	inline int32 Damage(int32 Damage) { Health -= Damage; return Health; }
 
 	// Components
 	UPROPERTY(VisibleAnywhere, Category = "Components")

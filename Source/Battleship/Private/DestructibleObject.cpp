@@ -13,6 +13,8 @@ ADestructibleObject::ADestructibleObject()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(RootComponent);
 
+	RootComponent = Mesh;
+
 	Box = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
 	Box->SetBoxExtent(FVector(120.0f, 120.0f, 200.0f));
 	Box->SetupAttachment(Mesh);
