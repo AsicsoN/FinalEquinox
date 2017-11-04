@@ -20,27 +20,31 @@ void ASpaceCombatGameMode::BeginPlay()
 		GridController = *ActorItr;
 	}
 
-	/*for (TActorIterator<AGridController> ActorItr(GetWorld()); ActorItr; ++ActorItr)
-	{
-		GridController = *ActorItr;
-	}
-
 	SpawnShips();
 
 	for (TActorIterator<AShipPawnBase> ActorItr(GetWorld()); ActorItr; ++ActorItr)
 	{
+		if (ActorItr->Faction == EFaction::Enemy1)
+		{
+			ActorItr->CAG = GenerateRandomCrewMember();
+			ActorItr->Engineer = GenerateRandomCrewMember();
+			ActorItr->Captain = GenerateRandomCrewMember();
+			ActorItr->NavigationOfficer = GenerateRandomCrewMember();
+			ActorItr->ScienceOfficer = GenerateRandomCrewMember();
+			ActorItr->WeaponsOfficer = GenerateRandomCrewMember();
+		}
+
 		ShipArray.Add(*ActorItr);
 	}
 
 	ShipArray.Sort(SortShipPawnBase);
 
+	SelectPawn(ShipArray[0]);
+
 	for (auto& Ship : ShipArray)
 	{
-
 		UE_LOG(LogTemp, Error, TEXT("Initiative: %d"), Ship->Initiative);
 	}
-
-	SelectShip(ShipArray[0]);*/
 }
 
 void ASpaceCombatGameMode::SortShipPawnArrayByInitiative(TArray<AShipPawnBase*> PawnArrayIn)
@@ -53,6 +57,11 @@ void ASpaceCombatGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+AGridController* ASpaceCombatGameMode::GetGridController()
+{
+	return GridController;
 }
 
 /*void ASpaceCombatGameMode::SpawnShips()

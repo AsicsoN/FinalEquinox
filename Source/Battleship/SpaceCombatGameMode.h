@@ -7,6 +7,15 @@
 #include "SpawnLocation.h"
 #include "SpaceCombatGameMode.generated.h"
 
+UENUM(BlueprintType)
+enum class ESpaceCombatPhase : uint8
+{
+	Intro UMETA(DisplayName = "Intro"),
+	PreCombat UMETA(DisplayName = "Pre-combat"),
+	Combat UMETA(DisplayName = "Combat"),
+	Outro UMETA(DisplayName = "Outro")
+};
+
 /**
  * 
  */
@@ -26,6 +35,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
 	bool bIsCombatEnded = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+	ESpaceCombatPhase Phase = ESpaceCombatPhase::Intro;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+	TArray<AShipPawnBase*> ShipArray;
 
 	ASpaceCombatGameMode();
 
@@ -80,11 +95,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
 	void RepairShip(AShipPawnBase* Ship);
 
+	UFUNCTION(BlueprintCallable, Category = "Gameplay")
+	AGridController* GetGridController();
+
 private:
 	bool bDidPlayerWin = false;
 
 	AGridController* GridController = nullptr;
-	TArray<AShipPawnBase*> ShipArray;
 
 	inline static bool SortShipPawnBase(const AShipPawnBase& ship1, const AShipPawnBase& ship2)
 	{
