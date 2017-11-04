@@ -57,6 +57,8 @@ void ATile::OnConstruction(const FTransform &Transform)
 
 	GridLocation->LocationX = FMath::RoundToInt(PosX);
 	GridLocation->LocationY = FMath::RoundToInt(PosY);
+
+	SetFolderPath("Tiles");
 }
 
 void ATile::CustomActorBeginCursorOver(UPrimitiveComponent* TouchedComponent)
