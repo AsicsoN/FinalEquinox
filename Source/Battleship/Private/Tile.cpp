@@ -72,6 +72,20 @@ void ATile::CustomActorBeginCursorOver(UPrimitiveComponent* TouchedComponent)
 		FlushPersistentDebugLines(GetWorld());
 		BuildPath();
 		PlayerController->Tile = this;
+
+		ASpaceCombatGameMode* GameMode = Cast<ASpaceCombatGameMode>(GetWorld()->GetAuthGameMode());
+		AShipPawnBase* SelectedShip = GameMode->SelectedShip;
+
+		if (SelectedShip != nullptr)
+		{
+			TArray<UStaticMeshComponent*> Components;
+			SelectedShip->GetComponents<UStaticMeshComponent>(Components);
+			UStaticMeshComponent* StaticMeshComponent = Components[0];
+			if (StaticMeshComponent) {
+				UStaticMesh* StaticMesh = StaticMeshComponent->StaticMesh;
+				StaticMeshComponent->SetWorldLocation(GetActorLocation(), true, nullptr, ETeleportType::TeleportPhysics);
+			}
+		}
 	}
 }
 
