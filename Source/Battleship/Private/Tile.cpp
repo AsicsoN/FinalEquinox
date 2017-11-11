@@ -80,10 +80,13 @@ void ATile::CustomActorBeginCursorOver(UPrimitiveComponent* TouchedComponent)
 		{
 			TArray<UStaticMeshComponent*> Components;
 			SelectedShip->GetComponents<UStaticMeshComponent>(Components);
-			UStaticMeshComponent* StaticMeshComponent = Components[0];
-			if (StaticMeshComponent) {
-				UStaticMesh* StaticMesh = StaticMeshComponent->StaticMesh;
-				StaticMeshComponent->SetWorldLocation(GetActorLocation(), true, nullptr, ETeleportType::TeleportPhysics);
+			if (Components.Num())
+			{
+				UStaticMeshComponent* StaticMeshComponent = Components[0];
+				if (StaticMeshComponent) {
+					UStaticMesh* StaticMesh = StaticMeshComponent->GetStaticMesh();
+					StaticMeshComponent->SetWorldLocation(GetActorLocation(), true, nullptr, ETeleportType::TeleportPhysics);
+				}
 			}
 		}
 	}
@@ -97,7 +100,7 @@ void ATile::CustomActorEndCursorOver(UPrimitiveComponent* TouchedComponent)
 	{
 		// Hide Path and Reset Tile
 		Tile->SetVisibility(false);
-		SetActorRotation(FRotator());
+		SetActorRotation(FRotator(0,0,0));
 	}
 }
 
