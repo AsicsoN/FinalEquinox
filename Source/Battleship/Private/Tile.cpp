@@ -64,28 +64,30 @@ void ATile::OnConstruction(const FTransform &Transform)
 void ATile::CustomActorBeginCursorOver(UPrimitiveComponent* TouchedComponent)
 {
 	ASpaceCombatPlayerController* PlayerController = Cast<ASpaceCombatPlayerController>(GetWorld()->GetFirstPlayerController());
+	ASpaceCombatGameMode* GameMode = Cast<ASpaceCombatGameMode>(GetWorld()->GetAuthGameMode());
+	AShipPawnBase* SelectedShip = GameMode->SelectedShip;
 
-	if (PlayerController->bPreparingToMove && !PlayerController->bMoving)
+	if (GameMode != nullptr && GameMode->Phase == ESpaceCombatPhase::Combat)
 	{
-		// Set Tile Indicator Visible and Show Path
-		Tile->SetVisibility(true);
-		FlushPersistentDebugLines(GetWorld());
-		BuildPath();
-		PlayerController->Tile = this;
-
-		ASpaceCombatGameMode* GameMode = Cast<ASpaceCombatGameMode>(GetWorld()->GetAuthGameMode());
-		AShipPawnBase* SelectedShip = GameMode->SelectedShip;
-
-		if (SelectedShip != nullptr)
+		if (PlayerController->bPreparingToMove && !PlayerController->bMoving)
 		{
-			TArray<UStaticMeshComponent*> Components;
-			SelectedShip->GetComponents<UStaticMeshComponent>(Components);
-			if (Components.Num())
+			// Set Tile Indicator Visible and Show Path
+			Tile->SetVisibility(true);
+			FlushPersistentDebugLines(GetWorld());
+			BuildPath();
+			PlayerController->Tile = this;
+
+			if (SelectedShip != nullptr)
 			{
-				UStaticMeshComponent* StaticMeshComponent = Components[0];
-				if (StaticMeshComponent) {
-					UStaticMesh* StaticMesh = StaticMeshComponent->GetStaticMesh();
-					StaticMeshComponent->SetWorldLocation(GetActorLocation(), true, nullptr, ETeleportType::TeleportPhysics);
+				TArray<UStaticMeshComponent*> Components;
+				SelectedShip->GetComponents<UStaticMeshComponent>(Components);
+				if (Components.Num())
+				{
+					UStaticMeshComponent* StaticMeshComponent = Components[0];
+					if (StaticMeshComponent) {
+						UStaticMesh* StaticMesh = StaticMeshComponent->GetStaticMesh();
+						StaticMeshComponent->SetWorldLocation(GetActorLocation(), true, nullptr, ETeleportType::TeleportPhysics);
+					}
 				}
 			}
 		}
@@ -94,13 +96,17 @@ void ATile::CustomActorBeginCursorOver(UPrimitiveComponent* TouchedComponent)
 
 void ATile::CustomActorEndCursorOver(UPrimitiveComponent* TouchedComponent)
 {
-	ASpaceCombatPlayerController* PlayerController = Cast<ASpaceCombatPlayerController>(GetWorld()->GetFirstPlayerController());
-
-	if (PlayerController->bPreparingToMove && !PlayerController->bMoving)
+	ASpaceCombatGameMode* GameMode = Cast<ASpaceCombatGameMode>(GetWorld()->GetAuthGameMode());
+	if (GameMode != nullptr && GameMode->Phase == ESpaceCombatPhase::Combat)
 	{
-		// Hide Path and Reset Tile
-		Tile->SetVisibility(false);
-		SetActorRotation(FRotator(0,0,0));
+		ASpaceCombatPlayerController* PlayerController = Cast<ASpaceCombatPlayerController>(GetWorld()->GetFirstPlayerController());
+
+		if (PlayerController->bPreparingToMove && !PlayerController->bMoving)
+		{
+			// Hide Path and Reset Tile
+			Tile->SetVisibility(false);
+			SetActorRotation(FRotator(0, 0, 0));
+		}
 	}
 }
 
