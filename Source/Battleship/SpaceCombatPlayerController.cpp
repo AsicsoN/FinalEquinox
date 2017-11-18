@@ -145,7 +145,6 @@ bool ASpaceCombatPlayerController::Fire(AShipPawnBase* TargetShip)
 				FDamageEvent DamageEvent(ValidDamageTypeClass);
 				
 				// Apply Damage
-				// TODO convert damage types to c++
 				TargetShip->TakeDamage(Damage, DamageEvent, this, SelectedShip);
 			}
 			else
@@ -160,17 +159,16 @@ bool ASpaceCombatPlayerController::Fire(AShipPawnBase* TargetShip)
 
 			// Update AP and Reset 
 			int32 CurrentActionPoints = SelectedShip->CurrentActionPoints;
-			UE_LOG(LogTemp, Error, TEXT("Previous: %d Cost: %d"), CurrentActionPoints, ActionCost);
 			int32 ActionPoints = CurrentActionPoints - ActionCost;
-
-			SelectedShip->ActionPoints = ActionPoints;
-			UE_LOG(LogTemp, Error, TEXT("Next: %d"), SelectedShip->CurrentActionPoints);
+			SelectedShip->CurrentActionPoints = ActionPoints;
 
 			// Update Missile Count
 			if (!bFireModeIsLasers)
 			{
 				SelectedShip->Missiles--;
 			}
+
+			bPreparingToFire = false;
 
 			return true;
 		}
