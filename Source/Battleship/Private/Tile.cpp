@@ -58,7 +58,9 @@ void ATile::OnConstruction(const FTransform &Transform)
 	GridLocation->LocationX = FMath::RoundToInt(PosX);
 	GridLocation->LocationY = FMath::RoundToInt(PosY);
 
-	SetFolderPath("Tiles");
+	#if WITH_EDITOR
+		SetFolderPath("Tiles");
+	#endif
 }
 
 void ATile::CustomActorBeginCursorOver(UPrimitiveComponent* TouchedComponent)
@@ -67,9 +69,9 @@ void ATile::CustomActorBeginCursorOver(UPrimitiveComponent* TouchedComponent)
 	ASpaceCombatGameMode* GameMode = Cast<ASpaceCombatGameMode>(GetWorld()->GetAuthGameMode());
 	AShipPawnBase* SelectedShip = GameMode->SelectedShip;
 
-	if (GameMode != nullptr && GameMode->Phase == ESpaceCombatPhase::Combat)
+	if (GameMode && PlayerController && GameMode->Phase == ESpaceCombatPhase::Combat)
 	{
-		if (PlayerController->bPreparingToMove && !PlayerController->bMoving)
+		if (PlayerController->bPreparingToMove && !PlayerController->bMoving && !PlayerController->bPreparingToFire)
 		{
 			// Set Tile Indicator Visible and Show Path
 			Tile->SetVisibility(true);
@@ -101,7 +103,7 @@ void ATile::CustomActorEndCursorOver(UPrimitiveComponent* TouchedComponent)
 	{
 		ASpaceCombatPlayerController* PlayerController = Cast<ASpaceCombatPlayerController>(GetWorld()->GetFirstPlayerController());
 
-		if (PlayerController->bPreparingToMove && !PlayerController->bMoving)
+		if (PlayerController->bPreparingToMove && !PlayerController->bMoving && !PlayerController->bPreparingToFire)
 		{
 			// Hide Path and Reset Tile
 			Tile->SetVisibility(false);
