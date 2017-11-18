@@ -58,32 +58,57 @@ void ATile::OnConstruction(const FTransform &Transform)
 	GridLocation->LocationX = FMath::RoundToInt(PosX);
 	GridLocation->LocationY = FMath::RoundToInt(PosY);
 
-	SetFolderPath("Tiles");
+	#if WITH_EDITOR
+		SetFolderPath("Tiles");
+	#endif
 }
 
 void ATile::CustomActorBeginCursorOver(UPrimitiveComponent* TouchedComponent)
 {
 	ASpaceCombatPlayerController* PlayerController = Cast<ASpaceCombatPlayerController>(GetWorld()->GetFirstPlayerController());
+	ASpaceCombatGameMode* GameMode = Cast<ASpaceCombatGameMode>(GetWorld()->GetAuthGameMode());
+	AShipPawnBase* SelectedShip = GameMode->SelectedShip;
 
-	if (PlayerController->bPreparingToMove && !PlayerController->bMoving)
+	if (GameMode && PlayerController && GameMode->Phase == ESpaceCombatPhase::Combat)
 	{
-		// Set Tile Indicator Visible and Show Path
-		Tile->SetVisibility(true);
-		FlushPersistentDebugLines(GetWorld());
-		BuildPath();
-		PlayerController->Tile = this;
+		if (PlayerController->bPreparingToMove && !PlayerController->bMoving && !PlayerController->bPreparingToFire)
+		{
+			// Set Tile Indicator Visible and Show Path
+			Tile->SetVisibility(true);
+			FlushPersistentDebugLines(GetWorld());
+			BuildPath();
+			PlayerController->Tile = this;
+
+			if (SelectedShip != nullptr)
+			{
+				TArray<UStaticMeshComponent*> Components;
+				SelectedShip->GetComponents<UStaticMeshComponent>(Components);
+				if (Components.Num())
+				{
+					UStaticMeshComponent* StaticMeshComponent = Components[0];
+					if (StaticMeshComponent) {
+						UStaticMesh* StaticMesh = StaticMeshComponent->GetStaticMesh();
+						StaticMeshComponent->SetWorldLocation(GetActorLocation(), true, nullptr, ETeleportType::TeleportPhysics);
+					}
+				}
+			}
+		}
 	}
 }
 
 void ATile::CustomActorEndCursorOver(UPrimitiveComponent* TouchedComponent)
 {
-	ASpaceCombatPlayerController* PlayerController = Cast<ASpaceCombatPlayerController>(GetWorld()->GetFirstPlayerController());
-
-	if (PlayerController->bPreparingToMove && !PlayerController->bMoving)
+	ASpaceCombatGameMode* GameMode = Cast<ASpaceCombatGameMode>(GetWorld()->GetAuthGameMode());
+	if (GameMode != nullptr && GameMode->Phase == ESpaceCombatPhase::Combat)
 	{
-		// Hide Path and Reset Tile
-		Tile->SetVisibility(false);
-		SetActorRotation(FRotator());
+		ASpaceCombatPlayerController* PlayerController = Cast<ASpaceCombatPlayerController>(GetWorld()->GetFirstPlayerController());
+
+		if (PlayerController->bPreparingToMove && !PlayerController->bMoving && !PlayerController->bPreparingToFire)
+		{
+			// Hide Path and Reset Tile
+			Tile->SetVisibility(false);
+			SetActorRotation(FRotator(0, 0, 0));
+		}
 	}
 }
 
