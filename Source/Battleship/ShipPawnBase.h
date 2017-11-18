@@ -89,6 +89,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crew")
 	TArray<UCrew*> Passengers;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector StartLocation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FRotator StartRotation;
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
