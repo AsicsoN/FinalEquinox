@@ -16,6 +16,14 @@ ASpaceCombatPlayerController::ASpaceCombatPlayerController()
 void ASpaceCombatPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (bPreparingToMove && bMoving)
+	{
+		float X, Y;
+		GetInputMouseDelta(X, Y);
+
+		MouseX += X;
+	}
 }
 
 
@@ -196,7 +204,7 @@ bool ASpaceCombatPlayerController::GetFinalRotation()
 
 		if (SelectedShip)
 		{
-			if (MouseX && (MouseX > 2 || MouseX < -2))
+			if (MouseX != 0 && (MouseX > 2 || MouseX < -2))
 			{
 				if (Tile)
 				{
