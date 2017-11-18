@@ -57,7 +57,7 @@ function GetUnrealVersion
 #Clean up output from previous build
 Remove-Item "$PSScriptRoot\Output" -Recurse -ErrorAction Ignore
 
-$version = GetBuildNumber
+$version = $env:GO_PIPELINE_LABEL
 Write-Host "BuildNumber: $version"
 
 SetUnrealBuildNumber $version
