@@ -1,3 +1,55 @@
+function PrepUnreal
+{
+	$engineVersion = GetUnrealVersion
+	$pathToEngine = (Get-Item env:unreal_$engineVersion).Value
+	
+	$pathToUBT = "$pathToEngine\Engine\Binaries\DotNET\UnrealBuildTool.exe"
+	$parameters = "-projectfiles", "-project=`"$PSScriptRoot\Battleship.uproject`"", "-game", "-rocket", "-progress"
+	$ubt = Start-Process -FilePath $pathToUBT -ArgumentList $parameters -PassThru -Wait -NoNewWindow
+	if ($ubt.ExitCode -ne 0) {
+		exit $ubt.ExitCode
+	}
+}
+
+function BuildVisualStudioSolution
+{
+	param([string]$Platform)
+	
+	$pathToMSBuild = "C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe"
+	$pathToSolution = "`"$PSScriptRoot\Battleship.sln`""
+	$parameters = "$pathToSolution", "/t:rebuild", "/p:Configuration=Shipping", "/p:Platform=$Platform;verbosity=diagnostic"
+	$msbuild = Start-Process -FilePath $pathToMSBuild -ArgumentList $parameters -PassThru -NoNewWindow
+	
+	$time = 0
+	while ($msbuild.HasExited -eq $false) {
+		if ($time > 600) {
+			Write-Host "Timeout exceeded"
+			exit -1
+		}
+		$time = $time + 10
+		Start-Sleep -s 10
+	}
+	
+	if ($msbuild.ExitCode -ne 0) {
+		#exit $msbuild.ExitCode
+	}
+}
+
+function BuildUnrealPlugins
+{
+	param([string]$Platform)
+
+	$engineVersion = GetUnrealVersion
+	$pathToEngine = (Get-Item env:unreal_$engineVersion).Value
+	
+	$pathToUBT = "$pathToEngine\Engine\Binaries\DotNET\UnrealBuildTool.exe"
+	$parameters = "Battleship", "Development", "$Platform", "-project=`"$PSScriptRoot\Battleship.uproject`"", "-editorrecompile",  "-progress", "-NoHotReloadFromIDE"
+	$ubt = Start-Process -FilePath $pathToUBT -ArgumentList $parameters -PassThru -Wait -NoNewWindow
+	if ($ubt.ExitCode -ne 0) {
+		exit $ubt.ExitCode
+	}
+}
+
 function BuildUnreal
 {
 	param([string]$Platform)
@@ -62,7 +114,12 @@ Write-Host "BuildNumber: $version"
 
 SetUnrealBuildNumber $version
 
+PrepUnreal
+BuildVisualStudioSolution "Win64"
+BuildUnrealPlugins "Win64"
 BuildUnreal "Win64"
+BuildVisualStudioSolution "Win32"
+BuildUnrealPlugins "Win32"
 BuildUnreal "Win32"
 BuildInstaller $version
 
