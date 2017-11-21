@@ -137,7 +137,6 @@ BuildVisualStudioSolution "Win64"
 BuildUnrealPlugins "Win64"
 BuildUnreal "Win64"
 BuildVisualStudioSolution "Win32"
-BuildUnrealPlugins "Win32"
 BuildUnreal "Win32"
 BuildInstaller $version
 
