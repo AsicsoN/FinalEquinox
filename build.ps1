@@ -1,5 +1,7 @@
 function PrepUnreal
 {
+	Write-Host "SECTION PrepUnreal"
+
 	$engineVersion = GetUnrealVersion
 	$pathToEngine = (Get-Item env:unreal_$engineVersion).Value
 	
@@ -14,6 +16,8 @@ function PrepUnreal
 function BuildVisualStudioSolution
 {
 	param([string]$Platform)
+	
+	Write-Host "SECTION BuildVisualStudioSolution $Platform"
 	
 	$pathToMSBuild = "C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe"
 	$pathToSolution = "`"$PSScriptRoot\Battleship.sln`""
@@ -38,6 +42,8 @@ function BuildVisualStudioSolution
 function BuildUnrealPlugins
 {
 	param([string]$Platform)
+	
+	Write-Host "SECTION BuildUnrealPlugins $Platform"
 
 	$engineVersion = GetUnrealVersion
 	$pathToEngine = (Get-Item env:unreal_$engineVersion).Value
@@ -53,6 +59,8 @@ function BuildUnrealPlugins
 function BuildUnreal
 {
 	param([string]$Platform)
+	
+	Write-Host "SECTION BuildUnreal $Platform"
 	
 	$engineVersion = GetUnrealVersion
 	$pathToEngine = (Get-Item env:unreal_$engineVersion).Value
@@ -78,6 +86,9 @@ function BuildUnreal
 function BuildInstaller
 {
 	param([string]$buildNum)
+	
+	Write-Host "SECTION BuildInstaller"
+	
 	$pathToMSBuild = "C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe"
 	$pathToSolution = "`"$PSScriptRoot\Installer\BattleshipInstaller.sln`""
 	$parameters = "$pathToSolution", "/p:Version=$buildNum", "/p:Configuration=Release", "/p:Platform=x86"
