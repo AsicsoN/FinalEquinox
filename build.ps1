@@ -124,6 +124,12 @@ function GetUnrealVersion
 	return $battleship.EngineAssociation
 }
 
+function DeployArtifacts
+{
+	Write-Host "SECTION DeployArtifacts"
+	Copy-Item "$PSScriptRoot\Installer\Bundle\bin\Release\BattleshipSetup.exe" "C:\Users\Jonathan\Google Drive\Frozen Wasteland Entertainment\Battleship\Builds"
+}
+
 #Clean up output from previous build
 Remove-Item "$PSScriptRoot\Output" -Recurse -ErrorAction Ignore
 
@@ -139,6 +145,7 @@ BuildUnreal "Win64"
 BuildVisualStudioSolution "Win32"
 BuildUnreal "Win32"
 BuildInstaller $version
+DeployArtifacts
 
 #Set the number back so source control doesn't see a change
 SetUnrealBuildNumber "1.0.0.9999"
