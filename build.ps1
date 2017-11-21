@@ -26,7 +26,7 @@ function BuildVisualStudioSolution
 	
 	$time = 0
 	while ($msbuild.HasExited -eq $false) {
-		if ($time > 600) {
+		if ($time -gt 600) {
 			Write-Host "Timeout exceeded"
 			exit -1
 		}
