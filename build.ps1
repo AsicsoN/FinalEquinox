@@ -57,6 +57,13 @@ function BuildUnreal
 	$engineVersion = GetUnrealVersion
 	$pathToEngine = (Get-Item env:unreal_$engineVersion).Value
 	
+	$pathToEditor= "$pathToEngine\Engine\Binaries\Win64\UE4Editor.exe"
+	$parameters = "$PSScriptRoot\Battleship.uproject", "-run=cook", "-targetplatform=WindowsNoEditor", "-CookAll"
+	$ue = Start-Process -FilePath $pathToEditor -ArgumentList $parameters -PassThru -Wait -NoNewWindow
+	if ($ue.ExitCode -ne 0) {
+		exit $ue.ExitCode
+	}
+	
 	$pathToUAT = "$pathToEngine\Engine\Build\BatchFiles\RunUAT.bat"
 	$parameters = "-ScriptsForProject=`"$PSScriptRoot\Battleship.uproject`"", "BuildCookRun", "-nocompile", "-nocompileeditor", "-installed", "-nop4",
 	 "-project=`"$PSScriptRoot\Battleship.uproject`"", "-cook", "-stage", "-archive", "-archivedirectory=`"$PSScriptRoot\Output\$Platform`"", "-package", 
