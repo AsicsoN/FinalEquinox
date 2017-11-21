@@ -127,7 +127,15 @@ function GetUnrealVersion
 function DeployArtifacts
 {
 	Write-Host "SECTION DeployArtifacts"
-	Copy-Item "$PSScriptRoot\Installer\Bundle\bin\Release\BattleshipSetup.exe" "C:\Users\Jonathan\Google Drive\Frozen Wasteland Entertainment\Battleship\Builds"
+	$version = $env:FULL_BUILD_NUMBER
+	
+	$path = "C:\Users\Jonathan\Google Drive\Frozen Wasteland Entertainment\Battleship\Builds\$version"
+	if(!(test-path $path))
+	{
+		New-Item -ItemType Directory -Force -Path $path
+	}
+	
+	Copy-Item "$PSScriptRoot\Installer\Bundle\bin\Release\BattleshipSetup.exe" $path
 }
 
 #Clean up output from previous build
