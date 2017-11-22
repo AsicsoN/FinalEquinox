@@ -1,13 +1,18 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "MSI32", "MSI32\MSI32.wixproj", "{036E08E4-365F-40ED-9D76-E79D97C978F7}"
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "MSI64", "MSI64\MSI64.wixproj", "{FE454F96-0995-494B-A9BB-E2D866D2A4C6}"
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "Bundle", "Bundle\Bundle.wixproj", "{34E8213D-6B83-4059-BEE8-A9D180FB1549}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{27670F37-56CF-4509-A7F2-B1240CF11730}"
+	ProjectSection(SolutionItems) = preProject
+		harvest.ps1 = harvest.ps1
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,5 +34,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {619B5EA4-C5C2-45C1-880A-0DD48AED627F}
 	EndGlobalSection
 EndGlobal
