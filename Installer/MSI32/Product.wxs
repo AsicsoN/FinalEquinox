@@ -18,29 +18,14 @@
 
       <Directory Id='ProgramFilesFolder' Name='PFiles'>
         <Directory Id='CDIR' Name='$(var.CompanyName)'>
-          <Directory Id='INSTALLDIR' Name='Battleship'>
-            <Directory Id='Battleship' Name='Battleship' />
-            <Directory Id='Engine' Name='Engine'>
-              <Directory Id='EngineBinaries' Name='Binaries' />
-              <Directory Id='EngineBuild' Name='Build' />
-              <Directory Id='EngineContent' Name='Content' />
-              <Directory Id='EnginePrograms' Name='Programs' />
-              <Directory Id='EngineShaders' Name='Shaders' />
-            </Directory>
-          </Directory>
+          <Directory Id='INSTALLDIR' Name='Battleship' />
         </Directory>
       </Directory>
 
     </Directory>
 
     <Feature Id='Complete' Level='1'>
-      <ComponentGroupRef Id='Base' />
-      <ComponentGroupRef Id='Battleship' />
-      <ComponentGroupRef Id='EngineBinaries' />
-      <ComponentGroupRef Id='EngineBuild' />
-      <ComponentGroupRef Id='EngineContent' />
-      <ComponentGroupRef Id='EnginePrograms' />
-      <ComponentGroupRef Id='EngineShaders' />
+      <ComponentGroupRef Id='UnrealFiles' />
     </Feature>
   </Product>
 </Wix>

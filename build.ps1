@@ -138,6 +138,16 @@ function DeployArtifacts
 	Copy-Item "$PSScriptRoot\Installer\Bundle\bin\Release\BattleshipSetup.exe" $path
 }
 
+function StageUnrealOutput
+{
+	Write-Host "SECTION StageUnrealOutput"
+	
+	Move-Item "$PSScriptRoot\Output\Win64\WindowsNoEditor\Engine\Extras\Redist\en-us\UE4PrereqSetup_x64.exe" "$PSScriptRoot\Output\Win64\"
+	Move-Item "$PSScriptRoot\Output\Win32\WindowsNoEditor\Engine\Extras\Redist\en-us\UE4PrereqSetup_x86.exe" "$PSScriptRoot\Output\Win32\"
+	Move-Item "$PSScriptRoot\Output\Win64\WindowsNoEditor\Manifest_NonUFSFiles_Win64.txt" "$PSScriptRoot\Output\Win64\"
+	Move-Item "$PSScriptRoot\Output\Win32\WindowsNoEditor\Manifest_NonUFSFiles_Win32.txt" "$PSScriptRoot\Output\Win32\"
+}
+
 #Clean up output from previous build
 Remove-Item "$PSScriptRoot\Output" -Recurse -ErrorAction Ignore
 
@@ -152,6 +162,7 @@ BuildUnrealPlugins "Win64"
 BuildUnreal "Win64"
 BuildVisualStudioSolution "Win32"
 BuildUnreal "Win32"
+StageUnrealOutput
 BuildInstaller $version
 DeployArtifacts
 

@@ -10,8 +10,8 @@
     </BootstrapperApplicationRef>
 
     <Chain>
-      <ExePackage Id="UE4PrereqSetup_x64" SourceFile="$(var.SourceDir)\Win64\WindowsNoEditor\Engine\Extras\Redist\en-us\UE4PrereqSetup_x64.exe" InstallCommand="/install /quiet" Permanent="yes" InstallCondition="VersionNT64" />
-      <ExePackage Id="UE4PrereqSetup_x86" SourceFile="$(var.SourceDir)\Win32\WindowsNoEditor\Engine\Extras\Redist\en-us\UE4PrereqSetup_x86.exe" InstallCommand="/install /quiet" Permanent="yes" InstallCondition="NOT VersionNT64" />
+      <ExePackage Id="UE4PrereqSetup_x64" SourceFile="$(var.SourceDir)\Win64\UE4PrereqSetup_x64.exe" InstallCommand="/install /quiet" Permanent="yes" InstallCondition="VersionNT64" />
+      <ExePackage Id="UE4PrereqSetup_x86" SourceFile="$(var.SourceDir)\Win32\UE4PrereqSetup_x86.exe" InstallCommand="/install /quiet" Permanent="yes" InstallCondition="NOT VersionNT64" />
 
       <RollbackBoundary />
 
