@@ -17,6 +17,9 @@ struct FDialogueEvents
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue Event")
 	bool EndDialogue = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue Event")
+	FString SceneInstructions;
+
 	GENERATED_USTRUCT_BODY()
 };
 
@@ -54,6 +57,9 @@ struct FDialogueNode
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue Node")
 	FText Text;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue Node")
+	FText SpeakerName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue Node")
 	TArray<int32> Links;
