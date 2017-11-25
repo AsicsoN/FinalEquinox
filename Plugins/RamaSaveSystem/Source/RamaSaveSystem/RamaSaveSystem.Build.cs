@@ -3,8 +3,8 @@ using UnrealBuildTool;
 
 public class RamaSaveSystem : ModuleRules
 {
-	public RamaSaveSystem(TargetInfo Target)
-	{
+	public RamaSaveSystem(ReadOnlyTargetRules Target) : base(Target)
+    {
         PublicDependencyModuleNames.AddRange(
 			new string[] { 
 				"Core", 

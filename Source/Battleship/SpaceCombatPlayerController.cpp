@@ -52,7 +52,7 @@ bool ASpaceCombatPlayerController::LeftTurn()
 				NavSys->SimpleMoveToLocation(AiController, Location);
 
 				// Update End Rotation of Ship
-				Rotation = Rotation.Add(0, -90, 0);
+				SelectedShip->NewRotation = SelectedShip->NewRotation.Add(0, -90, 0);
 
 				return true;
 			}
@@ -85,7 +85,7 @@ bool ASpaceCombatPlayerController::RightTurn()
 				UNavigationSystem::SimpleMoveToLocation(AiController, Location);
 
 				// Update End Rotation of Ship
-				Rotation = Rotation.Add(0, 90, 0);
+				SelectedShip->NewRotation = SelectedShip->NewRotation.Add(0, 90, 0);
 
 				return true;
 			}
@@ -232,7 +232,7 @@ bool ASpaceCombatPlayerController::GetFinalRotation()
 					Mesh->SetRelativeRotation(ShipRotation);
 
 					// Set Final Rotation
-					Rotation = ShipRotation;
+					SelectedShip->NewRotation = ShipRotation;
 
 					// Refresh MouseX
 					MouseX = 0.0f;
@@ -259,11 +259,11 @@ bool ASpaceCombatPlayerController::RotatePawn(float DeltaTime)
 			FRotator ShipRotation = SelectedShip->GetActorRotation();
 
 			// Rotate Pawn Progressively
-			FRotator NewRotation = FMath::RInterpTo(ShipRotation, Rotation, DeltaTime, 2.0f);
+			FRotator NewRotation = FMath::RInterpTo(ShipRotation, SelectedShip->NewRotation, DeltaTime, 2.0f);
 			SelectedShip->SetActorRelativeRotation(NewRotation);
 
 			// If nearly complete, snap rotation to fit
-			if (ShipRotation.Equals(Rotation, 0.1f))
+			if (ShipRotation.Equals(SelectedShip->NewRotation, 0.1f))
 			{
 				int32 Z = FMath::RoundToInt(ShipRotation.Yaw);
 
@@ -332,7 +332,7 @@ void ASpaceCombatPlayerController::ResetShip()
 
 			// Realign Static Mesh to Ship
 			StaticMesh->SetRelativeLocation(FVector(0.0f, 0.0f, Location.Z), false, nullptr, ETeleportType::TeleportPhysics);
-			StaticMesh->SetRelativeRotation(SelectedShip->GetActorRotation());
+			StaticMesh->SetRelativeRotation(SelectedShip->StartRotation);
 		}
 	}
 }
@@ -348,7 +348,7 @@ void ASpaceCombatPlayerController::SaveShipLocale()
 		if (SelectedShip && Tile)
 		{
 			// Save Ship Position
-			SelectedShip->StartRotation = Rotation;
+			SelectedShip->StartRotation = SelectedShip->NewRotation;
 			SelectedShip->StartLocation = Tile->GetActorLocation();
 		}
 	}
