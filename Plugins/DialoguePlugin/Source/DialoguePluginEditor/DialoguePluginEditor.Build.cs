@@ -4,8 +4,8 @@ namespace UnrealBuildTool.Rules
 {
 	public class DialoguePluginEditor : ModuleRules
 	{
-        public DialoguePluginEditor(TargetInfo Target)
-		{
+        public DialoguePluginEditor(ReadOnlyTargetRules Target) : base(Target)
+        {
 			PrivateIncludePaths.Add("DialoguePluginEditor/Private");
 			
             PublicDependencyModuleNames.AddRange(

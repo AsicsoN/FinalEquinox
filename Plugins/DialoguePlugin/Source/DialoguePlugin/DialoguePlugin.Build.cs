@@ -4,8 +4,8 @@ namespace UnrealBuildTool.Rules
 {
 	public class DialoguePlugin : ModuleRules
 	{
-        public DialoguePlugin(TargetInfo Target)
-		{
+        public DialoguePlugin(ReadOnlyTargetRules Target) : base(Target)
+        {
             PublicDependencyModuleNames.AddRange(
 				new string[]
 				{

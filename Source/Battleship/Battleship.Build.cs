@@ -4,9 +4,9 @@ using UnrealBuildTool;
 
 public class Battleship : ModuleRules
 {
-	public Battleship(TargetInfo Target)
-	{
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "AIModule" });
+	public Battleship(ReadOnlyTargetRules Target) : base(Target)
+    {
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "AIModule" });
 
         PrivateDependencyModuleNames.AddRange(new string[] {  });
 

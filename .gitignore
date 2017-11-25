@@ -24,3 +24,6 @@ obj/
 # Ignore Save Menu files
 /SaveData
 /Battleship.sln
+
+# Ignore generated files
+GeneratedFiles/
