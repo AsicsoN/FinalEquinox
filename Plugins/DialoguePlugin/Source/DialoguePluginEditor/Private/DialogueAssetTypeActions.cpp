@@ -1,5 +1,5 @@
-#include "DialoguePluginEditorPrivatePCH.h"
 #include "DialogueAssetTypeActions.h"
+#include "DialoguePluginEditorPrivatePCH.h"
 #include "DialogueEditor.h"
 
 #define LOCTEXT_NAMESPACE "AssetTypeActions"

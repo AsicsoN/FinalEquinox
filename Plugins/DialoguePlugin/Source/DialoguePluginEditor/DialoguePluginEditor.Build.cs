@@ -6,7 +6,11 @@ namespace UnrealBuildTool.Rules
 	{
         public DialoguePluginEditor(ReadOnlyTargetRules Target) : base(Target)
         {
-			PrivateIncludePaths.Add("DialoguePluginEditor/Private");
+            PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
+
+            PublicIncludePaths.AddRange(new string[] { "DialoguePluginEditor/Public" });
+
+            PrivateIncludePaths.AddRange(new string[] { "DialoguePluginEditor/Private" });
 			
             PublicDependencyModuleNames.AddRange(
 				new string[]
@@ -34,14 +38,6 @@ namespace UnrealBuildTool.Rules
 					"SlateCore",
 					"UnrealEd",
 					"DialoguePlugin"
-				}
-			);
-
-			DynamicallyLoadedModuleNames.AddRange(
-				new string[] 
-				{
-					"MainFrame",
-					"Settings"
 				}
 			);
 

@@ -1,4 +1,3 @@
-#include "DialoguePluginEditorPrivatePCH.h"
 #include "DialogueEditorStyle.h"
 #include "SlateStyle.h"
 #include "IPluginManager.h"

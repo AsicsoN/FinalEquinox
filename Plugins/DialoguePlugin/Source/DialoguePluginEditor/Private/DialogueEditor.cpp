@@ -1,5 +1,5 @@
-#include "DialoguePluginEditorPrivatePCH.h"
 #include "DialogueEditor.h"
+#include "DialoguePluginEditorPrivatePCH.h"
 #include "SSingleObjectDetailsPanel.h"
 #include "SceneViewport.h"
 #include "GraphEditor.h"

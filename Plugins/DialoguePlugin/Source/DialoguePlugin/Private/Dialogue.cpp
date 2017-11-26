@@ -1,5 +1,7 @@
-#include "DialoguePluginPrivatePCH.h"
 #include "Dialogue.h"
+#include "Runtime/Core/Public/Misc/OutputDeviceNull.h"
+#include "DialoguePluginPrivatePCH.h"
+
 
 
 UDialogue::UDialogue(const FObjectInitializer& ObjectInitializer)

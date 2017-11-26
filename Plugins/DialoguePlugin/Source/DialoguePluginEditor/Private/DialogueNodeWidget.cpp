@@ -1,5 +1,5 @@
-#include "DialoguePluginEditorPrivatePCH.h"
 #include "DialogueNodeWidget.h"
+#include "DialoguePluginEditorPrivatePCH.h"
 #include "DialogueEditor.h"
 #include "DialogueViewportWidget.h"
 #include "DialogueEditorStyle.h"

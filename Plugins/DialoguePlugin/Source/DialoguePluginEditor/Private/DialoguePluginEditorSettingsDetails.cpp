@@ -1,8 +1,8 @@
+#include "DialoguePluginEditorSettingsDetails.h"
 #include "DialoguePluginEditorPrivatePCH.h"
 #include "Dialogue.h"
 #include "DialogueViewportWidget.h"
 #include "Editor/UnrealEd/Public/ScopedTransaction.h"
-#include "DialoguePluginEditorSettingsDetails.h"
 
 
 #define LOCTEXT_NAMESPACE "DialoguePluginSettingsDetails"

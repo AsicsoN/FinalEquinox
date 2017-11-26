@@ -1,5 +1,5 @@
-#include "DialoguePluginEditorPrivatePCH.h"
 #include "DialogueViewportWidget.h"
+#include "DialoguePluginEditorPrivatePCH.h"
 #include "DialogueNodeWidget.h"
 #include "DialogueEditorStyle.h"
 #include "DialogueEditor.h"
@@ -261,8 +261,8 @@ void SDialogueViewportWidget::Tick(const FGeometry & AllottedGeometry, const dou
 	{
 		bFirstNodeRequiresRepositionning = false;
 
-		FVector2D TopLeftCoords = AllottedGeometry.AbsoluteToLocal(FVector2D(AllottedGeometry.GetClippingRect().Left, AllottedGeometry.GetClippingRect().Top));
-		FVector2D BottomRightCoords = AllottedGeometry.AbsoluteToLocal(FVector2D(AllottedGeometry.GetClippingRect().Right, AllottedGeometry.GetClippingRect().Bottom));
+		FVector2D TopLeftCoords = AllottedGeometry.AbsoluteToLocal(FVector2D(AllottedGeometry.GetLayoutBoundingRect().Left, AllottedGeometry.GetLayoutBoundingRect().Top));
+		FVector2D BottomRightCoords = AllottedGeometry.AbsoluteToLocal(FVector2D(AllottedGeometry.GetLayoutBoundingRect().Right, AllottedGeometry.GetLayoutBoundingRect().Bottom));
 
 		float HCoord = FMath::LerpStable(TopLeftCoords.X, BottomRightCoords.X, 0.5f);
 		float VCoord = FMath::LerpStable(TopLeftCoords.Y, BottomRightCoords.Y, 0.3f);
@@ -533,7 +533,7 @@ FReply SDialogueViewportWidget::OnMouseMove(const FGeometry& MyGeometry, const F
 		}
 
 		FVector2D currentMouseCoords = MouseEvent.GetScreenSpacePosition();
-		FSlateRect PanelScreenSpaceRect = MyGeometry.GetClippingRect();
+		FSlateRect PanelScreenSpaceRect = MyGeometry.GetLayoutBoundingRect();
 
 		UpdateAutoPanningDirection(currentMouseCoords, PanelScreenSpaceRect);
 
@@ -553,7 +553,7 @@ FReply SDialogueViewportWidget::OnMouseMove(const FGeometry& MyGeometry, const F
 		}
 
 		FVector2D currentMouseCoords = MouseEvent.GetScreenSpacePosition();
-		FSlateRect PanelScreenSpaceRect = MyGeometry.GetClippingRect();
+		FSlateRect PanelScreenSpaceRect = MyGeometry.GetLayoutBoundingRect();
 
 		UpdateAutoPanningDirection(currentMouseCoords, PanelScreenSpaceRect);
 
@@ -581,7 +581,7 @@ FReply SDialogueViewportWidget::OnMouseMove(const FGeometry& MyGeometry, const F
 
 		Dialogue->LinkingCoords = MyGeometry.AbsoluteToLocal(MouseEvent.GetScreenSpacePosition());
 		FVector2D currentMouseCoords = MouseEvent.GetScreenSpacePosition();
-		FSlateRect PanelScreenSpaceRect = MyGeometry.GetClippingRect();
+		FSlateRect PanelScreenSpaceRect = MyGeometry.GetLayoutBoundingRect();
 
 		UpdateAutoPanningDirection(currentMouseCoords, PanelScreenSpaceRect);
 
@@ -696,7 +696,7 @@ FReply SDialogueViewportWidget::OnMouseButtonUp(const FGeometry& MyGeometry, con
 
 			bShowSoftwareCursor = false;
 
-			FSlateRect PanelScreenSpaceRect = MyGeometry.GetClippingRect();
+			FSlateRect PanelScreenSpaceRect = MyGeometry.GetLayoutBoundingRect();
 			FVector2D CursorPosition = MyGeometry.LocalToAbsolute(SoftwareCursorPosition);
 
 			FIntPoint BestPositionInPanel(
@@ -865,8 +865,7 @@ int32 SDialogueViewportWidget::OnPaint(const FPaintArgs& Args, const FGeometry& 
 			OutDrawElements,
 			maxLayerId, // draws the mouse cursor on top of all nodes
 			AllottedGeometry.ToPaintGeometry(SoftwareCursorPosition - (Brush->ImageSize / 2), Brush->ImageSize),
-			Brush,
-			MyClippingRect
+			Brush
 			);
 	}
 
@@ -878,7 +877,6 @@ int32 SDialogueViewportWidget::OnPaint(const FPaintArgs& Args, const FGeometry& 
 			LayerId+3,
 			AllottedGeometry.ToPaintGeometry(MarqueeSize, FSlateLayoutTransform(MarqueePointOfOrigin)),
 			FEditorStyle::GetBrush("FocusRectangle"), // or MarqueeSelection ?
-			MyClippingRect,
 			ESlateDrawEffect::None,
 			FColor(255, 255, 255, 255) //FLinearColor::Green *.65f
 			);
@@ -906,8 +904,7 @@ int32 SDialogueViewportWidget::OnPaint(const FPaintArgs& Args, const FGeometry& 
 				OutDrawElements,
 				maxLayerId,
 				AllottedGeometry.ToPaintGeometry(),
-				BorderBrush,
-				MyClippingRect
+				BorderBrush
 				);
 		}
 	}
@@ -918,8 +915,7 @@ int32 SDialogueViewportWidget::OnPaint(const FPaintArgs& Args, const FGeometry& 
 			OutDrawElements,
 			maxLayerId,
 			AllottedGeometry.ToPaintGeometry(),
-			FEditorStyle::GetBrush(TEXT("Graph.Shadow")),
-			MyClippingRect
+			FEditorStyle::GetBrush(TEXT("Graph.Shadow"))
 			);
 	}
 
@@ -938,8 +934,7 @@ int32 SDialogueViewportWidget::OnPaint(const FPaintArgs& Args, const FGeometry& 
 				OutDrawElements,
 				LayerId + 5, // @TODO: why +5? Try different values?
 				AllottedGeometry.ToPaintGeometry(FVector2D(overlaySize), FSlateLayoutTransform(FVector2D(upperLeft))),
-				FEditorStyle::GetBrush(NodeWidgets[nodeIndex]->isSelected ? TEXT("Graph.Node.ShadowSelected")  : TEXT("Graph.Node.Shadow")),
-				MyClippingRect
+				FEditorStyle::GetBrush(NodeWidgets[nodeIndex]->isSelected ? TEXT("Graph.Node.ShadowSelected")  : TEXT("Graph.Node.Shadow"))
 				);
 		}
 
@@ -975,7 +970,6 @@ int32 SDialogueViewportWidget::OnPaint(const FPaintArgs& Args, const FGeometry& 
 							AllottedGeometry.ToPaintGeometry(),
 							startPoint, ComputeSplineTangent(startPoint, endPoint),
 							endPoint, ComputeSplineTangent(startPoint, endPoint),
-							MyClippingRect,
 							2.0f,
 							ESlateDrawEffect::None,
 							FLinearColor(0.013575f, 0.770000f, 0.429609f, 1.0f) //green-blue
@@ -990,7 +984,6 @@ int32 SDialogueViewportWidget::OnPaint(const FPaintArgs& Args, const FGeometry& 
 							AllottedGeometry.ToPaintGeometry(),
 							startPoint, ComputeSplineTangent(startPoint, endPoint),
 							endPoint, ComputeSplineTangent(startPoint, endPoint),
-							MyClippingRect,
 							2.0f,
 							ESlateDrawEffect::None,
 							FLinearColor(0.607717f, 0.224984f, 1.0f, 1.0f) // lilac
@@ -1005,7 +998,6 @@ int32 SDialogueViewportWidget::OnPaint(const FPaintArgs& Args, const FGeometry& 
 							AllottedGeometry.ToPaintGeometry(),
 							startPoint, ComputeSplineTangent(startPoint, endPoint),
 							endPoint, ComputeSplineTangent(startPoint, endPoint),
-							MyClippingRect,
 							2.0f,
 							ESlateDrawEffect::None,
 							FLinearColor(0.220000f, 0.195800f, 0.195800f, 0.2f) // grey
@@ -1036,7 +1028,6 @@ int32 SDialogueViewportWidget::OnPaint(const FPaintArgs& Args, const FGeometry& 
 						LayerId + 4,
 						AllottedGeometry.ToPaintGeometry(),
 						LinePoints,
-						MyClippingRect,
 						ESlateDrawEffect::None,
 						FLinearColor::White
 						);
@@ -1073,7 +1064,6 @@ int32 SDialogueViewportWidget::OnPaint(const FPaintArgs& Args, const FGeometry& 
 							LayerId + 4,
 							AllottedGeometry.ToPaintGeometry(),
 							ArrowPoints,
-							MyClippingRect,
 							ESlateDrawEffect::None,
 							FLinearColor::White
 						);
@@ -1083,7 +1073,6 @@ int32 SDialogueViewportWidget::OnPaint(const FPaintArgs& Args, const FGeometry& 
 							LayerId + 4,
 							AllottedGeometry.ToPaintGeometry(),
 							ArrowPoints2,
-							MyClippingRect,
 							ESlateDrawEffect::None,
 							FLinearColor::White
 						);
@@ -1111,7 +1100,6 @@ int32 SDialogueViewportWidget::OnPaint(const FPaintArgs& Args, const FGeometry& 
 			LayerId + 4,
 			AllottedGeometry.ToPaintGeometry(),
 			LinkingPoints,
-			MyClippingRect,
 			ESlateDrawEffect::None,
 			FLinearColor::White
 			);
@@ -1444,8 +1432,7 @@ void SDialogueViewportWidget::PaintBackgroundAsLines(const FSlateBrush* Backgrou
 		OutDrawElements,
 		DrawLayerId,
 		AllottedGeometry.ToPaintGeometry(),
-		BackgroundImage,
-		MyClippingRect
+		BackgroundImage
 	);
 
 	TArray<FVector2D> LinePoints;
@@ -1470,7 +1457,6 @@ void SDialogueViewportWidget::PaintBackgroundAsLines(const FSlateBrush* Backgrou
 				Layer,
 				AllottedGeometry.ToPaintGeometry(),
 				LinePoints,
-				MyClippingRect,
 				ESlateDrawEffect::None,
 				*Color,
 				bAntialias);
@@ -1495,7 +1481,6 @@ void SDialogueViewportWidget::PaintBackgroundAsLines(const FSlateBrush* Backgrou
 				Layer,
 				AllottedGeometry.ToPaintGeometry(),
 				LinePoints,
-				MyClippingRect,
 				ESlateDrawEffect::None,
 				*Color,
 				bAntialias);

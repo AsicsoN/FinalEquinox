@@ -1,31 +1,28 @@
 {
-	"FileVersion" : 3,
-	"Version" : 3,
-	"VersionName" : "1.2",
-	"FriendlyName" : "Dialogue Plugin",
-	"Description" : "A node-based dialogue editor.",
-	"Category" : "Misc",
-	"CreatedBy" : "CodeSpartan",
-	"CreatedByURL" : "https://forums.unrealengine.com/showthread.php?105999-Dialogue-Plugin",
-	"DocsURL" : "https://docs.google.com/document/d/1gKlNNxpNIEJ7Fx9cjOdHb6V8GmLwdI3PX8jlOGHZsxU/",
-	"MarketplaceURL" : "com.epicgames.launcher://ue/marketplace/content/847aa65dc3024a37ae83ed89307524bd",
-	"SupportURL" : "",
-	"EngineVersion" : "4.16.0",
-	"CanContainContent" : true,
-	"IsBetaVersion" : false,
-	"Installed" : true,
-	"RequiresBuildPlatform" : false,
-	"Modules" :
-	[
+	"FileVersion": 3,
+	"Version": 3,
+	"VersionName": "1.2",
+	"FriendlyName": "Dialogue Plugin",
+	"Description": "A node-based dialogue editor.",
+	"Category": "Misc",
+	"CreatedBy": "CodeSpartan",
+	"CreatedByURL": "https://forums.unrealengine.com/showthread.php?105999-Dialogue-Plugin",
+	"DocsURL": "https://docs.google.com/document/d/1gKlNNxpNIEJ7Fx9cjOdHb6V8GmLwdI3PX8jlOGHZsxU/",
+	"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/847aa65dc3024a37ae83ed89307524bd",
+	"SupportURL": "",
+	"EngineVersion": "4.18.0",
+	"CanContainContent": true,
+	"Installed": true,
+	"Modules": [
 		{
-			"Name" : "DialoguePlugin",
-			"Type" : "Runtime",
-			"LoadingPhase" : "PreDefault"
+			"Name": "DialoguePlugin",
+			"Type": "Runtime",
+			"LoadingPhase": "PreDefault"
 		},
 		{
-			"Name" : "DialoguePluginEditor",
-			"Type" : "Editor",
-			"LoadingPhase" : "Default"
+			"Name": "DialoguePluginEditor",
+			"Type": "Editor",
+			"LoadingPhase": "Default"
 		}
 	]
 }
