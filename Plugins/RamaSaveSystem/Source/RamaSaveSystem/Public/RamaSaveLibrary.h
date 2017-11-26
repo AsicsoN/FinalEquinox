@@ -1,10 +1,11 @@
-// Copyright 2015 by Nathan "Rama" Iyer. All Rights Reserved.
+// Copyright 2018 by Nathan "Rama" Iyer. All Rights Reserved.
 
 #pragma once
 
 #include "RamaSaveComponent.h"
 #include "RamaSaveEngine.h"
 
+#include "Runtime/Engine/Classes/Kismet/BlueprintFunctionLibrary.h"
 #include "RamaSaveLibrary.generated.h"
 
 
@@ -29,6 +30,21 @@ public:
 	UFUNCTION(Category="Rama Save System", BlueprintPure)
 	static FString RemoveLevelPIEPrefix(const FString& LevelName);
 
+	
+	/** 
+		This node will save only static data (Rama Save Object) to the file of your choosing! You can create as many of these as you want, and load them at any time!
+	
+		@param StaticSaveData For any simple data that is not associated with an actor that you want to be able to load even before the world has finished being created,  make a BP of my RamaSaveObject class and put all your data there! You can use Construct Object to create an instance of the RamaSaveObject and use it any where you like, then pass that instance to this save function at the time of saving.
+		
+		<3 Rama 
+	*/
+	UFUNCTION(Category="Rama Save System", BlueprintCallable,meta=(WorldContext="WorldContextObject"))
+	static void RamaSave_SaveOnlyStaticToFile(
+		FString FileName, 
+		bool& FileIOSuccess, 
+		URamaSaveObject* StaticSaveData
+	);
+	
 	/** 
 		All Rama Save Components are found and their owning actors and all variables that you specify via the string array RamaSave_VarsToSave are saved into a single file! 
 	
@@ -282,14 +298,14 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Rama Save System|Paths")
 	static FString RamaSavePaths_GameRootDirectory()
 	{
-		return FPaths::ConvertRelativePathToFull(FPaths::GameDir());
+		return FPaths::ConvertRelativePathToFull(FPaths::ProjectDir());
 	}
 
 	/** Use these nodes to always save files relative to the actual location of your game's .exe! InstallDir/GameName/Saved */
 	UFUNCTION(BlueprintPure, Category = "Rama Save System|Paths")
 	static FString RamaSavePaths_SavedDir()
 	{
-		return FPaths::ConvertRelativePathToFull(FPaths::GameSavedDir());
+		return FPaths::ConvertRelativePathToFull(FPaths::ProjectSavedDir());
 	}
 	
 	

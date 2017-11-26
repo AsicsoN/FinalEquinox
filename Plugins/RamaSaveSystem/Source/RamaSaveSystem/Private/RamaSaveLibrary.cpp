@@ -1,4 +1,4 @@
-// Copyright 2015 by Nathan "Rama" Iyer. All Rights Reserved.
+// Copyright 2018 by Nathan "Rama" Iyer. All Rights Reserved.
 #include "RamaSaveSystemPrivatePCH.h"
 #include "RamaSaveLibrary.h"
  
@@ -214,7 +214,7 @@ FString URamaSaveLibrary::RemoveLevelPIEPrefix(const FString& LevelName)
 
 bool URamaSaveLibrary::RamaSave_CancelAsyncSaveProcess(UObject* WorldContextObject)
 {
-	UWorld* const World = GEngine->GetWorldFromContextObject(WorldContextObject);
+	UWorld* const World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::ReturnNull);
 	if (!World) return false;
 	
 	/*
@@ -236,11 +236,34 @@ bool URamaSaveLibrary::RamaSave_CancelAsyncSaveProcess(UObject* WorldContextObje
 	return RamaEngine->RamaSaveAsync_Cancel();
 }
 
+
+void URamaSaveLibrary::RamaSave_SaveOnlyStaticToFile(
+	FString FileName, 
+	bool& FileIOSuccess, 
+	URamaSaveObject* StaticSaveData
+){
+	if(!StaticSaveData)
+	{
+		VSCREENMSG2("URamaSaveLibrary::RamaSave_SaveOnlyStaticToFile ~ No Static Data Object supplied while saving to location!", FileName);
+		return;
+	}
+	
+	FileIOSuccess = false;
+	if(!URamaSaveUtility::CreateDirectoryTreeForFile(FileName))
+	{
+		VSCREENMSG2("URamaSaveLibrary::RamaSave_SaveOnlyStaticToFile ~ Directory could not be created!", FileName);
+		RS_LOG2(RamaSave,"URamaSaveLibrary::RamaSave_SaveOnlyStaticToFile ~ Directory could not be created!", FileName);
+		return;
+	}
+	
+	ARamaSaveEngine::RamaSave_SaveStaticData(FileName,FileIOSuccess,StaticSaveData);
+}
+	
 void URamaSaveLibrary::RamaSave_SaveToFile(UObject* WorldContextObject, FString FileName, bool& FileIOSuccess, bool& AllComponentsSaved, FString SaveOnlyStreamingLevel,URamaSaveObject* StaticSaveData)
 {
 	if (!WorldContextObject) return;
 
-	UWorld* const World = GEngine->GetWorldFromContextObject(WorldContextObject);
+	UWorld* const World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::ReturnNull);
 	if (!World) return;
 	
 	/*
@@ -314,7 +337,7 @@ void URamaSaveLibrary::RamaSave_LoadFromFileWithTags(UObject* WorldContextObject
 	
 	
 	
-	#if !PLATFORM_HTML5_BROWSER
+	#if !PLATFORM_HTML5
 	if(!URamaSaveUtility::FileExists(FileName))
 	{
 		VSCREENMSG2("Rama Save System ~ File not found!", FileName);
@@ -324,7 +347,7 @@ void URamaSaveLibrary::RamaSave_LoadFromFileWithTags(UObject* WorldContextObject
 	 
 	if(!WorldContextObject) return;
 	 
-	UWorld* const World = GEngine->GetWorldFromContextObject(WorldContextObject);
+	UWorld* const World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::ReturnNull);
 	if(!World) return;
 	
 	if(!World->IsServer())
@@ -378,7 +401,7 @@ int32 URamaSaveLibrary::RamaSave_LoadStreamingStateFromFile(UObject* WorldContex
 	 
 	if(!WorldContextObject) return 0;
 	 
-	UWorld* const World = GEngine->GetWorldFromContextObject(WorldContextObject);
+	UWorld* const World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::ReturnNull);
 	if(!World) return 0;
 	
 	if(!World->IsServer())
@@ -442,7 +465,7 @@ void URamaSaveLibrary::GetAllRamaSaveComponentsWithTags(UObject* WorldContextObj
 	
 	if(!WorldContextObject) return;
 	 
-	UWorld* const World = GEngine->GetWorldFromContextObject(WorldContextObject);
+	UWorld* const World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::ReturnNull);
 	if(!World) return;
 	
 	for(TActorIterator<AActor> Itr(World); Itr; ++Itr)
@@ -508,7 +531,7 @@ void URamaSaveLibrary::GetAllRamaSaveActorsWithTags(UObject* WorldContextObject,
 	
 	if(!WorldContextObject) return;
 	 
-	UWorld* const World = GEngine->GetWorldFromContextObject(WorldContextObject);
+	UWorld* const World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::ReturnNull);
 	if(!World) return;
 	//~~~~~~~~~~~
 	
@@ -539,7 +562,7 @@ void URamaSaveLibrary::RamaSave_ClearLevel(UObject* WorldContextObject, bool Don
 {
 	if(!WorldContextObject) return;
 	 
-	UWorld* const World = GEngine->GetWorldFromContextObject(WorldContextObject);
+	UWorld* const World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::ReturnNull);
 	if(!World) return;
 	 
 	TArray<AActor*> ToDestroy;

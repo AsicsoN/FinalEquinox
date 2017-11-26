@@ -1,8 +1,4 @@
-/*
-
-	By Rama
-
-*/
+// Copyright 2018 by Nathan "Rama" Iyer. All Rights Reserved.
 #include "RamaSaveSystemPrivatePCH.h"
 #include "RamaSaveEngine.h"
 
@@ -128,6 +124,47 @@ void ARamaSaveEngine::EndPlay(const EEndPlayReason::Type EndPlayReason)
 //~~~~~~~~~~~~~~~~~~~
 // 		SAVING
 //~~~~~~~~~~~~~~~~~~~
+void ARamaSaveEngine::RamaSave_SaveStaticData(FString FileName, bool& FileIOSuccess, URamaSaveObject* StaticSaveData)
+{ 
+	TArray<uint8> ToBinary;
+	FMemoryWriter MemoryWriter(ToBinary, true);
+	
+	//! #1
+	
+	// Write version for this file format
+	int32 SavegameFileVersion = JOY_SAVE_VERSION;
+	MemoryWriter << SavegameFileVersion;
+	
+	//! #2
+	 
+	// Write out engine and UE4 version information
+	int32 PackageFileUE4Version = GPackageFileUE4Version;
+	MemoryWriter << PackageFileUE4Version;
+	FEngineVersion SavedEngineVersion = FEngineVersion::Current();
+	MemoryWriter << SavedEngineVersion;
+	
+	//Obj and Name as String
+	FObjectAndNameAsStringProxyArchive Ar(MemoryWriter, false);
+	
+	//! #3 Level Streaming
+	TArray<FString> Streaming;
+	Ar << Streaming;
+	
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	//!#4 STATIC DATA
+	uint8 HasStaticData = 1;
+	Ar << HasStaticData; 
+	SaveStaticData(Ar, StaticSaveData);
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	 
+	//!#5 Components
+	int32 TotalComponents = 0;
+	Ar << TotalComponents;
+	
+	//IO Success?
+	FileIOSuccess = URamaSaveUtility::CompressAndWriteToFile(ToBinary,FileName);
+}
+
 void ARamaSaveEngine::RamaSave_SaveToFile(FString FileName, bool& FileIOSuccess, bool& AllComponentsSaved, FString SaveOnlyStreamingLevel, URamaSaveObject* StaticSaveData)
 {
 	
@@ -951,6 +988,15 @@ void ARamaSaveEngine::Phase2()
 	//!#5 Component Total
 	int32 TotalComponents = 0;
 	Ar << TotalComponents;
+	
+	 
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	//Early Exit
+	if(TotalComponents <= 0)
+	{
+		return;
+	}
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	
 	
 	//VSCREENMSGF("Load process got here! Comps to load is", TotalComponents);

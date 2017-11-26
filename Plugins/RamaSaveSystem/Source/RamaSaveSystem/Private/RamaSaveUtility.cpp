@@ -1,9 +1,9 @@
-// Copyright 2015 by Nathan "Rama" Iyer. All Rights Reserved.
+// Copyright 2018 by Nathan "Rama" Iyer. All Rights Reserved.
 #include "RamaSaveSystemPrivatePCH.h"
 #include "RamaSaveUtility.h"
 
 //HTML Save and Load 
-#if PLATFORM_HTML5_BROWSER
+#if PLATFORM_HTML5
 	#include "HTML5JavaScriptFx.h"
 #endif 
 
@@ -33,7 +33,7 @@ bool URamaSaveUtility::CompressAndWriteToFile(TArray<uint8>& Uncompressed, const
 	//	Write to File
 
 	//HTML Save and Load 
-#if PLATFORM_HTML5_BROWSER
+#if PLATFORM_HTML5
 	FString FileName = FPaths::GetCleanFilename(*FullFilePath);
 	  
 	if (!UE_SaveGame(TCHAR_TO_ANSI(*FileName),0,(char*)Uncompressed.GetData(),Uncompressed.Num()))
@@ -78,7 +78,7 @@ bool URamaSaveUtility::DecompressFromFile(const FString& FullFilePath, TArray<ui
 {
 	
 	
-#if PLATFORM_HTML5_BROWSER
+#if PLATFORM_HTML5
 	FString FileName = FPaths::GetCleanFilename(*FullFilePath);
 	     
 	if(!UE_DoesSaveGameExist(TCHAR_TO_ANSI(*FileName),0))

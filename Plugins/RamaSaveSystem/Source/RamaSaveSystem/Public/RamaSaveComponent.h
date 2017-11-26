@@ -1,7 +1,11 @@
-// Copyright 2015 by Nathan "Rama" Iyer. All Rights Reserved.
+// Copyright 2018 by Nathan "Rama" Iyer. All Rights Reserved.
 #pragma once
  
 #include "RamaSaveUtility.h"
+
+#include "Runtime/Engine/Classes/Engine/NetSerialization.h"
+
+#include "Runtime/Engine/Classes/Components/PrimitiveComponent.h"
 
 #include "RamaSaveComponent.generated.h"
   
@@ -33,7 +37,7 @@ struct FRBSave
 		PhysicsLocation = Comp->GetComponentLocation();
 		PhysicsRotation = Comp->GetComponentQuat();
 		LinearVelocity = Comp->GetPhysicsLinearVelocity();
-		AngularVelocity = Comp->GetPhysicsAngularVelocity();
+		AngularVelocity = Comp->GetPhysicsAngularVelocityInDegrees();
 	}
 	void Apply(UPrimitiveComponent* Comp)
 	{
@@ -41,7 +45,7 @@ struct FRBSave
 		Comp->SetAllPhysicsPosition(PhysicsLocation);
 		Comp->SetWorldRotation(PhysicsRotation); 
 		Comp->SetPhysicsLinearVelocity(LinearVelocity);
-		Comp->SetPhysicsAngularVelocity(AngularVelocity);
+		Comp->SetPhysicsAngularVelocityInDegrees(AngularVelocity);
 	}
 	
 	FRBSave(){}

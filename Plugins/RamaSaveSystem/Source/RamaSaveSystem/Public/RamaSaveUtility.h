@@ -1,6 +1,11 @@
-// Copyright 2015 by Nathan "Rama" Iyer. All Rights Reserved.
+// Copyright 2018 by Nathan "Rama" Iyer. All Rights Reserved.
 
 #pragma once
+
+#include "Runtime/Core/Public/Misc/Paths.h"
+#include "Runtime/Core/Public/GenericPlatform/GenericPlatformFile.h"
+#include "Runtime/Core/Public/HAL/PlatformFilemanager.h"
+#include "Runtime/Core/Public/HAL/PlatformFile.h"
  
 #include "JoySaveClassFuncLine.h"
 #include "RamaSaveUtility.generated.h"
