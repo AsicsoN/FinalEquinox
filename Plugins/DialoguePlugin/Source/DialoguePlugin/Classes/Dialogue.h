@@ -1,4 +1,5 @@
 #pragma once
+#include "Runtime/Engine/Classes/Engine/DataAsset.h"
 #include "Dialogue.generated.h"
 
 //add any fields you want here, for example:
@@ -8,6 +9,9 @@
 USTRUCT(Blueprintable)
 struct FDialogueEvents
 {
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue Event")
+	class UAnimMontage* AnimationMontage = nullptr;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue Event")
 	bool SetCharacterOption = false;
 
@@ -80,10 +84,10 @@ struct FDialogueNode
 	FDialogueConditions Conditions;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue Node")
-	USoundBase* Sound = NULL;
+	class USoundBase* Sound = NULL;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue Node")
-	UDialogueWave* DialogueWave = NULL;
+	class UDialogueWave* DialogueWave = NULL;
 };
 
 UCLASS(Blueprintable, BlueprintType)

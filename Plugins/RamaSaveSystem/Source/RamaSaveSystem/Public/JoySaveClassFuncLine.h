@@ -1,3 +1,5 @@
+// Copyright 2018 by Nathan "Rama" Iyer. All Rights Reserved.
+
 /*
 	Joy String 
 		Current Class, File, and Line Number!

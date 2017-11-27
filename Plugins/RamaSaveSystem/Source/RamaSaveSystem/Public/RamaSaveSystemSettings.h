@@ -1,6 +1,5 @@
-/*
-	By Rama
-*/
+// Copyright 2018 by Nathan "Rama" Iyer. All Rights Reserved.
+
 #pragma once
 
 #include "RamaSaveEngine.h"

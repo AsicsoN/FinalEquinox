@@ -1,9 +1,16 @@
-/*
-	By Rama
-*/
-
+// Copyright 2018 by Nathan "Rama" Iyer. All Rights Reserved.
 #pragma once
 
+//Serializaiton
+#include "Runtime/Core/Public/Serialization/Archive.h"
+#include "Runtime/Core/Public/Serialization/MemoryWriter.h"
+#include "Runtime/Core/Public/Serialization/NameAsStringProxyArchive.h"
+#include "Runtime/CoreUObject/Public/Serialization/ObjectAndNameAsStringProxyArchive.h"
+
+//Level Streaming
+#include "Runtime/Engine/Classes/Engine/LevelStreaming.h"
+
+//This Plugin
 #include "RamaSaveObject.h"
 #include "RamaSaveEngine.generated.h"
  
@@ -62,6 +69,8 @@ public:
 //Saving
 public:
 	
+	static void RamaSave_SaveStaticData(FString FileName, bool& FileIOSuccess, URamaSaveObject* StaticSaveData);
+	
 	//SYNC
 	void RamaSave_SaveToFile(FString FileName, bool& FileIOSuccess, bool& AllComponentsSaved, FString SaveOnlyStreamingLevel="", URamaSaveObject* StaticSaveData = nullptr);
 	
@@ -113,8 +122,8 @@ public:
 	static int32 LoadedSaveVersion;
 	
 	
-	void SaveStaticData(FArchive& Ar, URamaSaveObject* StaticData);
-	void SkipStaticData(FArchive& Ar);
+	static void SaveStaticData(FArchive& Ar, URamaSaveObject* StaticData);
+	static void SkipStaticData(FArchive& Ar);
 	
 	static URamaSaveObject* LoadStaticData(bool& FileIOSuccess,  FString FileName);
 	

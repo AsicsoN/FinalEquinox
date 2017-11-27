@@ -3,12 +3,12 @@
 
 FString USaveGameHelper::GetSaveGamesDirectory()
 {
-	return FPaths::Combine(FPaths::GameSavedDir(), FString(TEXT("SaveGames")));
+	return FPaths::Combine(FPaths::ProjectSavedDir(), FString(TEXT("SaveGames")));
 }
 
 TArray<FString> USaveGameHelper::GetSaveGameFiles()
 {
-	FString saveDirectory = FString(FPaths::GameSavedDir()) + FString("SaveGames/");		// location of save directory
+	FString saveDirectory = FString(FPaths::ProjectSavedDir()) + FString("SaveGames/");		// location of save directory
 	TArray<FString> Files;
 	IFileManager& FileManager = IFileManager::Get();
 
@@ -27,7 +27,7 @@ TArray<FString> USaveGameHelper::GetSaveGameFiles()
 FString USaveGameHelper::GetLatestSaveFile()
 {
 	FString latestFile = "NotFound";
-	FString saveDirectory = FString(FPaths::GameSavedDir()) + FString("SaveGames/");		// location of save directory
+	FString saveDirectory = FString(FPaths::ProjectSavedDir()) + FString("SaveGames/");		// location of save directory
 	TArray<FString> Files;
 	IFileManager& FileManager = IFileManager::Get();
 
