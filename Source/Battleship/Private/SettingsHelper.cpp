@@ -3,7 +3,7 @@
 
 float USettingsHelper::GetFloat(FString name)
 {
-	FString FilePath = FString(FPaths::GameSavedDir()) + FString("Config/Settings.txt");
+	FString FilePath = FString(FPaths::ProjectSavedDir()) + FString("Config/Settings.txt");
 
 	if (!FPaths::FileExists(FilePath))
 	{
@@ -39,7 +39,7 @@ float USettingsHelper::GetFloat(FString name)
 
 void USettingsHelper::SetFloat(FString name, float value)
 {
-	FString FilePath = FString(FPaths::GameSavedDir()) + FString("Config/Settings.txt");
+	FString FilePath = FString(FPaths::ProjectSavedDir()) + FString("Config/Settings.txt");
 
 	if (!FPaths::FileExists(FilePath))
 	{

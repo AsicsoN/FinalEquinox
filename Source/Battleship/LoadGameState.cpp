@@ -8,7 +8,7 @@ FString ALoadGameState::runLoadGame() {
 
 	IFileManager& fileManager = IFileManager::Get();
 	TArray<FString> myFiles;
-	FString saveDirectory = FString(FPaths::GameDir()) + FString("/SaveData");		// location of save directory
+	FString saveDirectory = FString(FPaths::ProjectDir()) + FString("/SaveData");		// location of save directory
 
 	FString result = "Empty";
 
