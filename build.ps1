@@ -7,9 +7,16 @@ function PrepUnreal
 	
 	$pathToUBT = "$pathToEngine\Engine\Binaries\DotNET\UnrealBuildTool.exe"
 	$parameters = "-projectfiles", "-project=`"$PSScriptRoot\Battleship.uproject`"", "-game", "-rocket", "-progress"
-	$ubt = Start-Process -FilePath $pathToUBT -ArgumentList $parameters -PassThru -Wait -NoNewWindow
-	if ($ubt.ExitCode -ne 0) {
-		exit $ubt.ExitCode
+	$ubt = Start-Process -FilePath $pathToUBT -ArgumentList $parameters -PassThru -NoNewWindow
+	
+	$time = 0
+	while ($ubt.HasExited -eq $false) {
+		if ($time -gt 600) {
+			Write-Host "Timeout exceeded"
+			exit -1
+		}
+		$time = $time + 10
+		Start-Sleep -s 10
 	}
 }
 
@@ -33,10 +40,6 @@ function BuildVisualStudioSolution
 		$time = $time + 10
 		Start-Sleep -s 10
 	}
-	
-	if ($msbuild.ExitCode -ne 0) {
-		#exit $msbuild.ExitCode
-	}
 }
 
 function BuildUnrealPlugins
@@ -50,9 +53,16 @@ function BuildUnrealPlugins
 	
 	$pathToUBT = "$pathToEngine\Engine\Binaries\DotNET\UnrealBuildTool.exe"
 	$parameters = "Battleship", "Development", "$Platform", "-project=`"$PSScriptRoot\Battleship.uproject`"", "-editorrecompile",  "-progress", "-NoHotReloadFromIDE"
-	$ubt = Start-Process -FilePath $pathToUBT -ArgumentList $parameters -PassThru -Wait -NoNewWindow
-	if ($ubt.ExitCode -ne 0) {
-		exit $ubt.ExitCode
+	$ubt = Start-Process -FilePath $pathToUBT -ArgumentList $parameters -PassThru -NoNewWindow
+	
+	$time = 0
+	while ($ubt.HasExited -eq $false) {
+		if ($time -gt 600) {
+			Write-Host "Timeout exceeded"
+			exit -1
+		}
+		$time = $time + 10
+		Start-Sleep -s 10
 	}
 }
 
@@ -67,9 +77,16 @@ function BuildUnreal
 	
 	$pathToEditor= "$pathToEngine\Engine\Binaries\Win64\UE4Editor.exe"
 	$parameters = "$PSScriptRoot\Battleship.uproject", "-run=cook", "-targetplatform=WindowsNoEditor", "-CookAll"
-	$ue = Start-Process -FilePath $pathToEditor -ArgumentList $parameters -PassThru -Wait -NoNewWindow
-	if ($ue.ExitCode -ne 0) {
-		exit $ue.ExitCode
+	$ue = Start-Process -FilePath $pathToEditor -ArgumentList $parameters -PassThru -NoNewWindow
+	
+	$time = 0
+	while ($ue.HasExited -eq $false) {
+		if ($time -gt 900) {
+			Write-Host "Timeout exceeded"
+			exit -1
+		}
+		$time = $time + 10
+		Start-Sleep -s 10
 	}
 	
 	$pathToUAT = "$pathToEngine\Engine\Build\BatchFiles\RunUAT.bat"
@@ -77,9 +94,16 @@ function BuildUnreal
 	 "-project=`"$PSScriptRoot\Battleship.uproject`"", "-cook", "-stage", "-archive", "-archivedirectory=`"$PSScriptRoot\Output\$Platform`"", "-package", 
 	 "-clientconfig=Shipping", "-ue4exe=UE4Editor-Cmd.exe", "-clean", "-pak", "-prereqs", "-distribution", "-nodebuginfo", "-targetplatform=$Platform",
 	 "-build", "-CrashReporter", "-utf8output"
-	$uat = Start-Process -FilePath $pathToUAT -ArgumentList $parameters -PassThru -Wait -NoNewWindow
-	if ($uat.ExitCode -ne 0) {
-		exit $uat.ExitCode
+	$uat = Start-Process -FilePath $pathToUAT -ArgumentList $parameters -PassThru -NoNewWindow
+	
+	$time = 0
+	while ($uat.HasExited -eq $false) {
+		if ($time -gt 1800) {
+			Write-Host "Timeout exceeded"
+			exit -1
+		}
+		$time = $time + 10
+		Start-Sleep -s 10
 	}
 }
 
@@ -92,9 +116,16 @@ function BuildInstaller
 	$pathToMSBuild = "C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe"
 	$pathToSolution = "`"$PSScriptRoot\Installer\BattleshipInstaller.sln`""
 	$parameters = "$pathToSolution", "/p:Version=$buildNum", "/p:Configuration=Release", "/p:Platform=x86"
-	$msbuild = Start-Process -FilePath $pathToMSBuild -ArgumentList $parameters -PassThru -Wait -NoNewWindow
-	if ($msbuild.ExitCode -ne 0) {
-		exit $msbuild.ExitCode
+	$msbuild = Start-Process -FilePath $pathToMSBuild -ArgumentList $parameters -PassThru -NoNewWindow
+	
+	$time = 0
+	while ($msbuild.HasExited -eq $false) {
+		if ($time -gt 600) {
+			Write-Host "Timeout exceeded"
+			exit -1
+		}
+		$time = $time + 10
+		Start-Sleep -s 10
 	}
 }
 
