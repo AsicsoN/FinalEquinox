@@ -61,6 +61,7 @@ void FDialoguePluginEditorSettingsDetails::CustomizeDetails( IDetailLayoutBuilde
 			
 		const TSharedPtr<IPropertyHandleArray> Array = DataProperty->AsArray();
 		const TSharedPtr<IPropertyHandle> Child = Array->GetElement(index);
+		const TSharedPtr<IPropertyHandle> SpeakerNameField = Child->GetChildHandle("SpeakerName");
 		const TSharedPtr<IPropertyHandle> IsPlayerField = Child->GetChildHandle("isPlayer");
 		const TSharedPtr<IPropertyHandle> EventsField = Child->GetChildHandle("Events");
 		const TSharedPtr<IPropertyHandle> ConditionsField = Child->GetChildHandle("Conditions");
@@ -69,6 +70,7 @@ void FDialoguePluginEditorSettingsDetails::CustomizeDetails( IDetailLayoutBuilde
 		const TSharedPtr<IPropertyHandle> HasEventsField = Child->GetChildHandle("bHasEvents");
 		const TSharedPtr<IPropertyHandle> HasConditionsField = Child->GetChildHandle("bHasConditions");
 		
+		CurrentNodeCategory.AddProperty(SpeakerNameField);
 		CurrentNodeCategory.AddProperty(IsPlayerField);
 		CurrentNodeCategory.AddProperty(HasEventsField);
 		CurrentNodeCategory.AddProperty(HasConditionsField);
