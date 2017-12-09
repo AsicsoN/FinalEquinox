@@ -100,7 +100,7 @@ float AShipPawnBase::TakeDamage(float Damage, struct FDamageEvent const& DamageE
 			Arguments.Add(TEXT("Name"), FText::FromString(*Name));
 			Arguments.Add(TEXT("Damage"), FText::AsNumber(damage));
 
-			GameMode->WriteToCombatLog(FText::Format(LOCTEXT("TakeDamage", "{DamageCauser} dealt {Damage} shield damage to {Name}"), Arguments));
+			GameMode->WriteToCombatLog(FText::Format(LOCTEXT("DealShieldDamage", "{DamageCauser} dealt {Damage} shield damage to {Name}"), Arguments));
 		}
 		else
 		{
@@ -108,7 +108,7 @@ float AShipPawnBase::TakeDamage(float Damage, struct FDamageEvent const& DamageE
 			Arguments.Add(TEXT("Name"), FText::FromString(*Name));
 			Arguments.Add(TEXT("Damage"), FText::AsNumber(damage));
 
-			GameMode->WriteToCombatLog(FText::Format(LOCTEXT("TakeDamage", "{Name} was dealt {Damage} shield damage"), Arguments));
+			GameMode->WriteToCombatLog(FText::Format(LOCTEXT("TakeShieldDamage", "{Name} was dealt {Damage} shield damage"), Arguments));
 		}
 
 		if (CurrentShieldHitPoints <= 0)
@@ -129,7 +129,7 @@ float AShipPawnBase::TakeDamage(float Damage, struct FDamageEvent const& DamageE
 			Arguments.Add(TEXT("Name"), FText::FromString(*Name));
 			Arguments.Add(TEXT("Damage"), FText::AsNumber(damage));
 
-			GameMode->WriteToCombatLog(FText::Format(LOCTEXT("TakeDamage", "{DamageCauser} dealt {Damage} damage to {Name}"), Arguments));
+			GameMode->WriteToCombatLog(FText::Format(LOCTEXT("DealDamage", "{DamageCauser} dealt {Damage} damage to {Name}"), Arguments));
 		}
 		else
 		{
