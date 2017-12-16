@@ -31,7 +31,7 @@ void ASpaceCombatGameMode::BeginPlay()
 			ActorItr->Captain = GenerateRandomCrewMember();
 			ActorItr->NavigationOfficer = GenerateRandomCrewMember();
 			ActorItr->ScienceOfficer = GenerateRandomCrewMember();
-			ActorItr->WeaponsOfficer = GenerateRandomCrewMember();
+			ActorItr->TacticsOfficer = GenerateRandomCrewMember();
 		}
 
 		ShipArray.Add(*ActorItr);
@@ -105,10 +105,14 @@ UCrew* ASpaceCombatGameMode::GenerateRandomCrewMember()
 	crew->CrewRace = ERace::Human;
 	crew->IsMale = true;
 	crew->Leadership = 0;
-	crew->Piloting = 0;
+	crew->Tactics = 0;
 	crew->Gunnery = 0;
-	crew->Mechanics = 0;
-	crew->Hacking = 0;
+	crew->Engineering = 0;
+	crew->Science = 0;
+	crew->Tactics = 1;
+	crew->Communication = 1;
+	crew->SubsystemRepair = -1;
+	crew->ShieldRepair = -1;
 
 	return crew;
 }
@@ -129,10 +133,10 @@ float ASpaceCombatGameMode::CalculateHitChance(AShipPawnBase* TargetShip)
 	toReturn += 5 * (SelectedShip->Speed - TargetShip->Speed);
 
 	// selected ship WeaponsOfficer's gunnery skill modifier: y = 7x
-	toReturn += 7 * (SelectedShip->WeaponsOfficer->Gunnery);
+	toReturn += 7 * (SelectedShip->TacticsOfficer->Gunnery);
 
 	// target ship NavigationOfficer's piloting skill modifier: y = -7x
-	toReturn += -7 * (TargetShip->NavigationOfficer->Piloting);
+	toReturn += -7 * (TargetShip->NavigationOfficer->Navigation);
 
 	if (GridController != nullptr)
 	{
@@ -204,7 +208,7 @@ float ASpaceCombatGameMode::CalculateDistance(AShipPawnBase* Ship1, AShipPawnBas
 
 void ASpaceCombatGameMode::RepairShip(AShipPawnBase* Ship)
 {
-	int32 repairAmount = Ship->Engineer->Mechanics + FMath::RandRange(1, 10);
+	int32 repairAmount = Ship->Engineer->Engineering + FMath::RandRange(1, 10);
 
 	int32 maxRepairAmount = Ship->HitPoints - Ship->CurrentHitPoints;
 

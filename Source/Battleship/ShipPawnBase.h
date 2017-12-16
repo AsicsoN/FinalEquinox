@@ -11,6 +11,15 @@ enum class EFaction : uint8
 	Enemy1 UMETA(DisplayName = "Enemy1")
 };
 
+UENUM(BlueprintType)
+enum class EType : uint8
+{
+	None UMETA(DisplayName = "None"),
+	Small UMETA(DisplayName = "Small"),
+	Medium UMETA(DisplayName = "Medium"),
+	Large UMETA(DisplayName = "Large")
+};
+
 UCLASS()
 class BATTLESHIP_API AShipPawnBase : public ACharacter
 {
@@ -23,51 +32,76 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EFaction Faction = EFaction::Player;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EType Type = EType::None;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
 	FString Name;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	
+	//
+	// Ship Stats
+	//
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship Stats")
 	int32 Speed = 0;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship Stats")
 	int32 PowerLevel = 0;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship Stats")
 	int32 Initiative = -1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship Stats")
+	float Leadership = 0.0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship Stats")
+	float Tactics = 0.0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship Stats")
+	float Communication = 0.0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship Stats")
+	float Navigation = 0.0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship Stats")
+	int32 FighterSkill = 0;
+
+
+	//
+	// Ship Inventory
+	//
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "System Stats")
 	int32 ActionPoints = -1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "System Stats")
 	int32 CurrentActionPoints = -1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "System Stats")
 	int32 MovementPoints = -1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "System Stats")
 	int32 CurrentMovementPoints = -1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "System Stats")
 	int32 HitPoints = -1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "System Stats")
 	int32 CurrentHitPoints = -1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "System Stats")
 	int32 ShieldHitPoints = -1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "System Stats")
 	int32 CurrentShieldHitPoints = -1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "System Stats")
 	int32 MaxMissiles = -1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "System Stats")
 	int32 Missiles = -1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool ForceTurnEnd = false;
-
+	//
+	// Crew Objects
+	//
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crew")
 	UCrew* Captain = nullptr;
 
@@ -75,7 +109,7 @@ public:
 	UCrew* NavigationOfficer = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crew")
-	UCrew* WeaponsOfficer = nullptr;
+	UCrew* TacticsOfficer = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crew")
 	UCrew* ScienceOfficer = nullptr;
@@ -89,12 +123,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crew")
 	TArray<UCrew*> Passengers;
 
+	//
+	// Rotation Variables
+	//
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	FVector StartLocation;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	FRotator StartRotation;
-
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	FRotator NewRotation;
@@ -123,8 +159,11 @@ public:
 	bool ShowThisShipInactive();
 
 	UFUNCTION(BlueprintCallable, Category = "Instantiation")
-	void Instantiate(int32 Tactics);
+	void Instantiate();
 
 	UFUNCTION(BlueprintCallable, Category = "Game State")
 	bool IsTurnOver();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Game State")
+	bool ForceTurnEnd = false;
 };
