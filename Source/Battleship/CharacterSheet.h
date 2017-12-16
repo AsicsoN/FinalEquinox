@@ -1,10 +1,8 @@
 
-
 #pragma once
 
 #include "Object.h"
 #include "Race.h"
-#include "Ship.h"
 #include "CharacterSheet.generated.h"
 
 UENUM(BlueprintType)
@@ -16,6 +14,8 @@ enum class ECharacterBackground : uint8
 	Military UMETA(DisplayName = "Military"),
 	Trader UMETA(DisplayName = "Trader")
 };
+
+class AShipPawnBase;
 
 /**
  * 
@@ -29,7 +29,7 @@ public:
 	UCharacterSheet();
 
 	UFUNCTION(BlueprintCallable, Category = "Initialization")
-	void SetDefaultFleet(TSubclassOf<class AShipPawnBase> BattleshipPawnClass, TSubclassOf<class AShipPawnBase> DestroyerPawnClass);
+	void SetDefaultFleet(TSubclassOf<AShipPawnBase> BattleshipPawnClass, TSubclassOf<AShipPawnBase> DestroyerPawnClass);
 
 	UFUNCTION(BlueprintCallable, Category = "Options")
 	void SetCharacterOption(FString option);
@@ -50,7 +50,7 @@ public:
 	bool GenderIsMale = true;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fleet")
-	TArray<UShip*> Fleet;
+	TArray<AShipPawnBase*> Fleet;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighting")
 	int32 Brawling = 0;

@@ -2,6 +2,7 @@
 
 #include "Battleship.h"
 #include "CharacterSheet.h"
+#include "ShipPawnBase.h"
 
 UCharacterSheet::UCharacterSheet()
 {
@@ -70,7 +71,7 @@ void UCharacterSheet::SetCharacterOption(FString option)
 		Deception++;
 		Persuasion++;
 	}
-	else if (option == "option_piloting")
+	else if (option == "option_Navigation")
 	{
 		Pilot += 2;
 		Gunnery++;
@@ -80,9 +81,9 @@ void UCharacterSheet::SetCharacterOption(FString option)
 		Navigation += 2;
 		Tactics++;
 	}
-	else if (option == "option_mechanics")
+	else if (option == "option_Engineering")
 	{
-		Mechanics += 2;
+		Engineering += 2;
 		Engineering++;
 	}
 	else if (option == "option_workedhard")
@@ -125,7 +126,7 @@ void UCharacterSheet::SetCharacterOption(FString option)
 	{
 		Leadership += 2;
 		Persuasion += 3;
-		Mechanics--;
+		Engineering--;
 		Science--;
 		Leadership--;
 	}
@@ -216,14 +217,13 @@ bool UCharacterSheet::GetCharacterOption(FString option)
 	}
 }
 
-void UCharacterSheet::SetDefaultFleet(TSubclassOf<class AShipPawnBase> BattleshipPawnClass, TSubclassOf<class AShipPawnBase> DestroyerPawnClass)
+void UCharacterSheet::SetDefaultFleet(TSubclassOf<AShipPawnBase> BattleshipPawnClass, TSubclassOf<AShipPawnBase> DestroyerPawnClass)
 {
-	UShip* flagship = NewObject<UShip>();
+	AShipPawnBase* flagship = BattleshipPawnClass.GetDefaultObject();
 	flagship->Name = "GCS Odysseus";
-	flagship->PawnClass = BattleshipPawnClass;
 	flagship->Captain = NewObject<UCrew>();
 	flagship->NavigationOfficer = NewObject<UCrew>();
-	flagship->WeaponsOfficer = NewObject<UCrew>();
+	flagship->TacticsOfficer = NewObject<UCrew>();
 	flagship->ScienceOfficer = NewObject<UCrew>();
 	flagship->Engineer = NewObject<UCrew>();
 	flagship->CAG = NewObject<UCrew>();
@@ -232,64 +232,87 @@ void UCharacterSheet::SetDefaultFleet(TSubclassOf<class AShipPawnBase> Battleshi
 	flagship->Captain->CrewRace = ERace::Malderian;
 	flagship->Captain->IsMale = false;
 	flagship->Captain->Leadership = 2;
-	flagship->Captain->Piloting = -2;
+	flagship->Captain->Navigation = -2;
 	flagship->Captain->Gunnery = -3;
-	flagship->Captain->Mechanics = -1;
-	flagship->Captain->Hacking = 1;
+	flagship->Captain->Engineering = 0;
+	flagship->Captain->Science = 1;
+	flagship->Captain->Tactics = 1;
+	flagship->Captain->Communication = 1;
+	flagship->Captain->SubsystemRepair = -1;
+	flagship->Captain->ShieldRepair = -1;
 
 	flagship->NavigationOfficer->CrewName = "Edvin Tjaard";
 	flagship->NavigationOfficer->CrewRace = ERace::Human;
 	flagship->NavigationOfficer->IsMale = true;
 	flagship->NavigationOfficer->Leadership = 1;
-	flagship->NavigationOfficer->Piloting = 0;
+	flagship->NavigationOfficer->Navigation = 0;
 	flagship->NavigationOfficer->Gunnery = -1;
-	flagship->NavigationOfficer->Mechanics = 1;
-	flagship->NavigationOfficer->Hacking = -2;
+	flagship->NavigationOfficer->Engineering = 1;
+	flagship->NavigationOfficer->Science = -2;
+	flagship->NavigationOfficer->Tactics = 1;
+	flagship->NavigationOfficer->Communication = 1;
+	flagship->NavigationOfficer->SubsystemRepair = -1;
+	flagship->NavigationOfficer->ShieldRepair = -1;
 
-	flagship->WeaponsOfficer->CrewName = "Tu'Vol Strogonar";
-	flagship->WeaponsOfficer->CrewRace = ERace::Krum;
-	flagship->WeaponsOfficer->IsMale = true;
-	flagship->WeaponsOfficer->Leadership = 1;
-	flagship->WeaponsOfficer->Piloting = -3;
-	flagship->WeaponsOfficer->Gunnery = 1;
-	flagship->WeaponsOfficer->Mechanics = 0;
-	flagship->WeaponsOfficer->Hacking = -1;
+	flagship->TacticsOfficer->CrewName = "Tu'Vol Strogonar";
+	flagship->TacticsOfficer->CrewRace = ERace::Krum;
+	flagship->TacticsOfficer->IsMale = true;
+	flagship->TacticsOfficer->Leadership = 1;
+	flagship->TacticsOfficer->Navigation = -3;
+	flagship->TacticsOfficer->Gunnery = 1;
+	flagship->TacticsOfficer->Engineering = 0;
+	flagship->TacticsOfficer->Science = -1;
+	flagship->TacticsOfficer->Tactics = 0;
+	flagship->TacticsOfficer->Communication = 0;
+	flagship->TacticsOfficer->SubsystemRepair = 0;
+	flagship->TacticsOfficer->ShieldRepair = 0;
 
 	flagship->ScienceOfficer->CrewName = "Mar-Tun";
 	flagship->ScienceOfficer->CrewRace = ERace::Malderian;
 	flagship->ScienceOfficer->IsMale = true;
 	flagship->ScienceOfficer->Leadership = 0;
-	flagship->ScienceOfficer->Piloting = 0;
+	flagship->ScienceOfficer->Navigation = 0;
 	flagship->ScienceOfficer->Gunnery = 0;
-	flagship->ScienceOfficer->Mechanics = 0;
-	flagship->ScienceOfficer->Hacking = 0;
+	flagship->ScienceOfficer->Engineering = 0;
+	flagship->ScienceOfficer->Science = 0;
+	flagship->NavigationOfficer->Tactics = 1;
+	flagship->NavigationOfficer->Communication = 1;
+	flagship->NavigationOfficer->SubsystemRepair = -1;
+	flagship->NavigationOfficer->ShieldRepair = -1;
 
 	flagship->Engineer->CrewName = "Sheldon Matthaus";
 	flagship->Engineer->CrewRace = ERace::Human;
 	flagship->Engineer->IsMale = true;
 	flagship->Engineer->Leadership = 0;
-	flagship->Engineer->Piloting = 0;
+	flagship->Engineer->Navigation = 0;
 	flagship->Engineer->Gunnery = 0;
-	flagship->Engineer->Mechanics = 0;
-	flagship->Engineer->Hacking = 0;
+	flagship->Engineer->Engineering = 0;
+	flagship->Engineer->Science = 0;
+	flagship->NavigationOfficer->Tactics = 1;
+	flagship->NavigationOfficer->Communication = 1;
+	flagship->NavigationOfficer->SubsystemRepair = -1;
+	flagship->NavigationOfficer->ShieldRepair = -1;
 
 	flagship->CAG->CrewName = "Jaylen Arthur";
 	flagship->CAG->CrewRace = ERace::Human;
 	flagship->CAG->IsMale = false;
 	flagship->CAG->Leadership = 0;
-	flagship->CAG->Piloting = 0;
+	flagship->CAG->Navigation = 0;
 	flagship->CAG->Gunnery = 0;
-	flagship->CAG->Mechanics = 0;
-	flagship->CAG->Hacking = 0;
+	flagship->CAG->Engineering = 0;
+	flagship->CAG->Science = 0;
+	flagship->NavigationOfficer->Tactics = 1;
+	flagship->NavigationOfficer->Communication = 1;
+	flagship->NavigationOfficer->SubsystemRepair = -1;
+	flagship->NavigationOfficer->ShieldRepair = -1;
 
 	Fleet.Add(flagship);
 
-	UShip* destroyer = NewObject<UShip>();
+	AShipPawnBase* destroyer = DestroyerPawnClass.GetDefaultObject();
 	destroyer->Name = "GCS Selene";
-	destroyer->PawnClass = DestroyerPawnClass;
 	destroyer->Captain = NewObject<UCrew>();
 	destroyer->NavigationOfficer = NewObject<UCrew>();
-	destroyer->WeaponsOfficer = NewObject<UCrew>();
+	destroyer->TacticsOfficer = NewObject<UCrew>();
 	destroyer->ScienceOfficer = NewObject<UCrew>();
 	destroyer->Engineer = NewObject<UCrew>();
 	destroyer->CAG = NewObject<UCrew>();
@@ -298,55 +321,55 @@ void UCharacterSheet::SetDefaultFleet(TSubclassOf<class AShipPawnBase> Battleshi
 	destroyer->Captain->CrewRace = ERace::Malderian;
 	destroyer->Captain->IsMale = false;
 	destroyer->Captain->Leadership = 0;
-	destroyer->Captain->Piloting = 0;
+	destroyer->Captain->Navigation = 0;
 	destroyer->Captain->Gunnery = 0;
-	destroyer->Captain->Mechanics = 0;
-	destroyer->Captain->Hacking = 0;
+	destroyer->Captain->Engineering = 0;
+	destroyer->Captain->Science = 0;
 
 	destroyer->NavigationOfficer->CrewName = "Edvin Tjaard";
 	destroyer->NavigationOfficer->CrewRace = ERace::Human;
 	destroyer->NavigationOfficer->IsMale = true;
 	destroyer->NavigationOfficer->Leadership = 0;
-	destroyer->NavigationOfficer->Piloting = 0;
+	destroyer->NavigationOfficer->Navigation = 0;
 	destroyer->NavigationOfficer->Gunnery = 0;
-	destroyer->NavigationOfficer->Mechanics = 0;
-	destroyer->NavigationOfficer->Hacking = 0;
+	destroyer->NavigationOfficer->Engineering = 0;
+	destroyer->NavigationOfficer->Science = 0;
 
-	destroyer->WeaponsOfficer->CrewName = "Tu'Vol Strogonar";
-	destroyer->WeaponsOfficer->CrewRace = ERace::Krum;
-	destroyer->WeaponsOfficer->IsMale = true;
-	destroyer->WeaponsOfficer->Leadership = 0;
-	destroyer->WeaponsOfficer->Piloting = 0;
-	destroyer->WeaponsOfficer->Gunnery = 0;
-	destroyer->WeaponsOfficer->Mechanics = 0;
-	destroyer->WeaponsOfficer->Hacking = 0;
+	destroyer->TacticsOfficer->CrewName = "Tu'Vol Strogonar";
+	destroyer->TacticsOfficer->CrewRace = ERace::Krum;
+	destroyer->TacticsOfficer->IsMale = true;
+	destroyer->TacticsOfficer->Leadership = 0;
+	destroyer->TacticsOfficer->Navigation = 0;
+	destroyer->TacticsOfficer->Gunnery = 0;
+	destroyer->TacticsOfficer->Engineering = 0;
+	destroyer->TacticsOfficer->Science = 0;
 
 	destroyer->ScienceOfficer->CrewName = "Mar-Tun";
 	destroyer->ScienceOfficer->CrewRace = ERace::Malderian;
 	destroyer->ScienceOfficer->IsMale = true;
 	destroyer->ScienceOfficer->Leadership = 0;
-	destroyer->ScienceOfficer->Piloting = 0;
+	destroyer->ScienceOfficer->Navigation = 0;
 	destroyer->ScienceOfficer->Gunnery = 0;
-	destroyer->ScienceOfficer->Mechanics = 0;
-	destroyer->ScienceOfficer->Hacking = 0;
+	destroyer->ScienceOfficer->Engineering = 0;
+	destroyer->ScienceOfficer->Science = 0;
 
 	destroyer->Engineer->CrewName = "Sheldon Matthaus";
 	destroyer->Engineer->CrewRace = ERace::Human;
 	destroyer->Engineer->IsMale = true;
 	destroyer->Engineer->Leadership = 0;
-	destroyer->Engineer->Piloting = 0;
+	destroyer->Engineer->Navigation = 0;
 	destroyer->Engineer->Gunnery = 0;
-	destroyer->Engineer->Mechanics = 0;
-	destroyer->Engineer->Hacking = 0;
+	destroyer->Engineer->Engineering = 0;
+	destroyer->Engineer->Science = 0;
 
 	destroyer->CAG->CrewName = "Jaylen Arthur";
 	destroyer->CAG->CrewRace = ERace::Human;
 	destroyer->CAG->IsMale = false;
 	destroyer->CAG->Leadership = 0;
-	destroyer->CAG->Piloting = 0;
+	destroyer->CAG->Navigation = 0;
 	destroyer->CAG->Gunnery = 0;
-	destroyer->CAG->Mechanics = 0;
-	destroyer->CAG->Hacking = 0;
+	destroyer->CAG->Engineering = 0;
+	destroyer->CAG->Science = 0;
 
 	Fleet.Add(destroyer);
 }
