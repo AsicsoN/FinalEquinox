@@ -235,7 +235,7 @@ void UCharacterSheet::SetDefaultFleet(TSubclassOf<AShipPawnBase> BattleshipPawnC
 	flagship->Captain->Leadership = 2;
 	flagship->Captain->Navigation = -2;
 	flagship->Captain->Gunnery = -3;
-	flagship->Captain->Engineering = 0;
+	flagship->Captain->Engineering = 2;
 	flagship->Captain->Science = 1;
 	flagship->Captain->Tactics = 1;
 	flagship->Captain->Communication = 1;
@@ -246,7 +246,7 @@ void UCharacterSheet::SetDefaultFleet(TSubclassOf<AShipPawnBase> BattleshipPawnC
 	flagship->NavigationOfficer->CrewRace = ERace::Human;
 	flagship->NavigationOfficer->IsMale = true;
 	flagship->NavigationOfficer->Leadership = 1;
-	flagship->NavigationOfficer->Navigation = 0;
+	flagship->NavigationOfficer->Navigation = 4;
 	flagship->NavigationOfficer->Gunnery = -1;
 	flagship->NavigationOfficer->Engineering = 1;
 	flagship->NavigationOfficer->Science = -2;
@@ -263,7 +263,7 @@ void UCharacterSheet::SetDefaultFleet(TSubclassOf<AShipPawnBase> BattleshipPawnC
 	flagship->TacticsOfficer->Gunnery = 1;
 	flagship->TacticsOfficer->Engineering = 0;
 	flagship->TacticsOfficer->Science = -1;
-	flagship->TacticsOfficer->Tactics = 0;
+	flagship->TacticsOfficer->Tactics = 3;
 	flagship->TacticsOfficer->Communication = 0;
 	flagship->TacticsOfficer->SubsystemRepair = 0;
 	flagship->TacticsOfficer->ShieldRepair = 0;
@@ -275,11 +275,11 @@ void UCharacterSheet::SetDefaultFleet(TSubclassOf<AShipPawnBase> BattleshipPawnC
 	flagship->ScienceOfficer->Navigation = 0;
 	flagship->ScienceOfficer->Gunnery = 0;
 	flagship->ScienceOfficer->Engineering = 0;
-	flagship->ScienceOfficer->Science = 0;
-	flagship->NavigationOfficer->Tactics = 1;
-	flagship->NavigationOfficer->Communication = 1;
-	flagship->NavigationOfficer->SubsystemRepair = -1;
-	flagship->NavigationOfficer->ShieldRepair = -1;
+	flagship->ScienceOfficer->Science = 4;
+	flagship->ScienceOfficer->Tactics = 1;
+	flagship->ScienceOfficer->Communication = 1;
+	flagship->ScienceOfficer->SubsystemRepair = -1;
+	flagship->ScienceOfficer->ShieldRepair = -1;
 
 	flagship->Engineer->CrewName = "Sheldon Matthaus";
 	flagship->Engineer->CrewRace = ERace::Human;
@@ -287,25 +287,12 @@ void UCharacterSheet::SetDefaultFleet(TSubclassOf<AShipPawnBase> BattleshipPawnC
 	flagship->Engineer->Leadership = 0;
 	flagship->Engineer->Navigation = 0;
 	flagship->Engineer->Gunnery = 0;
-	flagship->Engineer->Engineering = 0;
+	flagship->Engineer->Engineering = 6;
 	flagship->Engineer->Science = 0;
-	flagship->NavigationOfficer->Tactics = 1;
-	flagship->NavigationOfficer->Communication = 1;
-	flagship->NavigationOfficer->SubsystemRepair = -1;
-	flagship->NavigationOfficer->ShieldRepair = -1;
-
-	flagship->CAG->CrewName = "Jaylen Arthur";
-	flagship->CAG->CrewRace = ERace::Human;
-	flagship->CAG->IsMale = false;
-	flagship->CAG->Leadership = 0;
-	flagship->CAG->Navigation = 0;
-	flagship->CAG->Gunnery = 0;
-	flagship->CAG->Engineering = 0;
-	flagship->CAG->Science = 0;
-	flagship->NavigationOfficer->Tactics = 1;
-	flagship->NavigationOfficer->Communication = 1;
-	flagship->NavigationOfficer->SubsystemRepair = -1;
-	flagship->NavigationOfficer->ShieldRepair = -1;
+	flagship->Engineer->Tactics = 1;
+	flagship->Engineer->Communication = 1;
+	flagship->Engineer->SubsystemRepair = -1;
+	flagship->Engineer->ShieldRepair = -1;
 
 	Fleet.Add(flagship);
 
@@ -327,15 +314,25 @@ void UCharacterSheet::SetDefaultFleet(TSubclassOf<AShipPawnBase> BattleshipPawnC
 	destroyer->Captain->Gunnery = 0;
 	destroyer->Captain->Engineering = 0;
 	destroyer->Captain->Science = 0;
+	destroyer->Captain->Tactics = 1;
+	destroyer->Captain->Communication = 1;
+	destroyer->Captain->SubsystemRepair = -1;
+	destroyer->Captain->ShieldRepair = -1;
+
 
 	destroyer->NavigationOfficer->CrewName = "Edvin Tjaard";
 	destroyer->NavigationOfficer->CrewRace = ERace::Human;
 	destroyer->NavigationOfficer->IsMale = true;
 	destroyer->NavigationOfficer->Leadership = 0;
-	destroyer->NavigationOfficer->Navigation = 0;
+	destroyer->NavigationOfficer->Navigation = 2;
 	destroyer->NavigationOfficer->Gunnery = 0;
 	destroyer->NavigationOfficer->Engineering = 0;
 	destroyer->NavigationOfficer->Science = 0;
+	destroyer->NavigationOfficer->Tactics = 1;
+	destroyer->NavigationOfficer->Communication = 1;
+	destroyer->NavigationOfficer->SubsystemRepair = -1;
+	destroyer->NavigationOfficer->ShieldRepair = -1;
+
 
 	destroyer->TacticsOfficer->CrewName = "Tu'Vol Strogonar";
 	destroyer->TacticsOfficer->CrewRace = ERace::Krum;
@@ -345,6 +342,11 @@ void UCharacterSheet::SetDefaultFleet(TSubclassOf<AShipPawnBase> BattleshipPawnC
 	destroyer->TacticsOfficer->Gunnery = 0;
 	destroyer->TacticsOfficer->Engineering = 0;
 	destroyer->TacticsOfficer->Science = 0;
+	destroyer->TacticsOfficer->Tactics = 3;
+	destroyer->TacticsOfficer->Communication = 1;
+	destroyer->TacticsOfficer->SubsystemRepair = -1;
+	destroyer->TacticsOfficer->ShieldRepair = -1;
+
 
 	destroyer->ScienceOfficer->CrewName = "Mar-Tun";
 	destroyer->ScienceOfficer->CrewRace = ERace::Malderian;
@@ -353,7 +355,12 @@ void UCharacterSheet::SetDefaultFleet(TSubclassOf<AShipPawnBase> BattleshipPawnC
 	destroyer->ScienceOfficer->Navigation = 0;
 	destroyer->ScienceOfficer->Gunnery = 0;
 	destroyer->ScienceOfficer->Engineering = 0;
-	destroyer->ScienceOfficer->Science = 0;
+	destroyer->ScienceOfficer->Science = 4;
+	destroyer->ScienceOfficer->Tactics = 1;
+	destroyer->ScienceOfficer->Communication = 1;
+	destroyer->ScienceOfficer->SubsystemRepair = -1;
+	destroyer->ScienceOfficer->ShieldRepair = -1;
+
 
 	destroyer->Engineer->CrewName = "Sheldon Matthaus";
 	destroyer->Engineer->CrewRace = ERace::Human;
@@ -361,17 +368,12 @@ void UCharacterSheet::SetDefaultFleet(TSubclassOf<AShipPawnBase> BattleshipPawnC
 	destroyer->Engineer->Leadership = 0;
 	destroyer->Engineer->Navigation = 0;
 	destroyer->Engineer->Gunnery = 0;
-	destroyer->Engineer->Engineering = 0;
+	destroyer->Engineer->Engineering = 3;
 	destroyer->Engineer->Science = 0;
-
-	destroyer->CAG->CrewName = "Jaylen Arthur";
-	destroyer->CAG->CrewRace = ERace::Human;
-	destroyer->CAG->IsMale = false;
-	destroyer->CAG->Leadership = 0;
-	destroyer->CAG->Navigation = 0;
-	destroyer->CAG->Gunnery = 0;
-	destroyer->CAG->Engineering = 0;
-	destroyer->CAG->Science = 0;
+	destroyer->Engineer->Tactics = 1;
+	destroyer->Engineer->Communication = 1;
+	destroyer->Engineer->SubsystemRepair = -1;
+	destroyer->Engineer->ShieldRepair = -1;
 
 	Fleet.Add(destroyer);
 }

@@ -210,24 +210,86 @@ float ASpaceCombatGameMode::CalculateDistance(AShipPawnBase* Ship1, AShipPawnBas
 	return toReturn;
 }
 
-void ASpaceCombatGameMode::RepairShip(AShipPawnBase* Ship)
+void ASpaceCombatGameMode::RepairShip(AShipPawnBase* Ship, FString Type)
 {
-	int32 repairAmount = Ship->Engineer->Engineering + FMath::RandRange(1, 10);
+	int32 repairAmount = 0; // = Ship->Engineer->Engineering + FMath::RandRange(1, 10);
+	int32 maxRepairAmount = 0; // Ship->HitPoints - Ship->CurrentHitPoints;
+	float Engineering = 0.0f;
 
-	int32 maxRepairAmount = Ship->HitPoints - Ship->CurrentHitPoints;
+	if (Type == "Hull")
+	{
+		Engineering += (Ship->Engineer->Engineering / 100.0f) * 80.0f;
+		Engineering += (Ship->Captain->Engineering / 100.0f) * 20.0f;
 
+		maxRepairAmount = Ship->HitPoints - Ship->CurrentHitPoints;
+
+		int32 Chance = FMath::RandRange(1, 10);
+
+		repairAmount = FMath::Clamp(FMath::CeilToInt(Engineering) * Chance, 0, maxRepairAmount);
+
+		UE_LOG(LogTemp, Warning, TEXT("Engineer: %d  Captain: %d"), Ship->Engineer->Engineering, Ship->Captain->Engineering);
+		UE_LOG(LogTemp, Warning, TEXT("Engineering: %f  RepairAmount: %d"), Engineering, repairAmount);
+
+		if (Chance == 10)
+		{
+			repairAmount += (repairAmount / 100) * 30;
+		}
+	}
+	else if (Type == "Shield")
+	{
+		Engineering += (Ship->ScienceOfficer->Engineering / 100) * 50;
+		Engineering += (Ship->Engineer->Engineering / 100) * 40;
+		Engineering += (Ship->Captain->Engineering / 100) * 10;
+
+		maxRepairAmount = Ship->ShieldHitPoints - Ship->CurrentShieldHitPoints;
+
+		int32 Chance = FMath::RandRange(1, 10);
+
+		repairAmount = FMath::Clamp(FMath::CeilToInt(Engineering) + Chance, 0, maxRepairAmount);
+
+		if (Chance == 10)
+		{
+			repairAmount += (repairAmount / 100) * 30;
+		}
+	}
+	else
+	{
+		Engineering += (Ship->Engineer->Engineering / 100) * 60;
+		Engineering += (Ship->ScienceOfficer->Engineering / 100) * 30;
+		Engineering += (Ship->Captain->Engineering / 100) * 10;
+
+		// TODO add once subsystems have been added 
+		// d3
+	}
+	
 	if (repairAmount > maxRepairAmount)
 	{
 		repairAmount = maxRepairAmount;
 	}
 
-	Ship->CurrentHitPoints += repairAmount;
-
 	FFormatNamedArguments Arguments;
 	Arguments.Add(TEXT("Name"), FText::FromString(Ship->Name));
 	Arguments.Add(TEXT("RepairAmount"), FText::AsNumber(repairAmount));
 
-	Ship->ActionPoints = Ship->ActionPoints - 10;
+	if (Type == "Hull")
+	{
+		Arguments.Add(TEXT("Type"), FText::FromString("Hull"));
+		Ship->CurrentHitPoints += repairAmount;
+		Ship->CurrentActionPoints = Ship->CurrentActionPoints - 8;
+	}
+	else if (Type == "Shield")
+	{
+		Arguments.Add(TEXT("Type"), FText::FromString("Shield"));
+		Ship->CurrentShieldHitPoints += repairAmount;
+		Ship->CurrentActionPoints = Ship->CurrentActionPoints - 6;
+	}
+	else
+	{
+		//TODO add subsystem when ready
+		/*Arguments.Add(TEXT("Type"), FText::FromString("Subsystem"));
+		Ship->CurrentShieldHitPoints += repairAmount;
+		Ship->CurrentActionPoints = Ship->CurrentActionPoints - 4;*/
+	}
 
-	WriteToCombatLog(FText::Format(LOCTEXT("Repair", "{Name} repaired {RepairAmount} hit points"), Arguments));
+	WriteToCombatLog(FText::Format(LOCTEXT("Repair", "{Name} repaired {RepairAmount} {Type} hit points"), Arguments));
 }
