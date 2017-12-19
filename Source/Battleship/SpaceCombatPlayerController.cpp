@@ -233,6 +233,19 @@ bool ASpaceCombatPlayerController::GetFinalRotation()
 
 					// Set Final Rotation
 					SelectedShip->NewRotation = ShipRotation;
+					
+					if (SelectedShip->Type == EType::Large)
+					{
+						Tile->RotCost = 6;
+					}
+					else if (SelectedShip->Type == EType::Medium)
+					{
+						Tile->RotCost = 3;
+					}
+					else
+					{
+						Tile->RotCost = 1;
+					}
 
 					// Refresh MouseX
 					MouseX = 0.0f;
@@ -268,6 +281,7 @@ bool ASpaceCombatPlayerController::RotatePawn(float DeltaTime)
 				int32 Z = FMath::RoundToInt(ShipRotation.Yaw);
 
 				SelectedShip->SetActorRotation(FRotator(0, Z, 0));
+				Tile->RotCost = 0;
 
 				return true;
 			}

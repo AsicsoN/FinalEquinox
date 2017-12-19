@@ -221,6 +221,7 @@ void UCharacterSheet::SetDefaultFleet(TSubclassOf<AShipPawnBase> BattleshipPawnC
 {
 	AShipPawnBase* flagship = BattleshipPawnClass.GetDefaultObject();
 	flagship->Name = "GCS Odysseus";
+	flagship->Type = EType::Large;
 	flagship->Captain = NewObject<UCrew>();
 	flagship->NavigationOfficer = NewObject<UCrew>();
 	flagship->TacticsOfficer = NewObject<UCrew>();
@@ -310,6 +311,7 @@ void UCharacterSheet::SetDefaultFleet(TSubclassOf<AShipPawnBase> BattleshipPawnC
 
 	AShipPawnBase* destroyer = DestroyerPawnClass.GetDefaultObject();
 	destroyer->Name = "GCS Selene";
+	destroyer->Type = EType::Medium;
 	destroyer->Captain = NewObject<UCrew>();
 	destroyer->NavigationOfficer = NewObject<UCrew>();
 	destroyer->TacticsOfficer = NewObject<UCrew>();

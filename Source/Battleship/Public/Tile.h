@@ -30,7 +30,9 @@ public:
 	class UGridLocation* GridLocation = nullptr;
 
 	UFUNCTION(BlueprintPure)
-	inline int32 GetRequiredMP() { return RequiredMP; }
+	inline int32 GetRequiredMP() { return RequiredMP + RotCost; }
+
+	int32 RotCost = 0;
 
 protected:
 	// Called when the game starts or when spawned

@@ -171,5 +171,9 @@ void ATile::BuildPath()
 		// Calculate MP Path Cost
 		PathLength = PathLength / 256;
 		RequiredMP = FMath::RoundToInt(PathLength);
+		if (SelectedShip->Type == EType::Large)
+		{
+			RequiredMP = RequiredMP * 2;
+		}
 	}
 }
