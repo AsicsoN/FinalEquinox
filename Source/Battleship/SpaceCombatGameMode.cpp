@@ -124,31 +124,34 @@ void ASpaceCombatGameMode::WriteToCombatLog(FText message)
 
 float ASpaceCombatGameMode::CalculateHitChance(AShipPawnBase* TargetShip)
 {
-	float toReturn = 0.0f;
+	float Chance = 0.0f;
 
-	// base hit chance: y = -5x + 100
-	toReturn = (-5 * CalculateDistance(SelectedShip, TargetShip)) + 100;
+	// Calculate Distance per Square
+	float Distance = CalculateDistance(SelectedShip, TargetShip);
 
-	// speed difference modifier: y = 5x
-	toReturn += 5 * (SelectedShip->Speed - TargetShip->Speed);
+	// Speed Difference between ships
+	float SpeedDifference = 5 * (SelectedShip->Speed - TargetShip->Speed);
 
-	// selected ship WeaponsOfficer's gunnery skill modifier: y = 7x
-	toReturn += 7 * (SelectedShip->TacticsOfficer->Gunnery);
+	// Selected Ships Gunnery Modifier
+	float GunneryDifference = 7 * (SelectedShip->TacticsOfficer->Gunnery);
 
-	// target ship NavigationOfficer's piloting skill modifier: y = -7x
-	toReturn += -7 * (TargetShip->NavigationOfficer->Navigation);
+	// Target Ship Navigation Modifier
+	float NavigationDifference = 7 * (TargetShip->Navigation);
+
+	// Enviornmental Penalty
+	float Penalty = 0.0f;
 
 	if (GridController != nullptr)
 	{
 		if (GridController->IsSpaceObjectIntersectingShip(SelectedShip))
 		{
 			ASpaceObject* object = GridController->GetIntersectingSpaceObject(SelectedShip);
-			toReturn -= object->HitChancePenalty;
+			Penalty -= object->HitChancePenalty;
 		}
 		if (GridController->IsSpaceObjectIntersectingShip(TargetShip))
 		{
 			ASpaceObject* object = GridController->GetIntersectingSpaceObject(TargetShip);
-			toReturn -= object->HitChancePenalty;
+			Penalty -= object->HitChancePenalty;
 		}
 	}
 	else
@@ -156,7 +159,8 @@ float ASpaceCombatGameMode::CalculateHitChance(AShipPawnBase* TargetShip)
 		UE_LOG(LogTemp, Error, TEXT("GridController is not defined in SpaceCombatGameMode"));
 	}
 
-	return toReturn;
+	// (100 - (DistanceInSquares * 5)) + SpeedDifference + NavigationDifference + (GunneryModifier * 1.5) + Penalty;
+	return (100 - (Distance * 5)) + SpeedDifference + NavigationDifference + (GunneryDifference * 1.5) + Penalty;
 }
 
 float ASpaceCombatGameMode::CalculateDistance(AShipPawnBase* Ship1, AShipPawnBase* Ship2)
