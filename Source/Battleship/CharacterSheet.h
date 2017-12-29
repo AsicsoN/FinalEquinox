@@ -37,6 +37,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Options")
 	bool GetCharacterOption(FString option);
 
+	UFUNCTION(BlueprintCallable, Category = "Information")
+	FString GetVariableValue(FString variableName);
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
 	FString Name = "Player";
 

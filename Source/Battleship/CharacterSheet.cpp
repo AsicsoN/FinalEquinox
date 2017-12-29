@@ -9,6 +9,239 @@ UCharacterSheet::UCharacterSheet()
 
 }
 
+FString UCharacterSheet::GetVariableValue(FString variableName)
+{
+	if (variableName.Contains("+"))
+	{
+		FString left;
+		FString right;
+		if (variableName.Split(FString("+"), &left, &right))
+		{
+			left = left.TrimStartAndEnd();
+			right = right.TrimStartAndEnd();
+
+			FString leftValue = GetVariableValue(left);
+			FString rightValue = GetVariableValue(right);
+
+			int32 leftInt = 0;
+			int32 rightInt = 0;
+
+			if (leftValue == "N/A")
+			{
+				leftInt = FCString::Atoi(*left);
+			}
+			else
+			{
+				leftInt = FCString::Atoi(*leftValue);
+			}
+
+
+			if (rightValue == "N/A")
+			{
+				rightInt = FCString::Atoi(*right);
+			}
+			else
+			{
+				rightInt = FCString::Atoi(*rightValue);
+			}
+
+			return FString::FromInt(leftInt + rightInt);
+		}
+	}
+	else if (variableName.Contains("-"))
+	{
+		FString left;
+		FString right;
+		if (variableName.Split(FString("-"), &left, &right))
+		{
+			left = left.TrimStartAndEnd();
+			right = right.TrimStartAndEnd();
+
+			FString leftValue = GetVariableValue(left);
+			FString rightValue = GetVariableValue(right);
+
+			int32 leftInt = 0;
+			int32 rightInt = 0;
+
+			if (leftValue == "N/A")
+			{
+				leftInt = FCString::Atoi(*left);
+			}
+			else
+			{
+				leftInt = FCString::Atoi(*leftValue);
+			}
+
+
+			if (rightValue == "N/A")
+			{
+				rightInt = FCString::Atoi(*right);
+			}
+			else
+			{
+				rightInt = FCString::Atoi(*rightValue);
+			}
+
+			return FString::FromInt(leftInt - rightInt);
+		}
+	}
+	else if (variableName.Contains("*"))
+	{
+		FString left;
+		FString right;
+		if (variableName.Split(FString("*"), &left, &right))
+		{
+			left = left.TrimStartAndEnd();
+			right = right.TrimStartAndEnd();
+
+			FString leftValue = GetVariableValue(left);
+			FString rightValue = GetVariableValue(right);
+
+			int32 leftInt = 0;
+			int32 rightInt = 0;
+
+			if (leftValue == "N/A")
+			{
+				leftInt = FCString::Atoi(*left);
+			}
+			else
+			{
+				leftInt = FCString::Atoi(*leftValue);
+			}
+
+
+			if (rightValue == "N/A")
+			{
+				rightInt = FCString::Atoi(*right);
+			}
+			else
+			{
+				rightInt = FCString::Atoi(*rightValue);
+			}
+
+			return FString::FromInt(leftInt * rightInt);
+		}
+
+	}
+	else if (variableName.Contains("/"))
+	{
+		FString left;
+		FString right;
+		if (variableName.Split(FString("/"), &left, &right))
+		{
+			left = left.TrimStartAndEnd();
+			right = right.TrimStartAndEnd();
+
+			FString leftValue = GetVariableValue(left);
+			FString rightValue = GetVariableValue(right);
+
+			int32 leftInt = 0;
+			int32 rightInt = 0;
+
+			if (leftValue == "N/A")
+			{
+				leftInt = FCString::Atoi(*left);
+			}
+			else
+			{
+				leftInt = FCString::Atoi(*leftValue);
+			}
+
+
+			if (rightValue == "N/A")
+			{
+				rightInt = FCString::Atoi(*right);
+			}
+			else
+			{
+				rightInt = FCString::Atoi(*rightValue);
+			}
+
+			return FString::FromInt(leftInt / rightInt);
+		}
+	}
+	else
+	{
+		if (variableName == "Race")
+		{
+			if (Race == ERace::Malderian)
+			{
+				return "Malderian";
+			}
+			else if (Race == ERace::Krum)
+			{
+				return "Krum";
+			}
+			else
+			{
+				return "Human";
+			}
+		}
+		else if (variableName == "Gender")
+		{
+			if (GenderIsMale == true)
+			{
+				return "Male";
+			}
+			else
+			{
+				return "Female";
+			}
+		}
+		else if (variableName == "Background")
+		{
+			if (Background == ECharacterBackground::Innerworlds)
+			{
+				return "Innerworlds";
+			}
+			else if (Background == ECharacterBackground::Outerworlds)
+			{
+				return "Outerworlds";
+			}
+			else if (Background == ECharacterBackground::Military)
+			{
+				return "Military";
+			}
+			else if (Background == ECharacterBackground::Noble)
+			{
+				return "Noble";
+			}
+			else
+			{
+				return "Trader";
+			}
+		}
+		else if (variableName == "Gunnery")
+		{
+			return FString::FromInt(Gunnery);
+		}
+		else if (variableName == "Pilot")
+		{
+			return FString::FromInt(Pilot);
+		}
+		else if (variableName == "Engineering")
+		{
+			return FString::FromInt(Engineering);
+		}
+		else if (variableName == "Science")
+		{
+			return FString::FromInt(Science);
+		}
+		else if (variableName == "AskedAboutEdward")
+		{
+			if (AskedAboutEdward == true)
+			{
+				return "true";
+			}
+			else
+			{
+				return "false";
+			}
+		}
+	}
+	return variableName;
+}
+
 void UCharacterSheet::SetCharacterOption(FString option)
 {
 	if (option == "option_human")
