@@ -1,6 +1,5 @@
 ﻿#Unreal gitignore
 Binaries/
-/Build
 /DerivedDataCache
 Intermediate/
 /Saved
