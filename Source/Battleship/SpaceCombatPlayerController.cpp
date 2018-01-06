@@ -115,12 +115,26 @@ bool ASpaceCombatPlayerController::Fire(AShipPawnBase* TargetShip)
 			if (bFireModeIsLasers)
 			{
 				// Laser Damage
-				ActionCost = 4;
+				if (SelectedShip->Type == EType::Large)
+				{
+					ActionCost = 4;
+				}
+				else
+				{
+					ActionCost = 5;
+				}
 			}
 			else
 			{
 				// Missile Damage
-				ActionCost = 6;
+				if (SelectedShip->Type == EType::Large)
+				{
+					ActionCost = 6;
+				}
+				else
+				{
+					ActionCost = 8;
+				}
 			}
 
 			if (RandomChance <= HitChance)
@@ -158,8 +172,8 @@ bool ASpaceCombatPlayerController::Fire(AShipPawnBase* TargetShip)
 			else
 			{
 				// Missed Target
-				FString AttackerName = SelectedShip->GetName();
-				FString DefenderName = TargetShip->GetName();
+				FString AttackerName = SelectedShip->Name;
+				FString DefenderName = TargetShip->Name;
 				FString Result = AttackerName + " missed " + DefenderName;
 
 				GameMode->WriteToCombatLog(FText::FromString(Result));
@@ -233,6 +247,19 @@ bool ASpaceCombatPlayerController::GetFinalRotation()
 
 					// Set Final Rotation
 					SelectedShip->NewRotation = ShipRotation;
+					
+					if (SelectedShip->Type == EType::Large)
+					{
+						Tile->RotCost = 6;
+					}
+					else if (SelectedShip->Type == EType::Medium)
+					{
+						Tile->RotCost = 3;
+					}
+					else
+					{
+						Tile->RotCost = 1;
+					}
 
 					// Refresh MouseX
 					MouseX = 0.0f;
@@ -268,6 +295,7 @@ bool ASpaceCombatPlayerController::RotatePawn(float DeltaTime)
 				int32 Z = FMath::RoundToInt(ShipRotation.Yaw);
 
 				SelectedShip->SetActorRotation(FRotator(0, Z, 0));
+				Tile->RotCost = 0;
 
 				return true;
 			}

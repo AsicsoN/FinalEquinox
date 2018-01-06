@@ -19,14 +19,47 @@ void AShipPawnBase::BeginPlay()
 }
 
 // Calculate ship stats
-void AShipPawnBase::Instantiate(int32 Tactics)
+void AShipPawnBase::Instantiate()
 {
-	Initiative = NavigationOfficer->Piloting + FMath::RandRange(1, 20) + Speed;
+	Navigation += (NavigationOfficer->Navigation / 100) * 60;
+	Navigation += (Captain->Navigation / 100) * 30;
+	Navigation += (TacticsOfficer->Navigation / 100) * 10;
 
-	ActionPoints = NavigationOfficer->Piloting + Tactics + FMath::RandRange(1, 8) + PowerLevel;
+	Communication += (Captain->Communication / 100) * 50;
+	Communication += (NavigationOfficer->Communication / 100) * 25;
+	Communication += (TacticsOfficer->Communication / 100) * 25;
+
+	Leadership += (Captain->Leadership / 100) * 60;
+	Leadership += (TacticsOfficer->Leadership / 100) * 20;
+	Leadership += (NavigationOfficer->Leadership / 100) * 20;
+
+	Tactics += (Captain->Tactics / 100) * 40;
+	Tactics += (TacticsOfficer->Tactics / 100) * 40;
+	Tactics += (NavigationOfficer->Tactics / 100) * 20;
+
+	Initiative = Navigation + FMath::RandRange(1, 6) + Speed + Communication;
+	Initiative = FMath::Clamp(Initiative, 0, 40);
+
+	if (Type != EType::Small)
+	{
+		// Normal Ship Calculations
+		ActionPoints = Tactics + FMath::RandRange(1, 8) + PowerLevel + Leadership + 4;
+		ActionPoints = FMath::Clamp(ActionPoints, 0, 40);
+
+		MovementPoints = Navigation + PowerLevel + FMath::RandRange(1, 8) + 4 + Tactics;
+		MovementPoints = FMath::Clamp(MovementPoints, 0, 39);
+	}
+	else
+	{
+		// Fighter Calculation
+		ActionPoints = FighterSkill + Tactics + FMath::RandRange(1, 6);
+		ActionPoints = FMath::Clamp(ActionPoints, -3, 21);
+
+		MovementPoints = FighterSkill + Communication + FMath::RandRange(1, 6);
+		MovementPoints = FMath::Clamp(MovementPoints, -3, 21);
+	}
+	
 	CurrentActionPoints = ActionPoints;
-
-	MovementPoints = Speed + FMath::RandRange(1, 4) + Tactics + 5;
 	CurrentMovementPoints = MovementPoints;
 
 	CurrentHitPoints = HitPoints;
@@ -44,7 +77,6 @@ void AShipPawnBase::Tick( float DeltaTime )
 void AShipPawnBase::SetupPlayerInputComponent(class UInputComponent* InputComp)
 {
 	Super::SetupPlayerInputComponent(InputComp);
-
 }
 
 float AShipPawnBase::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser)

@@ -31,7 +31,7 @@ void ASpaceCombatGameMode::BeginPlay()
 			ActorItr->Captain = GenerateRandomCrewMember();
 			ActorItr->NavigationOfficer = GenerateRandomCrewMember();
 			ActorItr->ScienceOfficer = GenerateRandomCrewMember();
-			ActorItr->WeaponsOfficer = GenerateRandomCrewMember();
+			ActorItr->TacticsOfficer = GenerateRandomCrewMember();
 		}
 
 		ShipArray.Add(*ActorItr);
@@ -105,10 +105,14 @@ UCrew* ASpaceCombatGameMode::GenerateRandomCrewMember()
 	crew->CrewRace = ERace::Human;
 	crew->IsMale = true;
 	crew->Leadership = 0;
-	crew->Piloting = 0;
+	crew->Tactics = 0;
 	crew->Gunnery = 0;
-	crew->Mechanics = 0;
-	crew->Hacking = 0;
+	crew->Engineering = 0;
+	crew->Science = 0;
+	crew->Tactics = 1;
+	crew->Communication = 1;
+	crew->SubsystemRepair = -1;
+	crew->ShieldRepair = -1;
 
 	return crew;
 }
@@ -120,31 +124,34 @@ void ASpaceCombatGameMode::WriteToCombatLog(FText message)
 
 float ASpaceCombatGameMode::CalculateHitChance(AShipPawnBase* TargetShip)
 {
-	float toReturn = 0.0f;
+	float Chance = 0.0f;
 
-	// base hit chance: y = -5x + 100
-	toReturn = (-5 * CalculateDistance(SelectedShip, TargetShip)) + 100;
+	// Calculate Distance per Square
+	float Distance = CalculateDistance(SelectedShip, TargetShip);
 
-	// speed difference modifier: y = 5x
-	toReturn += 5 * (SelectedShip->Speed - TargetShip->Speed);
+	// Speed Difference between ships
+	float SpeedDifference = 5 * (SelectedShip->Speed - TargetShip->Speed);
 
-	// selected ship WeaponsOfficer's gunnery skill modifier: y = 7x
-	toReturn += 7 * (SelectedShip->WeaponsOfficer->Gunnery);
+	// Selected Ships Gunnery Modifier
+	float GunneryDifference = 7 * (SelectedShip->TacticsOfficer->Gunnery);
 
-	// target ship NavigationOfficer's piloting skill modifier: y = -7x
-	toReturn += -7 * (TargetShip->NavigationOfficer->Piloting);
+	// Target Ship Navigation Modifier
+	float NavigationDifference = 7 * (TargetShip->Navigation);
+
+	// Enviornmental Penalty
+	float Penalty = 0.0f;
 
 	if (GridController != nullptr)
 	{
 		if (GridController->IsSpaceObjectIntersectingShip(SelectedShip))
 		{
 			ASpaceObject* object = GridController->GetIntersectingSpaceObject(SelectedShip);
-			toReturn -= object->HitChancePenalty;
+			Penalty -= object->HitChancePenalty;
 		}
 		if (GridController->IsSpaceObjectIntersectingShip(TargetShip))
 		{
 			ASpaceObject* object = GridController->GetIntersectingSpaceObject(TargetShip);
-			toReturn -= object->HitChancePenalty;
+			Penalty -= object->HitChancePenalty;
 		}
 	}
 	else
@@ -152,7 +159,8 @@ float ASpaceCombatGameMode::CalculateHitChance(AShipPawnBase* TargetShip)
 		UE_LOG(LogTemp, Error, TEXT("GridController is not defined in SpaceCombatGameMode"));
 	}
 
-	return toReturn;
+	// (100 - (DistanceInSquares * 5)) + SpeedDifference + NavigationDifference + (GunneryModifier * 1.5) + Penalty;
+	return (100 - (Distance * 5)) + SpeedDifference + NavigationDifference + (GunneryDifference * 1.5) + Penalty;
 }
 
 float ASpaceCombatGameMode::CalculateDistance(AShipPawnBase* Ship1, AShipPawnBase* Ship2)
@@ -202,24 +210,86 @@ float ASpaceCombatGameMode::CalculateDistance(AShipPawnBase* Ship1, AShipPawnBas
 	return toReturn;
 }
 
-void ASpaceCombatGameMode::RepairShip(AShipPawnBase* Ship)
+void ASpaceCombatGameMode::RepairShip(AShipPawnBase* Ship, FString Type)
 {
-	int32 repairAmount = Ship->Engineer->Mechanics + FMath::RandRange(1, 10);
+	int32 repairAmount = 0; // = Ship->Engineer->Engineering + FMath::RandRange(1, 10);
+	int32 maxRepairAmount = 0; // Ship->HitPoints - Ship->CurrentHitPoints;
+	float Engineering = 0.0f;
 
-	int32 maxRepairAmount = Ship->HitPoints - Ship->CurrentHitPoints;
+	if (Type == "Hull")
+	{
+		Engineering += (Ship->Engineer->Engineering / 100.0f) * 80.0f;
+		Engineering += (Ship->Captain->Engineering / 100.0f) * 20.0f;
 
+		maxRepairAmount = Ship->HitPoints - Ship->CurrentHitPoints;
+
+		int32 Chance = FMath::RandRange(1, 10);
+
+		repairAmount = FMath::Clamp(FMath::CeilToInt(Engineering) * Chance, 0, maxRepairAmount);
+
+		UE_LOG(LogTemp, Warning, TEXT("Engineer: %d  Captain: %d"), Ship->Engineer->Engineering, Ship->Captain->Engineering);
+		UE_LOG(LogTemp, Warning, TEXT("Engineering: %f  RepairAmount: %d"), Engineering, repairAmount);
+
+		if (Chance == 10)
+		{
+			repairAmount += (repairAmount / 100) * 30;
+		}
+	}
+	else if (Type == "Shield")
+	{
+		Engineering += (Ship->ScienceOfficer->Engineering / 100) * 50;
+		Engineering += (Ship->Engineer->Engineering / 100) * 40;
+		Engineering += (Ship->Captain->Engineering / 100) * 10;
+
+		maxRepairAmount = Ship->ShieldHitPoints - Ship->CurrentShieldHitPoints;
+
+		int32 Chance = FMath::RandRange(1, 10);
+
+		repairAmount = FMath::Clamp(FMath::CeilToInt(Engineering) + Chance, 0, maxRepairAmount);
+
+		if (Chance == 10)
+		{
+			repairAmount += (repairAmount / 100) * 30;
+		}
+	}
+	else
+	{
+		Engineering += (Ship->Engineer->Engineering / 100) * 60;
+		Engineering += (Ship->ScienceOfficer->Engineering / 100) * 30;
+		Engineering += (Ship->Captain->Engineering / 100) * 10;
+
+		// TODO add once subsystems have been added 
+		// d3
+	}
+	
 	if (repairAmount > maxRepairAmount)
 	{
 		repairAmount = maxRepairAmount;
 	}
 
-	Ship->CurrentHitPoints += repairAmount;
-
 	FFormatNamedArguments Arguments;
 	Arguments.Add(TEXT("Name"), FText::FromString(Ship->Name));
 	Arguments.Add(TEXT("RepairAmount"), FText::AsNumber(repairAmount));
 
-	Ship->ActionPoints = Ship->ActionPoints - 10;
+	if (Type == "Hull")
+	{
+		Arguments.Add(TEXT("Type"), FText::FromString("Hull"));
+		Ship->CurrentHitPoints += repairAmount;
+		Ship->CurrentActionPoints = Ship->CurrentActionPoints - 8;
+	}
+	else if (Type == "Shield")
+	{
+		Arguments.Add(TEXT("Type"), FText::FromString("Shield"));
+		Ship->CurrentShieldHitPoints += repairAmount;
+		Ship->CurrentActionPoints = Ship->CurrentActionPoints - 6;
+	}
+	else
+	{
+		//TODO add subsystem when ready
+		/*Arguments.Add(TEXT("Type"), FText::FromString("Subsystem"));
+		Ship->CurrentShieldHitPoints += repairAmount;
+		Ship->CurrentActionPoints = Ship->CurrentActionPoints - 4;*/
+	}
 
-	WriteToCombatLog(FText::Format(LOCTEXT("Repair", "{Name} repaired {RepairAmount} hit points"), Arguments));
+	WriteToCombatLog(FText::Format(LOCTEXT("Repair", "{Name} repaired {RepairAmount} {Type} hit points"), Arguments));
 }

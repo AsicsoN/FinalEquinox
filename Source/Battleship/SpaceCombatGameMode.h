@@ -93,7 +93,7 @@ public:
 	bool DestroyPawn(AShipPawnBase* Pawn);
 
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
-	void RepairShip(AShipPawnBase* Ship);
+	void RepairShip(AShipPawnBase* Ship, FString Type);
 
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
 	AGridController* GetGridController();
