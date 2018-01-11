@@ -1,5 +1,6 @@
 #include "Battleship.h"
 #include "SpaceCombatGameMode.h"
+#include "SpaceCombatAiController.h"
 
 #define LOCTEXT_NAMESPACE "SpaceCombat" 
 
@@ -15,6 +16,12 @@ void ASpaceCombatGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (!AiController)
+	{
+		UWorld* World = GetWorld();
+		AiController = World->SpawnActor<ASpaceCombatAiController>(ASpaceCombatAiController::StaticClass());
+	}
+
 	for (TActorIterator<AGridController> ActorItr(GetWorld()); ActorItr; ++ActorItr)
 	{
 		GridController = *ActorItr;
@@ -22,6 +29,7 @@ void ASpaceCombatGameMode::BeginPlay()
 
 	SpawnShips();
 
+	TArray<AShipPawnBase*> EnemyShips;
 	for (TActorIterator<AShipPawnBase> ActorItr(GetWorld()); ActorItr; ++ActorItr)
 	{
 		if (ActorItr->Faction == EFaction::Enemy1)
@@ -32,6 +40,7 @@ void ASpaceCombatGameMode::BeginPlay()
 			ActorItr->NavigationOfficer = GenerateRandomCrewMember();
 			ActorItr->ScienceOfficer = GenerateRandomCrewMember();
 			ActorItr->TacticsOfficer = GenerateRandomCrewMember();
+			EnemyShips.Add(*ActorItr);
 		}
 
 		ShipArray.Add(*ActorItr);
@@ -40,6 +49,8 @@ void ASpaceCombatGameMode::BeginPlay()
 	ShipArray.Sort(SortShipPawnBase);
 
 	SelectPawn(ShipArray[0]);
+
+	AiController->InitializeAI(EnemyShips, this);
 
 	for (auto& Ship : ShipArray)
 	{
@@ -62,6 +73,12 @@ void ASpaceCombatGameMode::Tick(float DeltaTime)
 AGridController* ASpaceCombatGameMode::GetGridController()
 {
 	return GridController;
+}
+
+void ASpaceCombatGameMode::StartAiTurn()
+{
+	AiController->Possess(SelectedShip);
+	AiController->BeginAiTurn();
 }
 
 /*void ASpaceCombatGameMode::SpawnShips()
