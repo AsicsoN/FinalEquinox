@@ -8,6 +8,7 @@
 
 class AShipPawnBase;
 class ASpaceCombatGameMode;
+class ATile;
 
 /**
  * 
@@ -18,36 +19,35 @@ class BATTLESHIP_API ASpaceCombatAiController : public AAIController
 	GENERATED_BODY()
 	
 public:
-	void InitializeAI(const TArray<AShipPawnBase*> AiShips, ASpaceCombatGameMode* NewGameMode);
+	void InitializeAI(ASpaceCombatGameMode* NewGameMode);
 
 	void BeginAiTurn();
 
 protected:
-	void AiLogicLoop();
+	void GenerateTurnInformation();
 
 	void SelectTarget();
 
-	bool MoveShip();
+	void CalculateTravelPoint();
+
+	void MoveShip();
 
 	void AttackPlayer();
 
 	void SwapShip();
 
 private:
-
-
-
-	// Enemy Ships
-	TArray<AShipPawnBase*> EnemyShips;
-
 	// Target Ship
 	AShipPawnBase* Target = nullptr;
 
 	// GameMode
 	ASpaceCombatGameMode* GameMode = nullptr;
 
+	// Target Tile
+	ATile* TargetTile = nullptr;
+
 	// Timer Handles
-	FTimerHandle AiTurnCycleHandle;
+	FTimerHandle AiMoveCycleHandle;
 	FTimerHandle AiAttackCycleHandle;
 	FTimerHandle AiSwapCycleHandle;
 };

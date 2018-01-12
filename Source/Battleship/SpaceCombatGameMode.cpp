@@ -29,7 +29,6 @@ void ASpaceCombatGameMode::BeginPlay()
 
 	SpawnShips();
 
-	TArray<AShipPawnBase*> EnemyShips;
 	for (TActorIterator<AShipPawnBase> ActorItr(GetWorld()); ActorItr; ++ActorItr)
 	{
 		if (ActorItr->Faction == EFaction::Enemy1)
@@ -40,7 +39,6 @@ void ASpaceCombatGameMode::BeginPlay()
 			ActorItr->NavigationOfficer = GenerateRandomCrewMember();
 			ActorItr->ScienceOfficer = GenerateRandomCrewMember();
 			ActorItr->TacticsOfficer = GenerateRandomCrewMember();
-			EnemyShips.Add(*ActorItr);
 		}
 
 		ShipArray.Add(*ActorItr);
@@ -50,7 +48,7 @@ void ASpaceCombatGameMode::BeginPlay()
 
 	SelectPawn(ShipArray[0]);
 
-	AiController->InitializeAI(EnemyShips, this);
+	AiController->InitializeAI(this);
 
 	for (auto& Ship : ShipArray)
 	{

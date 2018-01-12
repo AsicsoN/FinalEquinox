@@ -5,10 +5,11 @@
 #include "ShipPawnBase.h"
 #include "SpaceCombatPlayerController.h"
 #include "SpaceCombatGameMode.h"
+#include "Tile.h"
+#include "AI/Navigation/NavigationPath.h"
 
-void ASpaceCombatAiController::InitializeAI(const TArray<AShipPawnBase*> AiShips, ASpaceCombatGameMode* NewGameMode)
+void ASpaceCombatAiController::InitializeAI(ASpaceCombatGameMode* NewGameMode)
 {
-	EnemyShips = AiShips;
 	GameMode = NewGameMode;
 }
 
@@ -28,10 +29,10 @@ void ASpaceCombatAiController::BeginAiTurn()
 	UE_LOG(LogTemp, Warning, TEXT("Enemy Ship %s starting turn"), *SelectedShip->Name);
 
 	// Commence Ai Logic Cycle
-	AiLogicLoop();
+	GenerateTurnInformation();
 }
 
-void ASpaceCombatAiController::AiLogicLoop()
+void ASpaceCombatAiController::GenerateTurnInformation()
 {
 	AShipPawnBase* SelectedShip = Cast<AShipPawnBase>(GetPawn());
 	UWorld* World = GetWorld();
@@ -52,17 +53,11 @@ void ASpaceCombatAiController::AiLogicLoop()
 		return;
 	}
 
-	// Move ship to ready range
-	if (MoveShip() && SelectedShip->CurrentMovementPoints > 0)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Enemy Ship %s ready to attack target"), *SelectedShip->Name);
-		AttackPlayer();
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Enemy Ship %s moving to target"), *SelectedShip->Name);
-		World->GetTimerManager().SetTimer(AiTurnCycleHandle, this, &ASpaceCombatAiController::AiLogicLoop, 10.0f);
-	}
+	// Calculate Travel Point
+	CalculateTravelPoint();
+
+	UE_LOG(LogTemp, Warning, TEXT("Enemy Ship %s moving to target"), *SelectedShip->Name);
+	MoveShip();
 }
 
 void ASpaceCombatAiController::SelectTarget()
@@ -112,19 +107,129 @@ void ASpaceCombatAiController::SelectTarget()
 	}
 }
 
-bool ASpaceCombatAiController::MoveShip() 
+void ASpaceCombatAiController::CalculateTravelPoint() 
 {
-	//TODO Swap this for precision movement to tiles
-	EPathFollowingRequestResult::Type Result = MoveToActor(Target, 500.0f);
+	AShipPawnBase* SelectedShip = Cast<AShipPawnBase>(GetPawn());
+
+	FVector Start = SelectedShip->GetActorLocation();
+
+	float TotalDistance = FVector::Distance(Start, Target->GetActorLocation());
+
+	float FactionEngageDistance = 0.0f;
+
+	// Knock off Faction Bonus
+	if (SelectedShip->Faction == EFaction::Enemy1)
+	{
+		FactionEngageDistance = 256.0f * 10;
+	}
+	
+	UNavigationSystem* NavSys = UNavigationSystem::GetCurrent(GetWorld());
+
+	// Calculate the AI Pathing using the Nav system.
+	FVector End;
+	while (true)
+	{
+		End = NavSys->GetRandomPointInNavigableRadius(GetWorld(), Target->GetActorLocation(), FactionEngageDistance, NavSys->MainNavData);
+		UNavigationPath *NavResult = NavSys->FindPathToLocationSynchronously(GetWorld(), Start, End, SelectedShip);
+
+		if (NavResult == nullptr)
+		{
+			continue;
+		}
+
+		FColor LineColor = FColor();
+
+		for (int32 Index = 0; Index < NavResult->PathPoints.Num(); Index++)
+		{
+			int32 NextIndex = Index + 1;
+			bool bIsEven = (NextIndex % 2 > 0) ? true : false;
+
+			NextIndex = FMath::Clamp(NextIndex, 1, FMath::RoundToInt(NavResult->PathPoints.Num() - 1));
+
+			if (NextIndex != NavResult->PathPoints.Num())
+			{
+				FVector PointA = NavResult->PathPoints[Index];
+				FVector PointB = NavResult->PathPoints[NextIndex];
+				DrawDebugLine(
+					GetWorld(),
+					PointA,
+					PointB,
+					LineColor.Red,
+					true,
+					-1,
+					0,
+					10.0f
+				);
+			}
+		}
+
+		// Draw the central dot in the circle
+		DrawDebugLine(
+			GetWorld(),
+			End,
+			End,
+			LineColor.Red,
+			true,
+			-1,
+			0,
+			20.0f
+		);
+
+		float PathLength = NavResult->GetPathLength();
+
+		PathLength = PathLength / 256;
+
+		if (SelectedShip->CurrentMovementPoints < FMath::RoundToInt(PathLength))
+		{
+			FactionEngageDistance = FactionEngageDistance + 256.0f;
+		}
+		else
+		{
+			break;
+		}
+	}
+
+	ATile* CurTile = nullptr;
+
+	// Calculate our target tile
+	for (TActorIterator<ATile> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+	{
+		if (!CurTile)
+		{
+			CurTile = *ActorItr;
+		}
+
+		float CurrentDistance = FVector::Distance(CurTile->GetActorLocation(), End);
+		float NewDistance = FVector::Distance(ActorItr->GetActorLocation(), End);
+
+		if (NewDistance < CurrentDistance)
+		{
+			CurTile = *ActorItr;
+		}
+	}
+	
+	TargetTile = CurTile;
+}
+
+void ASpaceCombatAiController::MoveShip()
+{
+	UWorld* World = GetWorld();
+
+	// Calculate the AI Pathing using the Nav system.
+	EPathFollowingRequestResult::Type Result = MoveToActor(TargetTile, 500.0f);
 
 	if (Result == EPathFollowingRequestResult::AlreadyAtGoal)
 	{
+		World->GetTimerManager().ClearTimer(AiMoveCycleHandle);
+
 		UE_LOG(LogTemp, Warning, TEXT("Enemy Ship reached destination"));
-		return true;
+		StopMovement();
+
+		AttackPlayer();
 	}
 	else
 	{
-		return false;
+		World->GetTimerManager().SetTimer(AiSwapCycleHandle, this, &ASpaceCombatAiController::MoveShip, 3.0f);
 	}
 }
 
@@ -133,31 +238,20 @@ void ASpaceCombatAiController::AttackPlayer()
 	AShipPawnBase* SelectedShip = Cast<AShipPawnBase>(GetPawn());
 	UWorld* World = GetWorld();
 
-	if (World->GetTimerManager().IsTimerActive(AiTurnCycleHandle))
-	{
-		World->GetTimerManager().ClearTimer(AiTurnCycleHandle);
-	}
-
 	UE_LOG(LogTemp, Warning, TEXT("Enemy Ship %s ready to attack %s"), *SelectedShip->Name, *Target->Name);
 
 	if (SelectedShip->CurrentActionPoints >= 0)
 	{
 		ASpaceCombatPlayerController* PlayerController = Cast<ASpaceCombatPlayerController>(World->GetFirstPlayerController());
 
-		UnPossess();
-
-		PlayerController->Possess(SelectedShip);
 		PlayerController->PrepareToFire(true);
 
 		UE_LOG(LogTemp, Warning, TEXT("Enemy Ship %s FIRING"), *SelectedShip->Name);
 
 		PlayerController->Fire(Target);
-		PlayerController->UnPossess();
-
-		Possess(SelectedShip);
 
 		//TODO We will want to eventually go back into the AiLogicLoop for other targets
-		World->GetTimerManager().SetTimer(AiSwapCycleHandle, this, &ASpaceCombatAiController::AttackPlayer, 3.0f);
+		World->GetTimerManager().SetTimer(AiAttackCycleHandle, this, &ASpaceCombatAiController::AttackPlayer, 5.0f);
 	}
 	else
 	{
@@ -178,9 +272,8 @@ void ASpaceCombatAiController::SwapShip()
 
 	UE_LOG(LogTemp, Warning, TEXT("Enemy Ship %s finished turn"), *SelectedShip->Name);
 
-	//TODO Clear AI Controller and Unpossess();
 	UnPossess();
 
 	// Call GameMode to SwapPawn()
-	//GameMode->SelectPawn();
+	SelectedShip->ForceTurnEnd = true;
 }
