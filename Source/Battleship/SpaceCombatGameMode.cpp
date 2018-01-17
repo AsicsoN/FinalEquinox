@@ -1,5 +1,6 @@
 #include "Battleship.h"
 #include "SpaceCombatGameMode.h"
+#include "SpaceCombatAiController.h"
 
 #define LOCTEXT_NAMESPACE "SpaceCombat" 
 
@@ -14,6 +15,12 @@ ASpaceCombatGameMode::ASpaceCombatGameMode()
 void ASpaceCombatGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (!AiController)
+	{
+		UWorld* World = GetWorld();
+		AiController = World->SpawnActor<ASpaceCombatAiController>(ASpaceCombatAiController::StaticClass());
+	}
 
 	for (TActorIterator<AGridController> ActorItr(GetWorld()); ActorItr; ++ActorItr)
 	{
@@ -41,6 +48,8 @@ void ASpaceCombatGameMode::BeginPlay()
 
 	SelectPawn(ShipArray[0]);
 
+	AiController->InitializeAI(this);
+
 	for (auto& Ship : ShipArray)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Initiative: %d"), Ship->Initiative);
@@ -62,6 +71,12 @@ void ASpaceCombatGameMode::Tick(float DeltaTime)
 AGridController* ASpaceCombatGameMode::GetGridController()
 {
 	return GridController;
+}
+
+void ASpaceCombatGameMode::StartAiTurn()
+{
+	AiController->Possess(SelectedShip);
+	AiController->BeginAiTurn();
 }
 
 /*void ASpaceCombatGameMode::SpawnShips()

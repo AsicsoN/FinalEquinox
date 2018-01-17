@@ -7,6 +7,8 @@
 #include "SpawnLocation.h"
 #include "SpaceCombatGameMode.generated.h"
 
+class ASpaceCombatAiController;
+
 UENUM(BlueprintType)
 enum class ESpaceCombatPhase : uint8
 {
@@ -98,10 +100,15 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
 	AGridController* GetGridController();
 
+	UFUNCTION(BlueprintCallable, Category = "Turn Management")
+	void StartAiTurn();
+
 private:
 	bool bDidPlayerWin = false;
 
 	AGridController* GridController = nullptr;
+
+	ASpaceCombatAiController* AiController = nullptr;
 
 	inline static bool SortShipPawnBase(const AShipPawnBase& ship1, const AShipPawnBase& ship2)
 	{
