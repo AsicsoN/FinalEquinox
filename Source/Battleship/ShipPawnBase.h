@@ -37,6 +37,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
 	FString Name;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
+	FString Class;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
+	UTexture2D* Thumbnail;
 	
 	//
 	// Ship Stats
