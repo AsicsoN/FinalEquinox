@@ -23,6 +23,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
 	bool IsMale = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
+	UTexture2D* Portrait;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
+	bool CanDie = true;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 	int32 Leadership = 0;
@@ -50,4 +56,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 	int32 ShieldRepair = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
+	int32 Level = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
+	int32 ExperiencePoints = 0;
 };

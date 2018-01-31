@@ -452,6 +452,56 @@ bool UCharacterSheet::GetCharacterOption(FString option)
 
 void UCharacterSheet::SetDefaultFleet(TSubclassOf<AShipPawnBase> BattleshipPawnClass, TSubclassOf<AShipPawnBase> DestroyerPawnClass)
 {
+	UCrew* crew1 = NewObject<UCrew>();
+	UCrew* crew2 = NewObject<UCrew>();
+	UCrew* crew3 = NewObject<UCrew>();
+	
+	crew1->CrewName = "Bernkhnn Rnaep";
+	crew1->CrewRace = ERace::Krum;
+	crew1->IsMale = true;
+	crew1->Portrait = LoadObject<UTexture2D>(crew1, TEXT("/Game/Textures/Crew/CrewPortraitKrumMale1"), NULL, LOAD_None, NULL);
+	crew1->Leadership = 1;
+	crew1->Navigation = 2;
+	crew1->Gunnery = 3;
+	crew1->Engineering = 0;
+	crew1->Science = -1;
+	crew1->Tactics = -2;
+	crew1->Communication = -3;
+	crew1->SubsystemRepair = 0;
+	crew1->ShieldRepair = 0;
+
+	crew2->CrewName = "Xopown Napehb";
+	crew2->CrewRace = ERace::Krum;
+	crew2->IsMale = true;
+	crew2->Portrait = LoadObject<UTexture2D>(crew1, TEXT("/Game/Textures/Crew/CrewPortraitKrumMale1"), NULL, LOAD_None, NULL);
+	crew2->Leadership = -1;
+	crew2->Navigation = -2;
+	crew2->Gunnery = -3;
+	crew2->Engineering = 0;
+	crew2->Science = 1;
+	crew2->Tactics = 2;
+	crew2->Communication = 3;
+	crew2->SubsystemRepair = 4;
+	crew2->ShieldRepair = 5;
+
+	crew3->CrewName = "Coigreach Air Thuaiream";
+	crew3->CrewRace = ERace::Human;
+	crew3->IsMale = true;
+	crew3->Portrait = LoadObject<UTexture2D>(crew1, TEXT("/Game/Textures/Crew/CrewPortraitHumanMale2"), NULL, LOAD_None, NULL);
+	crew3->Leadership = 0;
+	crew3->Navigation = 0;
+	crew3->Gunnery = 0;
+	crew3->Engineering = 0;
+	crew3->Science = 0;
+	crew3->Tactics = 0;
+	crew3->Communication = 0;
+	crew3->SubsystemRepair = 0;
+	crew3->ShieldRepair = 0;
+
+	UnusedCrew.Add(crew1);
+	UnusedCrew.Add(crew2);
+	UnusedCrew.Add(crew3);
+
 	AShipPawnBase* flagship = BattleshipPawnClass.GetDefaultObject();
 	flagship->Name = "GCS Odysseus";
 	flagship->Type = EType::Large;
@@ -465,6 +515,7 @@ void UCharacterSheet::SetDefaultFleet(TSubclassOf<AShipPawnBase> BattleshipPawnC
 	flagship->Captain->CrewName = "Ixa Rkeok";
 	flagship->Captain->CrewRace = ERace::Malderian;
 	flagship->Captain->IsMale = false;
+	flagship->Captain->Portrait = LoadObject<UTexture2D>(crew1, TEXT("/Game/Textures/Crew/CrewPortraitMalderianMale1"), NULL, LOAD_None, NULL);
 	flagship->Captain->Leadership = 2;
 	flagship->Captain->Navigation = -2;
 	flagship->Captain->Gunnery = -3;
@@ -478,6 +529,7 @@ void UCharacterSheet::SetDefaultFleet(TSubclassOf<AShipPawnBase> BattleshipPawnC
 	flagship->NavigationOfficer->CrewName = "Edvin Tjaard";
 	flagship->NavigationOfficer->CrewRace = ERace::Human;
 	flagship->NavigationOfficer->IsMale = true;
+	flagship->NavigationOfficer->Portrait = LoadObject<UTexture2D>(crew1, TEXT("/Game/Textures/Crew/CrewPortraitHumanMale1"), NULL, LOAD_None, NULL);
 	flagship->NavigationOfficer->Leadership = 1;
 	flagship->NavigationOfficer->Navigation = 4;
 	flagship->NavigationOfficer->Gunnery = -1;
@@ -491,6 +543,7 @@ void UCharacterSheet::SetDefaultFleet(TSubclassOf<AShipPawnBase> BattleshipPawnC
 	flagship->TacticsOfficer->CrewName = "Tu'Vol Strogonar";
 	flagship->TacticsOfficer->CrewRace = ERace::Krum;
 	flagship->TacticsOfficer->IsMale = true;
+	flagship->TacticsOfficer->Portrait = LoadObject<UTexture2D>(crew1, TEXT("/Game/Textures/Crew/CrewPortraitKrumMale1"), NULL, LOAD_None, NULL);
 	flagship->TacticsOfficer->Leadership = 1;
 	flagship->TacticsOfficer->Navigation = -3;
 	flagship->TacticsOfficer->Gunnery = 1;
@@ -504,6 +557,7 @@ void UCharacterSheet::SetDefaultFleet(TSubclassOf<AShipPawnBase> BattleshipPawnC
 	flagship->ScienceOfficer->CrewName = "Mar-Tun";
 	flagship->ScienceOfficer->CrewRace = ERace::Malderian;
 	flagship->ScienceOfficer->IsMale = true;
+	flagship->ScienceOfficer->Portrait = LoadObject<UTexture2D>(crew1, TEXT("/Game/Textures/Crew/CrewPortraitMalderianMale1"), NULL, LOAD_None, NULL);
 	flagship->ScienceOfficer->Leadership = 0;
 	flagship->ScienceOfficer->Navigation = 0;
 	flagship->ScienceOfficer->Gunnery = 0;
@@ -517,6 +571,7 @@ void UCharacterSheet::SetDefaultFleet(TSubclassOf<AShipPawnBase> BattleshipPawnC
 	flagship->Engineer->CrewName = "Sheldon Matthaus";
 	flagship->Engineer->CrewRace = ERace::Human;
 	flagship->Engineer->IsMale = true;
+	flagship->Engineer->Portrait = LoadObject<UTexture2D>(crew1, TEXT("/Game/Textures/Crew/CrewPortraitHumanMale2"), NULL, LOAD_None, NULL);
 	flagship->Engineer->Leadership = 0;
 	flagship->Engineer->Navigation = 0;
 	flagship->Engineer->Gunnery = 0;
@@ -539,9 +594,10 @@ void UCharacterSheet::SetDefaultFleet(TSubclassOf<AShipPawnBase> BattleshipPawnC
 	destroyer->Engineer = NewObject<UCrew>();
 	destroyer->CAG = NewObject<UCrew>();
 
-	destroyer->Captain->CrewName = "Ixa Rkeok";
+	destroyer->Captain->CrewName = "Ard Kentar";
 	destroyer->Captain->CrewRace = ERace::Malderian;
 	destroyer->Captain->IsMale = false;
+	destroyer->Captain->Portrait = LoadObject<UTexture2D>(crew1, TEXT("/Game/Textures/Crew/CrewPortraitMalderianMale1"), NULL, LOAD_None, NULL);
 	destroyer->Captain->Leadership = 0;
 	destroyer->Captain->Navigation = 0;
 	destroyer->Captain->Gunnery = 0;
@@ -553,9 +609,10 @@ void UCharacterSheet::SetDefaultFleet(TSubclassOf<AShipPawnBase> BattleshipPawnC
 	destroyer->Captain->ShieldRepair = -1;
 
 
-	destroyer->NavigationOfficer->CrewName = "Edvin Tjaard";
+	destroyer->NavigationOfficer->CrewName = "Kevin Sawall";
 	destroyer->NavigationOfficer->CrewRace = ERace::Human;
 	destroyer->NavigationOfficer->IsMale = true;
+	destroyer->NavigationOfficer->Portrait = LoadObject<UTexture2D>(crew1, TEXT("/Game/Textures/Crew/CrewPortraitHumanMale2"), NULL, LOAD_None, NULL);
 	destroyer->NavigationOfficer->Leadership = 0;
 	destroyer->NavigationOfficer->Navigation = 2;
 	destroyer->NavigationOfficer->Gunnery = 0;
@@ -567,9 +624,10 @@ void UCharacterSheet::SetDefaultFleet(TSubclassOf<AShipPawnBase> BattleshipPawnC
 	destroyer->NavigationOfficer->ShieldRepair = -1;
 
 
-	destroyer->TacticsOfficer->CrewName = "Tu'Vol Strogonar";
+	destroyer->TacticsOfficer->CrewName = "Xiohe Inwei";
 	destroyer->TacticsOfficer->CrewRace = ERace::Krum;
-	destroyer->TacticsOfficer->IsMale = true;
+	destroyer->TacticsOfficer->IsMale = false;
+	destroyer->TacticsOfficer->Portrait = LoadObject<UTexture2D>(crew1, TEXT("/Game/Textures/Crew/CrewPortraitKrumMale1"), NULL, LOAD_None, NULL);
 	destroyer->TacticsOfficer->Leadership = 0;
 	destroyer->TacticsOfficer->Navigation = 0;
 	destroyer->TacticsOfficer->Gunnery = 0;
@@ -581,9 +639,10 @@ void UCharacterSheet::SetDefaultFleet(TSubclassOf<AShipPawnBase> BattleshipPawnC
 	destroyer->TacticsOfficer->ShieldRepair = -1;
 
 
-	destroyer->ScienceOfficer->CrewName = "Mar-Tun";
+	destroyer->ScienceOfficer->CrewName = "Io Ra";
 	destroyer->ScienceOfficer->CrewRace = ERace::Malderian;
 	destroyer->ScienceOfficer->IsMale = true;
+	destroyer->ScienceOfficer->Portrait = LoadObject<UTexture2D>(crew1, TEXT("/Game/Textures/Crew/CrewPortraitMalderianMale1"), NULL, LOAD_None, NULL);
 	destroyer->ScienceOfficer->Leadership = 0;
 	destroyer->ScienceOfficer->Navigation = 0;
 	destroyer->ScienceOfficer->Gunnery = 0;
@@ -595,9 +654,10 @@ void UCharacterSheet::SetDefaultFleet(TSubclassOf<AShipPawnBase> BattleshipPawnC
 	destroyer->ScienceOfficer->ShieldRepair = -1;
 
 
-	destroyer->Engineer->CrewName = "Sheldon Matthaus";
+	destroyer->Engineer->CrewName = "Sam Samson";
 	destroyer->Engineer->CrewRace = ERace::Human;
-	destroyer->Engineer->IsMale = true;
+	destroyer->Engineer->IsMale = false;
+	destroyer->Engineer->Portrait = LoadObject<UTexture2D>(crew1, TEXT("/Game/Textures/Crew/CrewPortraitHumanFemale1"), NULL, LOAD_None, NULL);
 	destroyer->Engineer->Leadership = 0;
 	destroyer->Engineer->Navigation = 0;
 	destroyer->Engineer->Gunnery = 0;

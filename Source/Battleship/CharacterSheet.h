@@ -3,6 +3,7 @@
 
 #include "Object.h"
 #include "Race.h"
+#include "Crew.h"
 #include "CharacterSheet.generated.h"
 
 UENUM(BlueprintType)
@@ -126,5 +127,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue Choices")
 	bool AskedAboutEdward = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crew")
+	TArray<UCrew*> UnusedCrew;
 
 };
