@@ -26,6 +26,53 @@ void ASpaceCombatPlayerController::Tick(float DeltaTime)
 	}
 }
 
+bool ASpaceCombatPlayerController::LaunchFighters(TSubclassOf<AShipPawnBase> FighterBlueprint)
+{
+	ASpaceCombatGameMode* GameMode = Cast<ASpaceCombatGameMode>(GetWorld()->GetAuthGameMode());
+
+	if (GameMode)
+	{
+		AShipPawnBase* SelectedShip = GameMode->SelectedShip;
+
+		if (SelectedShip)
+		{
+			float Distance = 256.0f;
+			if (SelectedShip->Type == EType::Medium)
+			{
+				Distance = Distance * 2;
+			}
+			else
+			{
+				Distance = Distance * 4;
+			}
+
+			//TODO check we can spawn fighters by location too
+			if (SelectedShip->Fighters)
+			{
+				FVector Location = SelectedShip->GetActorLocation();
+
+				UWorld* World = GetWorld();
+
+				AShipPawnBase* Fighter = World->SpawnActor<AShipPawnBase>(FighterBlueprint);
+
+				if (Fighter)
+				{
+					FVector NewLocation = Location + FVector(Distance, 0.0f, 0.0f);
+
+					Fighter->SetActorLocation(NewLocation);
+
+					GameMode->ShipArray.Add(Fighter);
+
+					//TODO Spawn Fighter Widget
+
+					return true;
+				}
+			}
+		}
+	}
+
+	return false;
+}
 
 bool ASpaceCombatPlayerController::LeftTurn()
 {
