@@ -46,12 +46,28 @@ bool ASpaceCombatPlayerController::LaunchFighters(TSubclassOf<AShipPawnBase> Fig
 				Distance = Distance * 4;
 			}
 
+			UWorld* World = GetWorld();
+
+			TArray<FHitResult> HitResults;
+			bool Hit = World->LineTraceMultiByChannel(HitResults, SelectedShip->GetActorLocation() * 256.0f, SelectedShip->GetActorForwardVector() * Distance, ECollisionChannel::ECC_Camera);
+
+			if (Hit)
+			{
+				for (FHitResult HitResult : HitResults)
+				{
+					ATile* IsTile = Cast<ATile>(HitResult.GetActor());
+
+					if (IsTile)
+					{
+						Hit = false;
+					}
+				}
+			}
+	
 			//TODO check we can spawn fighters by location too
-			if (SelectedShip->Fighters)
+			if (!Hit && SelectedShip->Fighters)
 			{
 				FVector Location = SelectedShip->GetActorLocation();
-
-				UWorld* World = GetWorld();
 
 				AShipPawnBase* Fighter = World->SpawnActor<AShipPawnBase>(FighterBlueprint);
 
@@ -62,8 +78,6 @@ bool ASpaceCombatPlayerController::LaunchFighters(TSubclassOf<AShipPawnBase> Fig
 					Fighter->SetActorLocation(NewLocation);
 
 					GameMode->ShipArray.Add(Fighter);
-
-					//TODO Spawn Fighter Widget
 
 					return true;
 				}
