@@ -73,9 +73,17 @@ bool ASpaceCombatPlayerController::LaunchFighters(TSubclassOf<AShipPawnBase> Fig
 
 				if (Fighter)
 				{
-					FVector NewLocation = Location + FVector(Distance, 0.0f, 0.0f);
+					FVector NewLocation = Location + (SelectedShip->GetActorForwardVector() * Distance);
 
 					Fighter->SetActorLocation(NewLocation);
+					Fighter->SetActorRotation(SelectedShip->GetActorRotation());
+			
+					Fighter->CAG = GameMode->GenerateRandomCrewMember();
+					Fighter->Engineer = GameMode->GenerateRandomCrewMember();
+					Fighter->Captain = GameMode->GenerateRandomCrewMember();
+					Fighter->NavigationOfficer = GameMode->GenerateRandomCrewMember();
+					Fighter->ScienceOfficer = GameMode->GenerateRandomCrewMember();
+					Fighter->TacticsOfficer = GameMode->GenerateRandomCrewMember();
 
 					GameMode->ShipArray.Add(Fighter);
 
