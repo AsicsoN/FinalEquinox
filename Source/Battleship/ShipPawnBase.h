@@ -120,6 +120,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "System Stats")
 	int32 Missiles = -1;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "System Stats")
+	int32 Fighters = -1;
+
 	//
 	// Crew Objects
 	//

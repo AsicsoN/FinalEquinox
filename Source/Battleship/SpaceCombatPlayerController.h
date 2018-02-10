@@ -38,6 +38,9 @@ public:
 	* Gameplay Functions
 	*/
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
+	bool LaunchFighters(TSubclassOf<AShipPawnBase> FighterBlueprint);
+
+	UFUNCTION(BlueprintCallable, Category = "Gameplay")
 	bool LeftTurn();
 
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")

@@ -26,6 +26,75 @@ void ASpaceCombatPlayerController::Tick(float DeltaTime)
 	}
 }
 
+bool ASpaceCombatPlayerController::LaunchFighters(TSubclassOf<AShipPawnBase> FighterBlueprint)
+{
+	ASpaceCombatGameMode* GameMode = Cast<ASpaceCombatGameMode>(GetWorld()->GetAuthGameMode());
+
+	if (GameMode)
+	{
+		AShipPawnBase* SelectedShip = GameMode->SelectedShip;
+
+		if (SelectedShip)
+		{
+			float Distance = 256.0f;
+			if (SelectedShip->Type == EType::Medium)
+			{
+				Distance = Distance * 2;
+			}
+			else
+			{
+				Distance = Distance * 4;
+			}
+
+			UWorld* World = GetWorld();
+
+			TArray<FHitResult> HitResults;
+			bool Hit = World->LineTraceMultiByChannel(HitResults, SelectedShip->GetActorLocation() * 256.0f, SelectedShip->GetActorForwardVector() * Distance, ECollisionChannel::ECC_Camera);
+
+			if (Hit)
+			{
+				for (FHitResult HitResult : HitResults)
+				{
+					ATile* IsTile = Cast<ATile>(HitResult.GetActor());
+
+					if (IsTile)
+					{
+						Hit = false;
+					}
+				}
+			}
+	
+			//TODO check we can spawn fighters by location too
+			if (!Hit && SelectedShip->Fighters)
+			{
+				FVector Location = SelectedShip->GetActorLocation();
+
+				AShipPawnBase* Fighter = World->SpawnActor<AShipPawnBase>(FighterBlueprint);
+
+				if (Fighter)
+				{
+					FVector NewLocation = Location + (SelectedShip->GetActorForwardVector() * Distance);
+
+					Fighter->SetActorLocation(NewLocation);
+					Fighter->SetActorRotation(SelectedShip->GetActorRotation());
+			
+					Fighter->CAG = GameMode->GenerateRandomCrewMember();
+					Fighter->Engineer = GameMode->GenerateRandomCrewMember();
+					Fighter->Captain = GameMode->GenerateRandomCrewMember();
+					Fighter->NavigationOfficer = GameMode->GenerateRandomCrewMember();
+					Fighter->ScienceOfficer = GameMode->GenerateRandomCrewMember();
+					Fighter->TacticsOfficer = GameMode->GenerateRandomCrewMember();
+
+					GameMode->ShipArray.Add(Fighter);
+
+					return true;
+				}
+			}
+		}
+	}
+
+	return false;
+}
 
 bool ASpaceCombatPlayerController::LeftTurn()
 {
