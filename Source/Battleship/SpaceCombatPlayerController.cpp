@@ -46,24 +46,46 @@ bool ASpaceCombatPlayerController::LaunchFighters(TSubclassOf<AShipPawnBase> Fig
 				Distance = Distance * 4;
 			}
 
+			UWorld* World = GetWorld();
+
+			TArray<FHitResult> HitResults;
+			bool Hit = World->LineTraceMultiByChannel(HitResults, SelectedShip->GetActorLocation() * 256.0f, SelectedShip->GetActorForwardVector() * Distance, ECollisionChannel::ECC_Camera);
+
+			if (Hit)
+			{
+				for (FHitResult HitResult : HitResults)
+				{
+					ATile* IsTile = Cast<ATile>(HitResult.GetActor());
+
+					if (IsTile)
+					{
+						Hit = false;
+					}
+				}
+			}
+	
 			//TODO check we can spawn fighters by location too
-			if (SelectedShip->Fighters)
+			if (!Hit && SelectedShip->Fighters)
 			{
 				FVector Location = SelectedShip->GetActorLocation();
-
-				UWorld* World = GetWorld();
 
 				AShipPawnBase* Fighter = World->SpawnActor<AShipPawnBase>(FighterBlueprint);
 
 				if (Fighter)
 				{
-					FVector NewLocation = Location + FVector(Distance, 0.0f, 0.0f);
+					FVector NewLocation = Location + (SelectedShip->GetActorForwardVector() * Distance);
 
 					Fighter->SetActorLocation(NewLocation);
+					Fighter->SetActorRotation(SelectedShip->GetActorRotation());
+			
+					Fighter->CAG = GameMode->GenerateRandomCrewMember();
+					Fighter->Engineer = GameMode->GenerateRandomCrewMember();
+					Fighter->Captain = GameMode->GenerateRandomCrewMember();
+					Fighter->NavigationOfficer = GameMode->GenerateRandomCrewMember();
+					Fighter->ScienceOfficer = GameMode->GenerateRandomCrewMember();
+					Fighter->TacticsOfficer = GameMode->GenerateRandomCrewMember();
 
 					GameMode->ShipArray.Add(Fighter);
-
-					//TODO Spawn Fighter Widget
 
 					return true;
 				}
