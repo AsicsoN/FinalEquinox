@@ -41,6 +41,9 @@ public:
 	bool LaunchFighters(TSubclassOf<AShipPawnBase> FighterBlueprint);
 
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
+	bool CollectFighter();
+
+	UFUNCTION(BlueprintCallable, Category = "Gameplay")
 	bool LeftTurn();
 
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
