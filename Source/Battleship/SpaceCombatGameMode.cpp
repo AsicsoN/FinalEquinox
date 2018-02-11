@@ -31,16 +31,6 @@ void ASpaceCombatGameMode::BeginPlay()
 
 	for (TActorIterator<AShipPawnBase> ActorItr(GetWorld()); ActorItr; ++ActorItr)
 	{
-		if (ActorItr->Faction == EFaction::Enemy1)
-		{
-			ActorItr->CAG = GenerateRandomCrewMember();
-			ActorItr->Engineer = GenerateRandomCrewMember();
-			ActorItr->Captain = GenerateRandomCrewMember();
-			ActorItr->NavigationOfficer = GenerateRandomCrewMember();
-			ActorItr->ScienceOfficer = GenerateRandomCrewMember();
-			ActorItr->TacticsOfficer = GenerateRandomCrewMember();
-		}
-
 		ShipArray.Add(*ActorItr);
 	}
 
@@ -148,7 +138,7 @@ float ASpaceCombatGameMode::CalculateHitChance(AShipPawnBase* TargetShip)
 	float SpeedDifference = 5 * (SelectedShip->Speed - TargetShip->Speed);
 
 	// Selected Ships Gunnery Modifier
-	float GunneryDifference = 7 * (SelectedShip->TacticsOfficer->Gunnery);
+	float GunneryDifference = 7 * (SelectedShip->Gunnery);
 
 	// Target Ship Navigation Modifier
 	float NavigationDifference = 7 * (TargetShip->Navigation);
@@ -233,8 +223,7 @@ void ASpaceCombatGameMode::RepairShip(AShipPawnBase* Ship, FString Type)
 
 	if (Type == "Hull")
 	{
-		Engineering += (Ship->Engineer->Engineering / 100.0f) * 80.0f;
-		Engineering += (Ship->Captain->Engineering / 100.0f) * 20.0f;
+		Engineering += Ship->HullRepair;
 
 		maxRepairAmount = Ship->HitPoints - Ship->CurrentHitPoints;
 
@@ -242,7 +231,6 @@ void ASpaceCombatGameMode::RepairShip(AShipPawnBase* Ship, FString Type)
 
 		repairAmount = FMath::Clamp(FMath::CeilToInt(Engineering) * Chance, 0, maxRepairAmount);
 
-		UE_LOG(LogTemp, Warning, TEXT("Engineer: %d  Captain: %d"), Ship->Engineer->Engineering, Ship->Captain->Engineering);
 		UE_LOG(LogTemp, Warning, TEXT("Engineering: %f  RepairAmount: %d"), Engineering, repairAmount);
 
 		if (Chance == 10)
@@ -252,9 +240,7 @@ void ASpaceCombatGameMode::RepairShip(AShipPawnBase* Ship, FString Type)
 	}
 	else if (Type == "Shield")
 	{
-		Engineering += (Ship->ScienceOfficer->Engineering / 100) * 50;
-		Engineering += (Ship->Engineer->Engineering / 100) * 40;
-		Engineering += (Ship->Captain->Engineering / 100) * 10;
+		Engineering += Ship->ShieldRepair;
 
 		maxRepairAmount = Ship->ShieldHitPoints - Ship->CurrentShieldHitPoints;
 
@@ -269,9 +255,7 @@ void ASpaceCombatGameMode::RepairShip(AShipPawnBase* Ship, FString Type)
 	}
 	else
 	{
-		Engineering += (Ship->Engineer->Engineering / 100) * 60;
-		Engineering += (Ship->ScienceOfficer->Engineering / 100) * 30;
-		Engineering += (Ship->Captain->Engineering / 100) * 10;
+		Engineering += Ship->SubsystemRepair;
 
 		// TODO add once subsystems have been added 
 		// d3

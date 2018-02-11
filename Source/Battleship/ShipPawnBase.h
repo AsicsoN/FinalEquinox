@@ -123,29 +123,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "System Stats")
 	int32 Fighters = -1;
 
-	//
-	// Crew Objects
-	//
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crew")
-	UCrew* Captain = nullptr;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crew")
-	UCrew* NavigationOfficer = nullptr;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crew")
-	UCrew* TacticsOfficer = nullptr;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crew")
-	UCrew* ScienceOfficer = nullptr;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crew")
-	UCrew* Engineer = nullptr;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crew")
-	UCrew* CAG = nullptr;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crew")
-	TArray<UCrew*> Passengers;
+	
 
 	//
 	// Rotation Variables
@@ -183,7 +161,7 @@ public:
 	bool ShowThisShipInactive();
 
 	UFUNCTION(BlueprintCallable, Category = "Instantiation")
-	void Instantiate();
+	virtual void Instantiate();
 
 	UFUNCTION(BlueprintCallable, Category = "Game State")
 	bool IsTurnOver();

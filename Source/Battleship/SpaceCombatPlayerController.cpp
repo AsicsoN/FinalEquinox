@@ -77,13 +77,6 @@ bool ASpaceCombatPlayerController::LaunchFighters(TSubclassOf<AShipPawnBase> Fig
 
 					Fighter->SetActorLocation(NewLocation);
 					Fighter->SetActorRotation(SelectedShip->GetActorRotation());
-			
-					Fighter->CAG = GameMode->GenerateRandomCrewMember();
-					Fighter->Engineer = GameMode->GenerateRandomCrewMember();
-					Fighter->Captain = GameMode->GenerateRandomCrewMember();
-					Fighter->NavigationOfficer = GameMode->GenerateRandomCrewMember();
-					Fighter->ScienceOfficer = GameMode->GenerateRandomCrewMember();
-					Fighter->TacticsOfficer = GameMode->GenerateRandomCrewMember();
 
 					GameMode->ShipArray.Add(Fighter);
 
