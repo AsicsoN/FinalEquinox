@@ -69,6 +69,21 @@ public:
 	float Navigation = 0.0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship Stats")
+	float Gunnery = 0.0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship Stats")
+	float Science = 0.0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship Stats")
+	float ShieldRepair = 0.0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship Stats")
+	float HullRepair = 0.0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship Stats")
+	float SubsystemRepair = 0.0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship Stats")
 	int32 FighterSkill = 0;
 
 
