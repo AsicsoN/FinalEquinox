@@ -36,6 +36,12 @@ bool ASpaceCombatPlayerController::LaunchFighters(TSubclassOf<AShipPawnBase> Fig
 
 		if (SelectedShip)
 		{
+			// Check ship has required AP to launch fighter
+			if (SelectedShip->CurrentActionPoints < 8)
+			{
+				return false;
+			}
+
 			float Distance = 256.0f;
 			if (SelectedShip->Type == EType::Medium)
 			{
@@ -64,7 +70,6 @@ bool ASpaceCombatPlayerController::LaunchFighters(TSubclassOf<AShipPawnBase> Fig
 				}
 			}
 	
-			//TODO check we can spawn fighters by location too
 			if (!Hit && SelectedShip->Fighters)
 			{
 				FVector Location = SelectedShip->GetActorLocation();
