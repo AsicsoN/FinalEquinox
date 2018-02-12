@@ -115,6 +115,7 @@ public:
 	// Sets default values for this actor's properties
 	AAbility();
 
+	UFUNCTION(BlueprintCallable)
 	void Execute(AShipPawnBase* TargetShip = nullptr);
 
 	void TickAbility();
