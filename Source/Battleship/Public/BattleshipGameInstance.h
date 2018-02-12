@@ -5,6 +5,8 @@
 #include "CharacterSheet.h"
 #include "BattleshipGameInstance.generated.h"
 
+class UAbilityLibrary;
+
 /**
  * 
  */
@@ -16,7 +18,9 @@ class BATTLESHIP_API UBattleshipGameInstance : public UGameInstance
 public:
 	UBattleshipGameInstance(const FObjectInitializer& ObjectInitializer);
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = CharacterSheet)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CharacterSheet")
 	UCharacterSheet* CharacterSheet;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AbilityLibrary")
+	UAbilityLibrary* AbilityLibrary;
 };

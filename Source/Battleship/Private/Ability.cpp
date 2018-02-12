@@ -103,7 +103,7 @@ void AAbility::AoeAbility()
 			TArray<AShipPawnBase*> AffectedShips;
 			for (auto Ship : GameMode->ShipArray)
 			{
-				if (Type == EAbilityType::BUFF)
+				if (Info.Type == EAbilityType::BUFF)
 				{
 					if (SelectedShip->Faction != Ship->Faction)
 					{
@@ -153,5 +153,5 @@ void AAbility::SelfAbility()
 
 void AAbility::TickAbility()
 {
-	NumberTurns--;
+	Info.NumberTurns--;
 };

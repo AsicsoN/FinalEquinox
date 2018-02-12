@@ -2,6 +2,7 @@
 
 #include "GameFramework/Character.h"
 #include "Crew.h"
+#include "Ability.h"
 #include "ShipPawnBase.generated.h"
 
 UENUM(BlueprintType)
@@ -158,6 +159,18 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	FRotator NewRotation;
+
+	//
+	// Abilities and Effects
+	//
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Abilities")
+	TArray<FAbilityStruct> Abilities;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Abilities")
+	TSet<AAbility*> Buffs;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Abilities")
+	TSet<AAbility*> Debuffs;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

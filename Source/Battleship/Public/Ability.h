@@ -61,6 +61,9 @@ struct BATTLESHIP_API FAbilityStruct
 	FString Name;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Description")
+	EAbilityType Type;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Description")
 	FString Description;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Description")
@@ -89,6 +92,9 @@ struct BATTLESHIP_API FAbilityStruct
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mechanic")
 	TMap<EAbilitySkill, int> SkillRequirements;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mechanic")
+	int NumberTurns = 1;
 
 	/***
 	* Ability Variables
@@ -126,11 +132,5 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Description")
-	EAbilityType Type;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Description")
 	FAbilityStruct Info;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mechanic")
-	int NumberTurns = 1;
 };
