@@ -109,13 +109,17 @@ public:
 	// Sets default values for this actor's properties
 	AAbility();
 
+	void Execute(AShipPawnBase* TargetShip = nullptr);
+
 	void TickAbility();
 	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	void MaybeCleanup();
+	void TargettedAbility(AShipPawnBase* TargetShip);
+	void AoeAbility();
+	void SelfAbility();
 
 public:	
 	// Called every frame
