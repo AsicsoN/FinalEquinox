@@ -36,29 +36,33 @@ void AAbility::Tick(float DeltaTime)
 
 void AAbility::Execute(AShipPawnBase* TargetShip)
 {
-	ASpaceCombatGameMode* GameMode = Cast<ASpaceCombatGameMode>(GetWorld()->GetAuthGameMode());
+	AShipPawnBase* SelectedShip = Cast<AShipPawnBase>(Instigator);
 
-	if (GameMode)
+	// Check we have the Action Points
+	if (SelectedShip->CurrentActionPoints >= Info.ActionCost)
 	{
-		AShipPawnBase* SelectedShip = GameMode->SelectedShip;
-
-		// Check we have the Action Points
-		if (SelectedShip->CurrentActionPoints >= Info.ActionCost)
+		if (Info.bIsTargeted && TargetShip)
 		{
-			if (TargetShip)
-			{
-				TargettedAbility(TargetShip);
-			}
-			else if (Info.AffectedDistance > 0)
-			{
-				AoeAbility();
-			}
-			else
-			{
-				SelfAbility();
-			}
+			TargettedAbility(TargetShip);
+		}
+		else if (Info.bAffectsAll || Info.AffectedDistance > 0)
+		{
+			AoeAbility();
+		}
+		else
+		{
+			SelfAbility();
+		}
 
-			SelectedShip->CurrentActionPoints -= Info.ActionCost;
+		SelectedShip->CurrentActionPoints -= Info.ActionCost;
+
+		// Tick Ability
+		TickAbility();
+
+		// If no turns, immeadiately destroy i.e. instant buff
+		if (!Info.NumberTurns)
+		{
+			Destroy();
 		}
 	}
 }
@@ -66,23 +70,16 @@ void AAbility::Execute(AShipPawnBase* TargetShip)
 void AAbility::TargettedAbility(AShipPawnBase* TargetShip)
 {
 	// TODO Extract and make GenerateBonus function
-	float Bonus = 0.0f;
-
-	if (Info.BuffType == EBuffType::SKILL)
+	if (Info.Type == EAbilityType::BUFF)
 	{
-		Bonus = Info.Power;
+		BoostStats(TargetShip);
+		TargetShip->Buffs.Add(this);
 	}
 	else
 	{
-
+		ReduceStats(TargetShip);
+		TargetShip->Debuffs.Add(this);
 	}
-
-	// TODO Apply Bonus to Target Ship
-
-	// Remove Turn from Ability
-	TickAbility();
-
-	// Add to Target Queue or Destroy
 }
 
 void AAbility::AoeAbility()
@@ -91,14 +88,14 @@ void AAbility::AoeAbility()
 
 	if (GameMode)
 	{
-		AShipPawnBase* SelectedShip = GameMode->SelectedShip;
+		AShipPawnBase* SelectedShip = Cast<AShipPawnBase>(Instigator);
 
 		if (SelectedShip)
 		{
 			float Distance = 256.0f * Info.AffectedDistance;
 
 			// Find Affected Ships
-			for (auto Ship : GameMode->ShipArray)
+			for (AShipPawnBase* Ship : GameMode->ShipArray)
 			{
 				if (Info.Type == EAbilityType::BUFF)
 				{
@@ -115,40 +112,44 @@ void AAbility::AoeAbility()
 					}
 				}
 
-				if (FVector::Dist(SelectedShip->GetActorLocation(), Ship->GetActorLocation()) <= Distance)
+				if (Info.bAffectsAll || FVector::Dist(SelectedShip->GetActorLocation(), Ship->GetActorLocation()) <= Distance)
 				{
 					AffectedShips.Add(Ship);
 				}
 			}
 
-			// TODO Apply Bonus to each Target Ship
-
-			// TODO Remove Turn from Ability
-			TickAbility();
-
-			// TODO Add to Targets' Queues or Destroy
-
+			for (AShipPawnBase* Ship : AffectedShips)
+			{
+				if (Info.Type == EAbilityType::BUFF)
+				{
+					BoostStats(Ship);
+					Ship->Buffs.Add(this);
+				}
+				else
+				{
+					ReduceStats(Ship);
+					Ship->Debuffs.Add(this);
+				}
+			}
 		}
 	}	
 }
 
 void AAbility::SelfAbility()
 {
-	ASpaceCombatGameMode* GameMode = Cast<ASpaceCombatGameMode>(GetWorld()->GetAuthGameMode());
+	AShipPawnBase* SelectedShip = Cast<AShipPawnBase>(Instigator);
 
-	if (GameMode)
+	if (SelectedShip)
 	{
-		AShipPawnBase* SelectedShip = GameMode->SelectedShip;
+		// Apply Ability
+		BoostStats(SelectedShip);
 
-		if (SelectedShip)
+		// Remove Turn Point
+		TickAbility();
+
+		// Add Ability to Buffs
+		if (Info.NumberTurns)
 		{
-			// Apply Ability
-			BoostStats(SelectedShip);
-
-			// Remove Turn Point
-			TickAbility();
-
-			// Add Ability to Buffs
 			SelectedShip->Buffs.Add(this);
 		}
 	}
@@ -161,6 +162,8 @@ void AAbility::TickAbility()
 
 void AAbility::BoostStats(AShipPawnBase* Ship)
 {
+	float AffectedValue;
+
 	if (Info.BuffType == EBuffType::SKILL)
 	{
 		float Power = Info.Power - 1.0f;
@@ -212,10 +215,14 @@ void AAbility::BoostStats(AShipPawnBase* Ship)
 				break;
 		}
 	}
+
+	AffectedValues.Add(Ship, AffectedValue);
 }
 
 void AAbility::ReduceStats(AShipPawnBase* Ship)
 {
+	float AffectedValue;
+
 	if (Info.BuffType == EBuffType::SKILL)
 	{
 		float Power = Info.Power - 1.0f;
@@ -267,10 +274,20 @@ void AAbility::ReduceStats(AShipPawnBase* Ship)
 				break;
 		}
 	}
+
+	AffectedValues.Add(Ship, AffectedValue);
 }
 
 void AAbility::Cleanup(AShipPawnBase* Ship)
 {
+	// If no value stored for this ship in ability, ignore - should never happen
+	if (!AffectedValues.Contains(Ship))
+	{
+		return;
+	}
+
+	float AffectedValue = AffectedValues[Ship];
+
 	// If it is a Buff, we need to reduce instead of buff
 	if (Info.Type == EAbilityType::BUFF)
 	{
@@ -319,5 +336,13 @@ void AAbility::Cleanup(AShipPawnBase* Ship)
 				Ship->AttackBonus += Info.Power;
 				break;
 		}
+	}
+
+	// Remove Ship From Ability
+	AffectedShips.Remove(Ship);
+
+	if (!AffectedShips.Num())
+	{
+		Destroy();
 	}
 }

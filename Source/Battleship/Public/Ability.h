@@ -98,6 +98,9 @@ struct BATTLESHIP_API FAbilityStruct
 	bool bIsTargeted;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mechanic")
+	bool bAffectsAll;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mechanic")
 	int NumberTurns = 1;
 
 	/***
@@ -142,7 +145,7 @@ public:
 	FAbilityStruct Info;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Description")
-	float AffectedValue;
+	TMap<AShipPawnBase*, float> AffectedValues;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Variable")
 	TSet<AShipPawnBase*> AffectedShips;

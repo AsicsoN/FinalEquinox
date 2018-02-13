@@ -195,6 +195,13 @@ void AShipPawnBase::CheckExpiryBuffs()
 		{
 			Ability->Cleanup(this);
 		}
+		else
+		{
+			if (Ability->Instigator == this)
+			{
+				Ability->TickAbility();
+			}
+		}
 	}
 
 	// Check if any buffs have expired
@@ -203,6 +210,13 @@ void AShipPawnBase::CheckExpiryBuffs()
 		if (!Ability->Info.NumberTurns)
 		{
 			Ability->Cleanup(this);
+		}
+		else
+		{
+			if (Ability->Instigator == this)
+			{
+				Ability->TickAbility();
+			}
 		}
 	}
 }
