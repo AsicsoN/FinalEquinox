@@ -185,3 +185,24 @@ bool AShipPawnBase::IsTurnOver()
 	
 	return ForceTurnEnd;
 }
+
+void AShipPawnBase::CheckExpiryBuffs()
+{
+	// Check if any buffs have expired
+	for (auto Ability : Buffs)
+	{
+		if (!Ability->Info.NumberTurns)
+		{
+			Ability->Cleanup(this);
+		}
+	}
+
+	// Check if any buffs have expired
+	for (auto Ability : Debuffs)
+	{
+		if (!Ability->Info.NumberTurns)
+		{
+			Ability->Cleanup(this);
+		}
+	}
+}

@@ -172,6 +172,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Abilities")
 	TSet<AAbility*> Debuffs;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Abilities")
+	float AttackBonus;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Abilities")
+	float HitBonus;
+
+	UFUNCTION(BlueprintCallable)
+	void CheckExpiryBuffs();
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	

@@ -35,6 +35,7 @@ enum class EAbilitySkill : uint8
 	SCIENCE UMETA(DisplayName = "Science"),
 	ENGINEERING UMETA(DisplayName = "Engineering"),
 	LEADERSHIP UMETA(DisplayName = "Leadership"),
+	HIT UMETA(DisplayName = "Hit Chance"),
 };
 
 UENUM(BlueprintType)
@@ -94,14 +95,14 @@ struct BATTLESHIP_API FAbilityStruct
 	TMap<EAbilitySkill, int> SkillRequirements;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mechanic")
+	bool bIsTargeted;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mechanic")
 	int NumberTurns = 1;
 
 	/***
 	* Ability Variables
 	*/
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Variable")
-	AShipPawnBase* AffectedShip = nullptr;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variable")
 	int AffectedDistance = 0;
 };
@@ -120,6 +121,8 @@ public:
 
 	void TickAbility();
 	
+	void Cleanup(AShipPawnBase* Ship);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -128,10 +131,19 @@ protected:
 	void AoeAbility();
 	void SelfAbility();
 
+	void BoostStats(AShipPawnBase* Ship);
+	void ReduceStats(AShipPawnBase* Ship);
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Description")
 	FAbilityStruct Info;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Description")
+	float AffectedValue;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Variable")
+	TSet<AShipPawnBase*> AffectedShips;
 };

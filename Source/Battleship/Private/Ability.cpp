@@ -42,25 +42,23 @@ void AAbility::Execute(AShipPawnBase* TargetShip)
 	{
 		AShipPawnBase* SelectedShip = GameMode->SelectedShip;
 
-		// Make sure Current Ship was the instigator 
-		if (SelectedShip && Instigator == SelectedShip)
+		// Check we have the Action Points
+		if (SelectedShip->CurrentActionPoints >= Info.ActionCost)
 		{
-			// Check we have the Action Points
-			if (SelectedShip->CurrentActionPoints >= Info.ActionCost)
+			if (TargetShip)
 			{
-				if (TargetShip)
-				{
-					TargettedAbility(TargetShip);
-				}
-				else if (Info.AffectedDistance > 0)
-				{
-					AoeAbility();
-				}
-				else
-				{
-					SelfAbility();
-				}
+				TargettedAbility(TargetShip);
 			}
+			else if (Info.AffectedDistance > 0)
+			{
+				AoeAbility();
+			}
+			else
+			{
+				SelfAbility();
+			}
+
+			SelectedShip->CurrentActionPoints -= Info.ActionCost;
 		}
 	}
 }
@@ -100,7 +98,6 @@ void AAbility::AoeAbility()
 			float Distance = 256.0f * Info.AffectedDistance;
 
 			// Find Affected Ships
-			TArray<AShipPawnBase*> AffectedShips;
 			for (auto Ship : GameMode->ShipArray)
 			{
 				if (Info.Type == EAbilityType::BUFF)
@@ -127,6 +124,7 @@ void AAbility::AoeAbility()
 			// TODO Apply Bonus to each Target Ship
 
 			// TODO Remove Turn from Ability
+			TickAbility();
 
 			// TODO Add to Targets' Queues or Destroy
 
@@ -144,9 +142,14 @@ void AAbility::SelfAbility()
 
 		if (SelectedShip)
 		{
-			// TODO Add Boost to Stats
+			// Apply Ability
+			BoostStats(SelectedShip);
 
-			// TODO Add ability to TSet if Turn > 1
+			// Remove Turn Point
+			TickAbility();
+
+			// Add Ability to Buffs
+			SelectedShip->Buffs.Add(this);
 		}
 	}
 }
@@ -154,4 +157,167 @@ void AAbility::SelfAbility()
 void AAbility::TickAbility()
 {
 	Info.NumberTurns--;
-};
+}
+
+void AAbility::BoostStats(AShipPawnBase* Ship)
+{
+	if (Info.BuffType == EBuffType::SKILL)
+	{
+		float Power = Info.Power - 1.0f;
+		switch (Info.AffectedSkill)
+		{
+			case EAbilitySkill::NAVIGATION:
+				AffectedValue = Ship->Navigation * Power;
+				Ship->Navigation += AffectedValue;
+				break;
+			case EAbilitySkill::ENGINEERING:
+				AffectedValue = Ship->Engineer->Engineering * Power;
+				Ship->Engineer->Engineering += AffectedValue;
+				break;
+			case EAbilitySkill::LEADERSHIP:
+				AffectedValue = Ship->Leadership * Info.Power;
+				Ship->Leadership += AffectedValue;
+				break;
+			case EAbilitySkill::TACTICS:
+				AffectedValue = Ship->Tactics * Power;
+				Ship->Tactics += AffectedValue;
+				break;
+			case EAbilitySkill::SCIENCE:
+				AffectedValue = Ship->Science * Power;
+				Ship->Science += AffectedValue;
+				break;
+			case EAbilitySkill::HIT:
+				AffectedValue = Power;
+				Ship->HitBonus += AffectedValue;
+				break;
+		}
+	}
+	else
+	{
+		AffectedValue = Info.Power;
+
+		switch (Info.AffectedStat)
+		{
+			case EAbilityStat::HEALTH:
+				Ship->CurrentHitPoints += Info.Power;
+				break;
+			case EAbilityStat::SHIELDS:
+				Ship->CurrentShieldHitPoints += Info.Power;
+				break;
+			case EAbilityStat::SPEED:
+				Ship->Speed += Info.Power;
+				break;
+			case EAbilityStat::ATTACK:
+				Ship->AttackBonus += Info.Power;
+				break;
+		}
+	}
+}
+
+void AAbility::ReduceStats(AShipPawnBase* Ship)
+{
+	if (Info.BuffType == EBuffType::SKILL)
+	{
+		float Power = Info.Power - 1.0f;
+		switch (Info.AffectedSkill)
+		{
+			case EAbilitySkill::NAVIGATION:
+				AffectedValue = Ship->Navigation * Power;
+				Ship->Navigation -= AffectedValue;
+				break;
+			case EAbilitySkill::ENGINEERING:
+				AffectedValue = Ship->Engineer->Engineering * Power;
+				Ship->Engineer->Engineering -= AffectedValue;
+				break;
+			case EAbilitySkill::LEADERSHIP:
+				AffectedValue = Ship->Leadership * Info.Power;
+				Ship->Leadership -= AffectedValue;
+				break;
+			case EAbilitySkill::TACTICS:
+				AffectedValue = Ship->Tactics * Power;
+				Ship->Tactics -= AffectedValue;
+				break;
+			case EAbilitySkill::SCIENCE:
+				AffectedValue = Ship->Science * Power;
+				Ship->Science -= AffectedValue;
+				break;
+			case EAbilitySkill::HIT:
+				AffectedValue = Power;
+				Ship->HitBonus -= AffectedValue;
+				break;
+		}
+	}
+	else
+	{
+		AffectedValue = Info.Power;
+
+		switch (Info.AffectedStat)
+		{
+			case EAbilityStat::HEALTH:
+				Ship->CurrentHitPoints -= Info.Power;
+				break;
+			case EAbilityStat::SHIELDS:
+				Ship->CurrentShieldHitPoints -= Info.Power;
+				break;
+			case EAbilityStat::SPEED:
+				Ship->Speed -= Info.Power;
+				break;
+			case EAbilityStat::ATTACK:
+				Ship->AttackBonus -= Info.Power;
+				break;
+		}
+	}
+}
+
+void AAbility::Cleanup(AShipPawnBase* Ship)
+{
+	// If it is a Buff, we need to reduce instead of buff
+	if (Info.Type == EAbilityType::BUFF)
+	{
+		AffectedValue = -AffectedValue;
+	}
+
+	// Readjust values
+	if (Info.BuffType == EBuffType::SKILL)
+	{
+		switch (Info.AffectedSkill)
+		{
+			case EAbilitySkill::NAVIGATION:
+				Ship->Navigation += AffectedValue;
+				break;
+			case EAbilitySkill::ENGINEERING:
+				Ship->Engineer->Engineering += AffectedValue;
+				break;
+			case EAbilitySkill::LEADERSHIP:
+				Ship->Leadership += AffectedValue;
+				break;
+			case EAbilitySkill::TACTICS:
+				Ship->Tactics += AffectedValue;
+				break;
+			case EAbilitySkill::SCIENCE:
+				Ship->Science += AffectedValue;
+				break;
+			case EAbilitySkill::HIT:
+				Ship->HitBonus += AffectedValue;
+				break;
+		}
+	}
+	else
+	{
+		switch (Info.AffectedStat)
+		{
+			case EAbilityStat::HEALTH:
+				Ship->CurrentHitPoints += Info.Power;
+				break;
+			case EAbilityStat::SHIELDS:
+				Ship->CurrentShieldHitPoints += Info.Power;
+				break;
+			case EAbilityStat::SPEED:
+				Ship->Speed += Info.Power;
+				break;
+			case EAbilityStat::ATTACK:
+				Ship->AttackBonus += Info.Power;
+				break;
+		}
+	}
+}
