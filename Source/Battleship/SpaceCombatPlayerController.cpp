@@ -5,6 +5,7 @@
 #include "ShipPawnBase.h"
 #include "DestructibleObject.h"
 #include "Tile.h"
+#include "Ability.h"
 
 ASpaceCombatPlayerController::ASpaceCombatPlayerController()
 {

@@ -189,34 +189,48 @@ bool AShipPawnBase::IsTurnOver()
 void AShipPawnBase::CheckExpiryBuffs()
 {
 	// Check if any buffs have expired
-	for (auto Ability : Buffs)
+	for (auto Buff : Buffs)
 	{
-		if (!Ability->Info.NumberTurns)
+		// Check for nullptr, remove from set
+		if (!Buff)
 		{
-			Ability->Cleanup(this);
+			continue;
+		}
+
+		if (!Buff->Info.NumberTurns)
+		{
+			Buff->Cleanup(this);
 		}
 		else
 		{
-			if (Ability->Instigator == this)
+			if (Buff->Instigator == this)
 			{
-				Ability->TickAbility();
+				Buff->TickAbility();
 			}
 		}
 	}
+	Buffs.Remove(nullptr);
 
 	// Check if any buffs have expired
-	for (auto Ability : Debuffs)
+	for (auto Debuff : Debuffs)
 	{
-		if (!Ability->Info.NumberTurns)
+		// Check for nullptr, remove from set
+		if (!Debuff)
 		{
-			Ability->Cleanup(this);
+			continue;
+		}
+
+		if (!Debuff->Info.NumberTurns)
+		{
+			Debuff->Cleanup(this);
 		}
 		else
 		{
-			if (Ability->Instigator == this)
+			if (Debuff->Instigator == this)
 			{
-				Ability->TickAbility();
+				Debuff->TickAbility();
 			}
 		}
 	}
+	Debuffs.Remove(nullptr);
 }
