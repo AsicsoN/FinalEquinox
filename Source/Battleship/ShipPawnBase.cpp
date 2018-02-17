@@ -185,3 +185,52 @@ bool AShipPawnBase::IsTurnOver()
 	
 	return ForceTurnEnd;
 }
+
+void AShipPawnBase::CheckExpiryBuffs()
+{
+	// Check if any buffs have expired
+	for (auto Buff : Buffs)
+	{
+		// Check for nullptr, remove from set
+		if (!Buff)
+		{
+			continue;
+		}
+
+		if (!Buff->Info.NumberTurns)
+		{
+			Buff->Cleanup(this);
+		}
+		else
+		{
+			if (Buff->Instigator == this)
+			{
+				Buff->TickAbility();
+			}
+		}
+	}
+	Buffs.Remove(nullptr);
+
+	// Check if any buffs have expired
+	for (auto Debuff : Debuffs)
+	{
+		// Check for nullptr, remove from set
+		if (!Debuff)
+		{
+			continue;
+		}
+
+		if (!Debuff->Info.NumberTurns)
+		{
+			Debuff->Cleanup(this);
+		}
+		else
+		{
+			if (Debuff->Instigator == this)
+			{
+				Debuff->TickAbility();
+			}
+		}
+	}
+	Debuffs.Remove(nullptr);
+}

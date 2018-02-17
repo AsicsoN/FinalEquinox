@@ -175,7 +175,10 @@ float ASpaceCombatGameMode::CalculateHitChance(AShipPawnBase* TargetShip)
 	}
 
 	// (100 - (DistanceInSquares * 5)) + SpeedDifference + NavigationDifference + (GunneryModifier * 1.5) + Penalty;
-	return (100 - (Distance * 5)) + SpeedDifference + NavigationDifference + (GunneryDifference * 1.5) + Penalty;
+	float HitChance = (100 - (Distance * 5)) + SpeedDifference + NavigationDifference + (GunneryDifference * 1.5);
+	HitChance *= (1.0f + SelectedShip->HitBonus);
+	HitChance += Penalty;
+	return HitChance;
 }
 
 float ASpaceCombatGameMode::CalculateDistance(AShipPawnBase* Ship1, AShipPawnBase* Ship2)
