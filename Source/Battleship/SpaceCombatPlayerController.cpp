@@ -5,6 +5,7 @@
 #include "ShipPawnBase.h"
 #include "DestructibleObject.h"
 #include "Tile.h"
+#include "Ability.h"
 
 ASpaceCombatPlayerController::ASpaceCombatPlayerController()
 {
@@ -293,7 +294,7 @@ bool ASpaceCombatPlayerController::Fire(AShipPawnBase* TargetShip)
 
 				// Is a Critical Hit?
 				bool CriticalHit = (RandomChance <= HitChance);
-				int32 Damage = 0;
+				int32 Damage = SelectedShip->AttackBonus;
 
 				// Log Critical to CombatLog
 				if (CriticalHit)
