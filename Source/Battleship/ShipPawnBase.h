@@ -21,6 +21,25 @@ enum class EType : uint8
 	Large UMETA(DisplayName = "Large")
 };
 
+
+USTRUCT(BlueprintType)
+struct BATTLESHIP_API FSubsystems {
+
+	GENERATED_BODY();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Engine")
+	float Engine = 1.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Guns")
+	float Guns = 1.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ShieldGen")
+	float ShieldGen = 1.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Scanners")
+	float Scanners = 1.0f;
+};
+
 UCLASS()
 class BATTLESHIP_API AShipPawnBase : public ACharacter
 {
@@ -86,6 +105,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship Stats")
 	int32 FighterSkill = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ship Stats")
+	FSubsystems Subsystems;
 
 
 	//
