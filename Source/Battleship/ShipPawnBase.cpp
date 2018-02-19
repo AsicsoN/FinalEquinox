@@ -83,9 +83,11 @@ float AShipPawnBase::TakeDamage(float Damage, struct FDamageEvent const& DamageE
 
 	int32 damage = ActualDamage;
 
+	bool ShieldsOnline = (Subsystems.ShieldGen != 0.0f);
+
 	if (DamageEvent.DamageTypeClass->GetDefaultObjectName().ToString().Contains("ShieldDamage", ESearchCase::IgnoreCase))
 	{
-		if (CurrentShieldHitPoints > 0)
+		if (ShieldsOnline && CurrentShieldHitPoints > 0)
 		{
 			CurrentShieldHitPoints = CurrentShieldHitPoints - damage;
 
@@ -115,7 +117,7 @@ float AShipPawnBase::TakeDamage(float Damage, struct FDamageEvent const& DamageE
 			GameMode->WriteToCombatLog(FText::Format(LOCTEXT("HullDamage", "{Damage} damage was dealt to {Name}."), Arguments));
 		}
 	}
-	else if (DamageEvent.DamageTypeClass->GetDefaultObjectName().ToString().Contains("LaserDamage", ESearchCase::IgnoreCase) && CurrentShieldHitPoints > 0)
+	else if (DamageEvent.DamageTypeClass->GetDefaultObjectName().ToString().Contains("LaserDamage", ESearchCase::IgnoreCase) && ShieldsOnline)
 	{
 		CurrentShieldHitPoints = CurrentShieldHitPoints - damage;
 
