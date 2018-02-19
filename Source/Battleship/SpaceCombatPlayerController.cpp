@@ -256,6 +256,19 @@ bool ASpaceCombatPlayerController::Fire(AShipPawnBase* TargetShip)
 		AShipPawnBase* SelectedShip = GameMode->SelectedShip;
 		if (SelectedShip)
 		{
+			// Check Subsystems are operational
+			if (!SelectedShip->Subsystems.Guns)
+			{
+				FString OfficerName = SelectedShip->TacticsOfficer->CrewName;
+				FString Result = OfficerName + ": Our weapons are offline.";
+
+				GameMode->WriteToCombatLog(FText::FromString(Result));
+
+				bPreparingToFire = false;
+
+				return false;
+			}
+
 			int32 ActionCost = 0;
 
 			// Calculate Hit Chance
@@ -312,6 +325,9 @@ bool ASpaceCombatPlayerController::Fire(AShipPawnBase* TargetShip)
 					// Missile Damage
 					Damage = SelectedShip->CalculateMissileDamage(CriticalHit);
 				}
+
+				// Adjust by Gun Subsystems Status
+				Damage = FMath::FloorToFloat(Damage * SelectedShip->Subsystems.Guns);
 
 				TSubclassOf<UDamageType> const ValidDamageTypeClass = TSubclassOf<UDamageType>(UDamageType::StaticClass());
 				FDamageEvent DamageEvent(ValidDamageTypeClass);
