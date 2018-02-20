@@ -129,7 +129,44 @@ void ASpaceCombatAiController::CalculateTravelPoint()
 	FVector End;
 	while (true)
 	{
+
+		// Grab random point around target
 		End = NavSys->GetRandomPointInNavigableRadius(GetWorld(), Target->GetActorLocation(), FactionEngageDistance, NavSys->MainNavData);
+
+		// Make sure that our enemies keep a fixed minimum distance away.
+		if (FVector::Dist(Target->GetActorLocation(), End) < 512.0f)
+		{
+			continue;
+		}
+
+		bool isOverlapping = false;
+		for (TActorIterator<AActor> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+		{
+			AShipPawnBase *Ship = Cast<AShipPawnBase>(*ActorItr);
+
+			if (!Ship)
+			{
+				continue;
+			}
+
+			if (Ship->Faction != EFaction::Player)
+			{
+				continue;
+			}
+
+			if (FVector::Dist(Ship->GetActorLocation(), End) <= 600.0f)
+			{
+				isOverlapping = true;
+				break;
+			}
+		}
+
+		if (isOverlapping)
+		{
+			continue;
+		}
+
+		// Find Path to the Target Location
 		UNavigationPath *NavResult = NavSys->FindPathToLocationSynchronously(GetWorld(), Start, End, SelectedShip);
 
 		if (NavResult == nullptr)
@@ -137,6 +174,7 @@ void ASpaceCombatAiController::CalculateTravelPoint()
 			continue;
 		}
 
+		#pragma region Debug Logic
 		FColor LineColor = FColor();
 
 		for (int32 Index = 0; Index < NavResult->PathPoints.Num(); Index++)
@@ -162,18 +200,7 @@ void ASpaceCombatAiController::CalculateTravelPoint()
 				);
 			}
 		}
-
-		// Draw the central dot in the circle
-		DrawDebugLine(
-			GetWorld(),
-			End,
-			End,
-			LineColor.Red,
-			true,
-			-1,
-			0,
-			20.0f
-		);
+		#pragma endregion
 
 		float PathLength = NavResult->GetPathLength();
 
@@ -209,6 +236,22 @@ void ASpaceCombatAiController::CalculateTravelPoint()
 	}
 	
 	TargetTile = CurTile;
+
+	#pragma region Debug Logic
+	FColor LineColor = FColor();
+
+	// Draw the central dot in the circle
+	DrawDebugLine(
+		GetWorld(),
+		TargetTile->GetActorLocation(),
+		TargetTile->GetActorLocation(),
+		LineColor.Red,
+		true,
+		-1,
+		0,
+		20.0f
+	);
+	#pragma endregion
 }
 
 void ASpaceCombatAiController::MoveShip()
@@ -216,7 +259,7 @@ void ASpaceCombatAiController::MoveShip()
 	UWorld* World = GetWorld();
 
 	// Calculate the AI Pathing using the Nav system.
-	EPathFollowingRequestResult::Type Result = MoveToActor(TargetTile, 500.0f);
+	EPathFollowingRequestResult::Type Result = MoveToActor(TargetTile, 10.0f);
 
 	if (Result == EPathFollowingRequestResult::AlreadyAtGoal)
 	{
@@ -229,7 +272,7 @@ void ASpaceCombatAiController::MoveShip()
 	}
 	else
 	{
-		World->GetTimerManager().SetTimer(AiSwapCycleHandle, this, &ASpaceCombatAiController::MoveShip, 3.0f);
+		World->GetTimerManager().SetTimer(AiSwapCycleHandle, this, &ASpaceCombatAiController::MoveShip, 0.1f);
 	}
 }
 
@@ -250,8 +293,17 @@ void ASpaceCombatAiController::AttackPlayer()
 
 		PlayerController->Fire(Target);
 
-		//TODO We will want to eventually go back into the AiLogicLoop for other targets
-		World->GetTimerManager().SetTimer(AiAttackCycleHandle, this, &ASpaceCombatAiController::AttackPlayer, 5.0f);
+		if (Target->CurrentHitPoints <= 0)
+		{
+			// Target has died, Look for new Target!
+			Target = nullptr;
+
+			GenerateTurnInformation();
+		}
+		else
+		{
+			World->GetTimerManager().SetTimer(AiAttackCycleHandle, this, &ASpaceCombatAiController::AttackPlayer, 5.0f);
+		}
 	}
 	else
 	{
