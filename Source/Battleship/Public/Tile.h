@@ -7,6 +7,7 @@
 #include "Tile.generated.h"
 
 class UGridLocation;
+class USplineMeshComponent;
 
 UCLASS()
 class BATTLESHIP_API ATile : public AActor
@@ -34,6 +35,8 @@ public:
 
 	int32 RotCost = 0;
 
+	void ClearPath();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -53,4 +56,6 @@ private:
 	void BuildPath();
 
 	int32 RequiredMP = 0;
+
+	TArray<USplineMeshComponent*> SplineMeshes;
 };
