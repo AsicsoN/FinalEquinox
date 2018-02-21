@@ -4,6 +4,7 @@
 #include "SpaceCombatPlayerController.generated.h"
 
 class ATile;
+class AAbility;
 
 /**
  * 
@@ -34,11 +35,20 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	ATile* Tile = nullptr;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+	bool bUseAbility = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+	AAbility* Ability = nullptr;
+
 	/***
 	* Gameplay Functions
 	*/
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
 	bool LaunchFighters(TSubclassOf<AShipPawnBase> FighterBlueprint);
+
+	UFUNCTION(BlueprintCallable, Category = "Gameplay")
+	bool CollectFighter();
 
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
 	bool LeftTurn();

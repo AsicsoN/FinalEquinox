@@ -5,6 +5,7 @@
 #include "ShipPawnBase.h"
 #include "DestructibleObject.h"
 #include "Tile.h"
+#include "Ability.h"
 
 ASpaceCombatPlayerController::ASpaceCombatPlayerController()
 {
@@ -36,6 +37,12 @@ bool ASpaceCombatPlayerController::LaunchFighters(TSubclassOf<AShipPawnBase> Fig
 
 		if (SelectedShip)
 		{
+			// Check ship has required AP to launch fighter
+			if (SelectedShip->CurrentActionPoints < 8)
+			{
+				return false;
+			}
+
 			float Distance = 256.0f;
 			if (SelectedShip->Type == EType::Medium)
 			{
@@ -64,7 +71,6 @@ bool ASpaceCombatPlayerController::LaunchFighters(TSubclassOf<AShipPawnBase> Fig
 				}
 			}
 	
-			//TODO check we can spawn fighters by location too
 			if (!Hit && SelectedShip->Fighters)
 			{
 				FVector Location = SelectedShip->GetActorLocation();
@@ -72,7 +78,10 @@ bool ASpaceCombatPlayerController::LaunchFighters(TSubclassOf<AShipPawnBase> Fig
 				AShipPawnBase* Fighter = World->SpawnActor<AShipPawnBase>(FighterBlueprint);
 
 				if (Fighter)
-				{
+				{	
+					// Setup Fighter
+					Fighter->Instigator = SelectedShip;
+
 					FVector NewLocation = Location + (SelectedShip->GetActorForwardVector() * Distance);
 
 					Fighter->SetActorLocation(NewLocation);
@@ -80,9 +89,81 @@ bool ASpaceCombatPlayerController::LaunchFighters(TSubclassOf<AShipPawnBase> Fig
 
 					GameMode->ShipArray.Add(Fighter);
 
+					// Take AP from Parent Ship
+					SelectedShip->CurrentActionPoints -= 8;
+
+
+					FString OfficerName = Fighter->NavigationOfficer->CrewName;
+					FString Result = OfficerName + ": " + Fighter->Name + " have launched successfully, Admiral";
+
+					GameMode->WriteToCombatLog(FText::FromString(Result));
+
 					return true;
 				}
 			}
+
+			FString OfficerName = SelectedShip->TacticsOfficer->CrewName;
+			FString Result = OfficerName + ": We can't launch our fighters at this time, Admiral";
+
+			GameMode->WriteToCombatLog(FText::FromString(Result));
+		}
+	}
+
+	return false;
+}
+
+bool ASpaceCombatPlayerController::CollectFighter()
+{
+	ASpaceCombatGameMode* GameMode = Cast<ASpaceCombatGameMode>(GetWorld()->GetAuthGameMode());
+
+	if (GameMode)
+	{
+		AShipPawnBase* Fighter = Cast<AShipPawnBase>(GameMode->SelectedShip);
+
+		if (Fighter)
+		{
+			AShipPawnBase* Parent = Cast<AShipPawnBase>(Fighter->Instigator);
+
+			if (Parent)
+			{
+				// Check Distance between Parent Ship and Fighter
+				float Distance = 300.0f;
+				if (Parent->Type == EType::Medium)
+				{
+					Distance = Distance * 2;
+				}
+				else
+				{
+					Distance = Distance * 4;
+				}
+				float ShipDistance = FVector::Dist(Fighter->GetActorLocation(), Parent->GetActorLocation());
+
+				// If within distance and still alive, collect the fighter
+				if (ShipDistance <= Distance && Fighter->CurrentHitPoints > 0.0f && Fighter->CurrentActionPoints >= 5)
+				{
+					// TODO add turn timer?
+					// Replenish Parent Supply
+					Parent->Fighters++;
+
+					Fighter->ForceTurnEnd = true;
+
+					// TODO add animation?
+					// Remove Fighter
+					Fighter->SetLifeSpan(0.1f);
+
+					FString OfficerName = Parent->TacticsOfficer->CrewName;
+					FString Result = OfficerName + ": Successfully retrieved " + Fighter->Name + ", Admiral";
+
+					GameMode->WriteToCombatLog(FText::FromString(Result));
+
+					return true;
+				}
+			}
+
+			FString OfficerName = Fighter->NavigationOfficer->CrewName;
+			FString Result = OfficerName + ": We can't dock, Admiral!";
+
+			GameMode->WriteToCombatLog(FText::FromString(Result));
 		}
 	}
 
@@ -168,6 +249,19 @@ bool ASpaceCombatPlayerController::Fire(AShipPawnBase* TargetShip)
 		AShipPawnBase* SelectedShip = GameMode->SelectedShip;
 		if (SelectedShip)
 		{
+			// Check Subsystems are operational
+			if (!SelectedShip->Subsystems.Guns)
+			{
+				FString OfficerName = SelectedShip->TacticsOfficer->CrewName;
+				FString Result = OfficerName + ": Our weapons are offline.";
+
+				GameMode->WriteToCombatLog(FText::FromString(Result));
+
+				bPreparingToFire = false;
+
+				return false;
+			}
+
 			int32 ActionCost = 0;
 
 			// Calculate Hit Chance
@@ -206,7 +300,7 @@ bool ASpaceCombatPlayerController::Fire(AShipPawnBase* TargetShip)
 
 				// Is a Critical Hit?
 				bool CriticalHit = (RandomChance <= HitChance);
-				int32 Damage = 0;
+				int32 Damage = SelectedShip->AttackBonus;
 
 				// Log Critical to CombatLog
 				if (CriticalHit)
@@ -224,6 +318,9 @@ bool ASpaceCombatPlayerController::Fire(AShipPawnBase* TargetShip)
 					// Missile Damage
 					Damage = SelectedShip->CalculateMissileDamage(CriticalHit);
 				}
+
+				// Adjust by Gun Subsystems Status
+				Damage = FMath::FloorToFloat(Damage * SelectedShip->Subsystems.Guns);
 
 				TSubclassOf<UDamageType> const ValidDamageTypeClass = TSubclassOf<UDamageType>(UDamageType::StaticClass());
 				FDamageEvent DamageEvent(ValidDamageTypeClass);

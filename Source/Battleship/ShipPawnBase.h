@@ -2,6 +2,7 @@
 
 #include "GameFramework/Character.h"
 #include "Crew.h"
+#include "Ability.h"
 #include "ShipPawnBase.generated.h"
 
 UENUM(BlueprintType)
@@ -18,6 +19,25 @@ enum class EType : uint8
 	Small UMETA(DisplayName = "Small"),
 	Medium UMETA(DisplayName = "Medium"),
 	Large UMETA(DisplayName = "Large")
+};
+
+
+USTRUCT(BlueprintType)
+struct BATTLESHIP_API FSubsystems {
+
+	GENERATED_BODY();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Engine")
+	float Engine = 1.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Guns")
+	float Guns = 1.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ShieldGen")
+	float ShieldGen = 1.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Scanners")
+	float Scanners = 1.0f;
 };
 
 UCLASS()
@@ -86,6 +106,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ship Stats")
 	int32 FighterSkill = 0;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ship Stats")
+	FSubsystems Subsystems;
+
 
 	//
 	// Ship Inventory
@@ -136,6 +159,27 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	FRotator NewRotation;
+
+	//
+	// Abilities and Effects
+	//
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Abilities")
+	TArray<FAbilityStruct> Abilities;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Abilities")
+	TSet<AAbility*> Buffs;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Abilities")
+	TSet<AAbility*> Debuffs;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Abilities")
+	float AttackBonus;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Abilities")
+	float HitBonus;
+
+	UFUNCTION(BlueprintCallable)
+	void CheckExpiryBuffs();
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

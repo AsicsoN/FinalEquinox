@@ -46,9 +46,11 @@ float AShipPawnBase::TakeDamage(float Damage, struct FDamageEvent const& DamageE
 
 	int32 damage = ActualDamage;
 
+	bool ShieldsOnline = (Subsystems.ShieldGen != 0.0f);
+
 	if (DamageEvent.DamageTypeClass->GetDefaultObjectName().ToString().Contains("ShieldDamage", ESearchCase::IgnoreCase))
 	{
-		if (CurrentShieldHitPoints > 0)
+		if (ShieldsOnline && CurrentShieldHitPoints > 0)
 		{
 			CurrentShieldHitPoints = CurrentShieldHitPoints - damage;
 
@@ -78,7 +80,7 @@ float AShipPawnBase::TakeDamage(float Damage, struct FDamageEvent const& DamageE
 			GameMode->WriteToCombatLog(FText::Format(LOCTEXT("HullDamage", "{Damage} damage was dealt to {Name}."), Arguments));
 		}
 	}
-	else if (DamageEvent.DamageTypeClass->GetDefaultObjectName().ToString().Contains("LaserDamage", ESearchCase::IgnoreCase) && CurrentShieldHitPoints > 0)
+	else if (DamageEvent.DamageTypeClass->GetDefaultObjectName().ToString().Contains("LaserDamage", ESearchCase::IgnoreCase) && ShieldsOnline)
 	{
 		CurrentShieldHitPoints = CurrentShieldHitPoints - damage;
 
@@ -147,4 +149,53 @@ bool AShipPawnBase::IsTurnOver()
 	if (CurrentMovementPoints <= 0 && CurrentActionPoints <= 0) return true;
 	
 	return ForceTurnEnd;
+}
+
+void AShipPawnBase::CheckExpiryBuffs()
+{
+	// Check if any buffs have expired
+	for (auto Buff : Buffs)
+	{
+		// Check for nullptr, remove from set
+		if (!Buff)
+		{
+			continue;
+		}
+
+		if (!Buff->Info.NumberTurns)
+		{
+			Buff->Cleanup(this);
+		}
+		else
+		{
+			if (Buff->Instigator == this)
+			{
+				Buff->TickAbility();
+			}
+		}
+	}
+	Buffs.Remove(nullptr);
+
+	// Check if any buffs have expired
+	for (auto Debuff : Debuffs)
+	{
+		// Check for nullptr, remove from set
+		if (!Debuff)
+		{
+			continue;
+		}
+
+		if (!Debuff->Info.NumberTurns)
+		{
+			Debuff->Cleanup(this);
+		}
+		else
+		{
+			if (Debuff->Instigator == this)
+			{
+				Debuff->TickAbility();
+			}
+		}
+	}
+	Debuffs.Remove(nullptr);
 }
