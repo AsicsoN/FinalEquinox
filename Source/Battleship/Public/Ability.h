@@ -59,13 +59,13 @@ struct BATTLESHIP_API FAbilityStruct
 	* Ability Description
 	*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Description")
-	FString Name;
+	FText Name;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Description")
 	EAbilityType Type;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Description")
-	FString Description;
+	FText Description;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Description")
 	UTexture2D* Icon;
