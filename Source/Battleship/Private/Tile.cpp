@@ -174,15 +174,28 @@ void ATile::ClearPath()
 {
 	ASpaceCombatPlayerController* PlayerController = Cast<ASpaceCombatPlayerController>(GetWorld()->GetFirstPlayerController());
 
+	if (!PlayerController)
+	{
+		return;
+	}
+
 	USplineComponent* Path = PlayerController->PathSpline;
+
+	if (!Path)
+	{
+		return;
+	}
 
 	//Checks if it is valid at index zero because index zero is always going to exist if the array has any elements
 	if (SplineMeshes.IsValidIndex(0))
 	{
 		while (SplineMeshes.IsValidIndex(0))
 		{
-			SplineMeshes[0]->DestroyComponent();
-			SplineMeshes.RemoveAt(0);
+			if (SplineMeshes[0] != nullptr)
+			{
+				SplineMeshes[0]->DestroyComponent();
+				SplineMeshes.RemoveAt(0);
+			}
 		}
 	}
 
