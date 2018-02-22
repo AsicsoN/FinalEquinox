@@ -333,7 +333,35 @@ bool ASpaceCombatPlayerController::Fire(AShipPawnBase* TargetShip)
 				FDamageEvent DamageEvent(ValidDamageTypeClass);
 				
 				// Apply Damage
-				TargetShip->TakeDamage(Damage, DamageEvent, this, SelectedShip);
+				// TODO Change to Damage event?
+				if (!bFireAtSubsystems)
+				{
+					TargetShip->TakeDamage(Damage, DamageEvent, this, SelectedShip);
+				}
+				else
+				{
+					Damage = Damage / 100;
+
+					if (bFireAtScanners)
+					{
+						TargetShip->Subsystems.Scanners -= Damage;
+					}
+
+					if (bFireAtGuns)
+					{
+						TargetShip->Subsystems.Guns -= Damage;
+					}
+
+					if (bFireAtEngines)
+					{
+						TargetShip->Subsystems.Engine -= Damage;
+					}
+
+					if (bFireAtShields)
+					{
+						TargetShip->Subsystems.ShieldGen -= Damage;
+					}
+				}
 			}
 			else
 			{
@@ -357,6 +385,8 @@ bool ASpaceCombatPlayerController::Fire(AShipPawnBase* TargetShip)
 			}
 
 			bPreparingToFire = false;
+			bFireAtSubsystems = false;
+			bFireAtScanners = bFireAtGuns = bFireAtEngines = bFireAtShields = false;
 
 			return true;
 		}
@@ -366,8 +396,9 @@ bool ASpaceCombatPlayerController::Fire(AShipPawnBase* TargetShip)
 	return false;
 }
 
-bool ASpaceCombatPlayerController::PrepareToFire(bool FiringLasers)
+bool ASpaceCombatPlayerController::PrepareToFire(bool FiringLasers, bool FireSubsystems)
 {
+	bFireAtSubsystems = FireSubsystems;
 	bFireModeIsLasers = FiringLasers;
 	bPreparingToFire = true;
 	return true;
