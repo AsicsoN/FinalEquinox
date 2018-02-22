@@ -7,6 +7,8 @@
 #include "SpaceCombatGameMode.h"
 #include "ShipPawnBase.h"
 #include "AI/Navigation/NavigationPath.h"
+#include "Classes/Components/SplineComponent.h"
+#include "Classes/Components/SplineMeshComponent.h"
 
 
 // Sets default values
@@ -108,6 +110,7 @@ void ATile::CustomActorEndCursorOver(UPrimitiveComponent* TouchedComponent)
 			// Hide Path and Reset Tile
 			Tile->SetVisibility(false);
 			SetActorRotation(FRotator(0, 0, 0));
+			ClearPath();
 		}
 	}
 }
@@ -115,6 +118,7 @@ void ATile::CustomActorEndCursorOver(UPrimitiveComponent* TouchedComponent)
 void ATile::BuildPath()
 {
 	ASpaceCombatGameMode* GameMode = Cast<ASpaceCombatGameMode>(GetWorld()->GetAuthGameMode());
+	ASpaceCombatPlayerController* PlayerController = Cast<ASpaceCombatPlayerController>(GetWorld()->GetFirstPlayerController());
 	AShipPawnBase* SelectedShip = GameMode->SelectedShip;
 
 	// Get Start and End Points
@@ -129,44 +133,32 @@ void ATile::BuildPath()
 	// If not null, draw the path using the nav points provided
 	if (NavResult != nullptr)
 	{
+		USplineComponent* Path = PlayerController->PathSpline;
+		UStaticMesh* Mesh = PlayerController->LineMesh;
+
 		FColor LineColor = FColor();
 		float PathLength = NavResult->GetPathLength();
 
-		for (int32 Index = 0; Index < NavResult->PathPoints.Num(); Index++)
+		Path->SetSplinePoints(NavResult->PathPoints, ESplineCoordinateSpace::Type::Local, true);
+
+		for (int32 Index = 0; Index < Path->GetNumberOfSplinePoints() - 1; Index++)
 		{
-			int32 NextIndex = Index + 1;
-			bool bIsEven = (NextIndex % 2 > 0) ? true : false;
+			USplineMeshComponent* Spline = NewObject<USplineMeshComponent>();
 
-			NextIndex = FMath::Clamp(NextIndex, 1, FMath::RoundToInt(NavResult->PathPoints.Num() - 1));
+			FVector pointLocationStart, pointTangentStart, pointLocationEnd, pointTangentEnd;
+			Path->GetLocalLocationAndTangentAtSplinePoint(Index, pointLocationStart, pointTangentStart);
+			Path->GetLocalLocationAndTangentAtSplinePoint(Index + 1, pointLocationEnd, pointTangentEnd);
 
-			if (NextIndex != NavResult->PathPoints.Num())
+			if (Spline)
 			{
-				FVector PointA = NavResult->PathPoints[Index];
-				FVector PointB = NavResult->PathPoints[NextIndex];
-				DrawDebugLine(
-					GetWorld(), 
-					PointA,
-					PointB,
-					LineColor.Cyan,
-					true,
-					-1,
-					0,
-					10.0f
-				);
+				Spline->bCastDynamicShadow = false;
+				Spline->SetStaticMesh(Mesh);
+				Spline->SetStartAndEnd(pointLocationStart, pointTangentStart, pointLocationEnd, pointTangentEnd);
+				Spline->RegisterComponentWithWorld(GetWorld());
+
+				SplineMeshes.Add(Spline);
 			}
 		}
-
-		// Draw the central dot in the circle
-		DrawDebugLine(
-			GetWorld(), 
-			End, 
-			End, 
-			LineColor.Cyan,
-			true, 
-			-1, 
-			0, 
-			20.0f
-		);
 
 		// Calculate MP Path Cost
 		PathLength = PathLength / 256;
@@ -176,4 +168,36 @@ void ATile::BuildPath()
 			RequiredMP = RequiredMP * 2;
 		}
 	}
+}
+
+void ATile::ClearPath()
+{
+	ASpaceCombatPlayerController* PlayerController = Cast<ASpaceCombatPlayerController>(GetWorld()->GetFirstPlayerController());
+
+	if (!PlayerController)
+	{
+		return;
+	}
+
+	USplineComponent* Path = PlayerController->PathSpline;
+
+	if (!Path)
+	{
+		return;
+	}
+
+	//Checks if it is valid at index zero because index zero is always going to exist if the array has any elements
+	if (SplineMeshes.IsValidIndex(0))
+	{
+		while (SplineMeshes.IsValidIndex(0))
+		{
+			if (SplineMeshes[0] != nullptr)
+			{
+				SplineMeshes[0]->DestroyComponent();
+				SplineMeshes.RemoveAt(0);
+			}
+		}
+	}
+
+	Path->ClearSplinePoints(true);
 }

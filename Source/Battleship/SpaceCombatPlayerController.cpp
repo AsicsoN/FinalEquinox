@@ -1,6 +1,7 @@
 #include "Battleship.h"
 #include "SpaceCombatPlayerController.h"
 #include "Runtime/AIModule/Classes/AIController.h"
+#include "Classes/Components/SplineComponent.h"
 #include "SpaceCombatGameMode.h"
 #include "ShipPawnBase.h"
 #include "DestructibleObject.h"
@@ -11,6 +12,11 @@ ASpaceCombatPlayerController::ASpaceCombatPlayerController()
 {
 	bEnableMouseOverEvents = true;
 	PrimaryActorTick.bCanEverTick = true;
+
+	PathSpline = CreateDefaultSubobject<USplineComponent>(TEXT("Path"));
+	PathSpline->SetupAttachment(RootComponent);
+
+	LineMesh = CreateDefaultSubobject<UStaticMesh>(TEXT("LineMesh"));
 }
 
 // Called every frame
@@ -520,6 +526,13 @@ void ASpaceCombatPlayerController::ResetShip()
 			// Realign Static Mesh to Ship
 			StaticMesh->SetRelativeLocation(FVector(0.0f, 0.0f, Location.Z), false, nullptr, ETeleportType::TeleportPhysics);
 			StaticMesh->SetRelativeRotation(SelectedShip->StartRotation);
+		
+		
+		}
+
+		if (Tile)
+		{
+			Tile->ClearPath();
 		}
 	}
 }
