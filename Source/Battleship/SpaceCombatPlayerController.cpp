@@ -4,6 +4,7 @@
 #include "Classes/Components/SplineComponent.h"
 #include "SpaceCombatGameMode.h"
 #include "ShipPawnBase.h"
+#include "PlayerShipPawnBase.h"
 #include "DestructibleObject.h"
 #include "Tile.h"
 #include "Ability.h"
@@ -99,8 +100,8 @@ bool ASpaceCombatPlayerController::LaunchFighters(TSubclassOf<AShipPawnBase> Fig
 					SelectedShip->CurrentActionPoints -= 8;
 
 
-					FString OfficerName = Fighter->NavigationOfficer->CrewName;
-					FString Result = OfficerName + ": " + Fighter->Name + " have launched successfully, Admiral";
+					//FString OfficerName = Fighter->NavigationOfficer->CrewName;
+					FString Result = Fighter->Name + " have launched successfully, Admiral";
 
 					GameMode->WriteToCombatLog(FText::FromString(Result));
 
@@ -108,8 +109,8 @@ bool ASpaceCombatPlayerController::LaunchFighters(TSubclassOf<AShipPawnBase> Fig
 				}
 			}
 
-			FString OfficerName = SelectedShip->TacticsOfficer->CrewName;
-			FString Result = OfficerName + ": We can't launch our fighters at this time, Admiral";
+			//FString OfficerName = SelectedShip->TacticsOfficer->CrewName;
+			FString Result = "We can't launch our fighters at this time, Admiral";
 
 			GameMode->WriteToCombatLog(FText::FromString(Result));
 		}
@@ -128,7 +129,7 @@ bool ASpaceCombatPlayerController::CollectFighter()
 
 		if (Fighter)
 		{
-			AShipPawnBase* Parent = Cast<AShipPawnBase>(Fighter->Instigator);
+			APlayerShipPawnBase* Parent = Cast<APlayerShipPawnBase>(Fighter->Instigator);
 
 			if (Parent)
 			{
@@ -166,8 +167,8 @@ bool ASpaceCombatPlayerController::CollectFighter()
 				}
 			}
 
-			FString OfficerName = Fighter->NavigationOfficer->CrewName;
-			FString Result = OfficerName + ": We can't dock, Admiral!";
+			//FString OfficerName = Fighter->NavigationOfficer->CrewName;
+			FString Result = "We can't dock, Admiral!";
 
 			GameMode->WriteToCombatLog(FText::FromString(Result));
 		}
@@ -258,8 +259,8 @@ bool ASpaceCombatPlayerController::Fire(AShipPawnBase* TargetShip)
 			// Check Subsystems are operational
 			if (!SelectedShip->Subsystems.Guns)
 			{
-				FString OfficerName = SelectedShip->TacticsOfficer->CrewName;
-				FString Result = OfficerName + ": Our weapons are offline.";
+				//FString OfficerName = SelectedShip->TacticsOfficer->CrewName;
+				FString Result = "Our weapons are offline.";
 
 				GameMode->WriteToCombatLog(FText::FromString(Result));
 
