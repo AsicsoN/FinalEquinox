@@ -1,8 +1,7 @@
-
-
 #include "Battleship.h"
 #include "CharacterSheet.h"
 #include "ShipPawnBase.h"
+#include "PlayerShipPawnBase.h"
 
 UCharacterSheet::UCharacterSheet()
 {
@@ -450,7 +449,7 @@ bool UCharacterSheet::GetCharacterOption(FString option)
 	}
 }
 
-void UCharacterSheet::SetDefaultFleet(TSubclassOf<AShipPawnBase> BattleshipPawnClass, TSubclassOf<AShipPawnBase> DestroyerPawnClass)
+void UCharacterSheet::SetDefaultFleet(TSubclassOf<APlayerShipPawnBase> BattleshipPawnClass, TSubclassOf<APlayerShipPawnBase> DestroyerPawnClass)
 {
 	if (Fleet.Num() == 0)
 	{
@@ -504,7 +503,7 @@ void UCharacterSheet::SetDefaultFleet(TSubclassOf<AShipPawnBase> BattleshipPawnC
 		UnusedCrew.Add(crew2);
 		UnusedCrew.Add(crew3);
 
-		AShipPawnBase* flagship = BattleshipPawnClass.GetDefaultObject();
+		APlayerShipPawnBase* flagship = BattleshipPawnClass.GetDefaultObject();
 		flagship->Name = "GCS Odysseus";
 		flagship->Type = EType::Large;
 		flagship->Captain = NewObject<UCrew>();
@@ -586,7 +585,7 @@ void UCharacterSheet::SetDefaultFleet(TSubclassOf<AShipPawnBase> BattleshipPawnC
 
 		Fleet.Add(flagship);
 
-		AShipPawnBase* destroyer = DestroyerPawnClass.GetDefaultObject();
+		APlayerShipPawnBase* destroyer = DestroyerPawnClass.GetDefaultObject();
 		destroyer->Name = "GCS Selene";
 		destroyer->Type = EType::Medium;
 		destroyer->Captain = NewObject<UCrew>();
