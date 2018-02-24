@@ -56,6 +56,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	AAbility* Ability = nullptr;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+	class USplineComponent* PathSpline;
+
+	UPROPERTY(EditAnywhere)
+	class UStaticMesh* LineMesh = nullptr;
+
 	/***
 	* Gameplay Functions
 	*/
