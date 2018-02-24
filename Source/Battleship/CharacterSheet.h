@@ -16,7 +16,7 @@ enum class ECharacterBackground : uint8
 	Trader UMETA(DisplayName = "Trader")
 };
 
-class AShipPawnBase;
+class APlayerShipPawnBase;
 
 /**
  * 
@@ -30,7 +30,7 @@ public:
 	UCharacterSheet();
 
 	UFUNCTION(BlueprintCallable, Category = "Initialization")
-	void SetDefaultFleet(TSubclassOf<AShipPawnBase> BattleshipPawnClass, TSubclassOf<AShipPawnBase> DestroyerPawnClass);
+	void SetDefaultFleet(TSubclassOf<APlayerShipPawnBase> BattleshipPawnClass, TSubclassOf<APlayerShipPawnBase> DestroyerPawnClass);
 
 	UFUNCTION(BlueprintCallable, Category = "Options")
 	void SetCharacterOption(FString option);
@@ -54,7 +54,7 @@ public:
 	bool GenderIsMale = true;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fleet")
-	TArray<AShipPawnBase*> Fleet;
+	TArray<APlayerShipPawnBase*> Fleet;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fighting")
 	int32 Brawling = 0;
