@@ -174,8 +174,8 @@ void AAbility::BoostStats(AShipPawnBase* Ship)
 				Ship->Navigation += AffectedValue;
 				break;
 			case EAbilitySkill::ENGINEERING:
-				AffectedValue = Ship->Engineer->Engineering * Power;
-				Ship->Engineer->Engineering += AffectedValue;
+				AffectedValue = Ship->HullRepair * Power;
+				Ship->HullRepair += AffectedValue;
 				break;
 			case EAbilitySkill::LEADERSHIP:
 				AffectedValue = Ship->Leadership * Info.Power;
@@ -233,8 +233,8 @@ void AAbility::ReduceStats(AShipPawnBase* Ship)
 				Ship->Navigation -= AffectedValue;
 				break;
 			case EAbilitySkill::ENGINEERING:
-				AffectedValue = Ship->Engineer->Engineering * Power;
-				Ship->Engineer->Engineering -= AffectedValue;
+				AffectedValue = Ship->HullRepair * Power;
+				Ship->HullRepair -= AffectedValue;
 				break;
 			case EAbilitySkill::LEADERSHIP:
 				AffectedValue = Ship->Leadership * Info.Power;
@@ -303,7 +303,7 @@ void AAbility::Cleanup(AShipPawnBase* Ship)
 				Ship->Navigation += AffectedValue;
 				break;
 			case EAbilitySkill::ENGINEERING:
-				Ship->Engineer->Engineering += AffectedValue;
+				Ship->HullRepair += AffectedValue;
 				break;
 			case EAbilitySkill::LEADERSHIP:
 				Ship->Leadership += AffectedValue;
