@@ -318,12 +318,12 @@ bool ASpaceCombatPlayerController::Fire(AShipPawnBase* TargetShip)
 				if (bFireModeIsLasers)
 				{
 					// Laser Damage
-					Damage = SelectedShip->CalculateLaserDamage(CriticalHit);
+					Damage += SelectedShip->CalculateLaserDamage(CriticalHit);
 				}
 				else
 				{
 					// Missile Damage
-					Damage = SelectedShip->CalculateMissileDamage(CriticalHit);
+					Damage += SelectedShip->CalculateMissileDamage(CriticalHit);
 				}
 
 				// Adjust by Gun Subsystems Status
