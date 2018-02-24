@@ -8,7 +8,7 @@
 #include "SpaceCombatGameMode.h"
 
 FAbilityStruct::FAbilityStruct() 
-	: Name(""), Description(""), Icon(nullptr), Animation(nullptr), ActionCost(0), Power(0.0f)
+	: Name(FText()), Description(FText()), Icon(nullptr), Animation(nullptr), ActionCost(0), Power(0.0f)
 {
 
 }

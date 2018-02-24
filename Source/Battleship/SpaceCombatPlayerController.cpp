@@ -1,6 +1,7 @@
 #include "Battleship.h"
 #include "SpaceCombatPlayerController.h"
 #include "Runtime/AIModule/Classes/AIController.h"
+#include "Classes/Components/SplineComponent.h"
 #include "SpaceCombatGameMode.h"
 #include "ShipPawnBase.h"
 #include "DestructibleObject.h"
@@ -11,6 +12,11 @@ ASpaceCombatPlayerController::ASpaceCombatPlayerController()
 {
 	bEnableMouseOverEvents = true;
 	PrimaryActorTick.bCanEverTick = true;
+
+	PathSpline = CreateDefaultSubobject<USplineComponent>(TEXT("Path"));
+	PathSpline->SetupAttachment(RootComponent);
+
+	LineMesh = CreateDefaultSubobject<UStaticMesh>(TEXT("LineMesh"));
 }
 
 // Called every frame
@@ -256,6 +262,19 @@ bool ASpaceCombatPlayerController::Fire(AShipPawnBase* TargetShip)
 		AShipPawnBase* SelectedShip = GameMode->SelectedShip;
 		if (SelectedShip)
 		{
+			// Check Subsystems are operational
+			if (!SelectedShip->Subsystems.Guns)
+			{
+				FString OfficerName = SelectedShip->TacticsOfficer->CrewName;
+				FString Result = OfficerName + ": Our weapons are offline.";
+
+				GameMode->WriteToCombatLog(FText::FromString(Result));
+
+				bPreparingToFire = false;
+
+				return false;
+			}
+
 			int32 ActionCost = 0;
 
 			// Calculate Hit Chance
@@ -312,6 +331,9 @@ bool ASpaceCombatPlayerController::Fire(AShipPawnBase* TargetShip)
 					// Missile Damage
 					Damage = SelectedShip->CalculateMissileDamage(CriticalHit);
 				}
+
+				// Adjust by Gun Subsystems Status
+				Damage = FMath::FloorToFloat(Damage * SelectedShip->Subsystems.Guns);
 
 				TSubclassOf<UDamageType> const ValidDamageTypeClass = TSubclassOf<UDamageType>(UDamageType::StaticClass());
 				FDamageEvent DamageEvent(ValidDamageTypeClass);
@@ -511,6 +533,13 @@ void ASpaceCombatPlayerController::ResetShip()
 			// Realign Static Mesh to Ship
 			StaticMesh->SetRelativeLocation(FVector(0.0f, 0.0f, Location.Z), false, nullptr, ETeleportType::TeleportPhysics);
 			StaticMesh->SetRelativeRotation(SelectedShip->StartRotation);
+		
+		
+		}
+
+		if (Tile)
+		{
+			Tile->ClearPath();
 		}
 	}
 }
