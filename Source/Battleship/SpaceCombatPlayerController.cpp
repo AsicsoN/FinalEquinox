@@ -327,7 +327,7 @@ bool ASpaceCombatPlayerController::Fire(AShipPawnBase* TargetShip)
 				}
 
 				// Adjust by Gun Subsystems Status
-				Damage = FMath::FloorToFloat(Damage * SelectedShip->Subsystems.Guns);
+				Damage = FMath::FloorToInt(Damage * SelectedShip->Subsystems.Guns);
 
 				TSubclassOf<UDamageType> const ValidDamageTypeClass = TSubclassOf<UDamageType>(UDamageType::StaticClass());
 				FDamageEvent DamageEvent(ValidDamageTypeClass);
@@ -340,27 +340,38 @@ bool ASpaceCombatPlayerController::Fire(AShipPawnBase* TargetShip)
 				}
 				else
 				{
-					Damage = Damage / 100;
+					float SubsystemDamage =  float(Damage) / 100.0f;
+					FString Subsystem;
 
 					if (bFireAtScanners)
 					{
-						TargetShip->Subsystems.Scanners -= Damage;
+						TargetShip->Subsystems.Scanners -= SubsystemDamage;
+						Subsystem = "Scanners";
 					}
 
 					if (bFireAtGuns)
 					{
-						TargetShip->Subsystems.Guns -= Damage;
+						TargetShip->Subsystems.Guns -= SubsystemDamage;
+						Subsystem = "Guns";
 					}
 
 					if (bFireAtEngines)
 					{
-						TargetShip->Subsystems.Engine -= Damage;
+						TargetShip->Subsystems.Engine -= SubsystemDamage;
+						Subsystem = "Engines";
 					}
 
 					if (bFireAtShields)
 					{
-						TargetShip->Subsystems.ShieldGen -= Damage;
+						TargetShip->Subsystems.ShieldGen -= SubsystemDamage;
+						Subsystem = "Shield Generator";
 					}
+
+					FString AttackerName = SelectedShip->Name;
+					FString DefenderName = TargetShip->Name;
+					FString Result = AttackerName + " damaged " + DefenderName + " " + Subsystem;
+
+					GameMode->WriteToCombatLog(FText::FromString(Result));
 				}
 			}
 			else
