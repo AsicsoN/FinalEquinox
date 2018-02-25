@@ -87,10 +87,12 @@ void ATile::CustomActorBeginCursorOver(UPrimitiveComponent* TouchedComponent)
 				SelectedShip->GetComponents<UStaticMeshComponent>(Components);
 				if (Components.Num())
 				{
-					UStaticMeshComponent* StaticMeshComponent = Components[0];
-					if (StaticMeshComponent) {
-						UStaticMesh* StaticMesh = StaticMeshComponent->GetStaticMesh();
-						StaticMeshComponent->SetWorldLocation(GetActorLocation(), true, nullptr, ETeleportType::TeleportPhysics);
+					for (UStaticMeshComponent* StaticMeshComponent : Components)
+					{
+						if (StaticMeshComponent && StaticMeshComponent->ComponentHasTag(FName("Ship"))) 
+						{
+							StaticMeshComponent->SetWorldLocation(FVector(GetActorLocation().X, GetActorLocation().Y, StaticMeshComponent->GetComponentLocation().Z), true, nullptr, ETeleportType::TeleportPhysics);
+						}
 					}
 				}
 			}
@@ -191,7 +193,7 @@ void ATile::ClearPath()
 	{
 		while (SplineMeshes.IsValidIndex(0))
 		{
-			if (SplineMeshes[0] != nullptr)
+			if (SplineMeshes[0] != nullptr && !SplineMeshes[0]->IsBeingDestroyed())
 			{
 				SplineMeshes[0]->DestroyComponent();
 				SplineMeshes.RemoveAt(0);
