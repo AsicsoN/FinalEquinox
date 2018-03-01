@@ -192,10 +192,10 @@ public:
 
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser);
 
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Actions")
+	UFUNCTION(BlueprintCallable, Category = "Actions")
 	int32 CalculateLaserDamage(bool CriticalHit);
 
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Actions")
+	UFUNCTION(BlueprintCallable, Category = "Actions")
 	int32 CalculateMissileDamage(bool CriticalHit);
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "TurnSequence")

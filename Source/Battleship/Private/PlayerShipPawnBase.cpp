@@ -4,7 +4,7 @@
 // Calculate ship stats
 void APlayerShipPawnBase::Instantiate()
 {
-	//Super::Instantiate();
+	// Super::Instantiate();
 
 	Tactics = (Captain->Tactics * 0.4) + (TacticsOfficer->Tactics * 0.4) + (NavigationOfficer->Tactics * 0.2);
 	Navigation = (NavigationOfficer->Navigation * 0.6) + (Captain->Navigation * 0.3) + (TacticsOfficer->Navigation * 0.1);
