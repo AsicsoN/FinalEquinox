@@ -24,7 +24,7 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	class UStaticMeshComponent* Indicator = nullptr;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	class UBoxComponent* Box = nullptr;
 
 	UPROPERTY(EditAnywhere)
