@@ -20,7 +20,7 @@ void AShipPawnBase::BeginPlay()
 
 void AShipPawnBase::Instantiate()
 {
-	
+
 }
 
 // Called every frame
@@ -142,6 +142,32 @@ float AShipPawnBase::TakeDamage(float Damage, struct FDamageEvent const& DamageE
 	}
 
 	return damage;
+}
+
+int32 AShipPawnBase::CalculateLaserDamage(bool CriticalHit)
+{
+	int32 Damage = FMath::RandRange(1, 20);
+
+	if (CriticalHit)
+	{
+		Damage = Damage * 2;
+	}
+	
+	return Damage;
+}
+
+int32 AShipPawnBase::CalculateMissileDamage(bool CriticalHit)
+{
+	int32 Damage = FMath::RandRange(1, 10);
+
+	Damage += 10;
+
+	if (CriticalHit)
+	{
+		Damage = Damage * 2;
+	}
+
+	return Damage;
 }
 
 bool AShipPawnBase::IsTurnOver()
