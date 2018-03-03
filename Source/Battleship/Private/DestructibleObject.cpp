@@ -16,8 +16,8 @@ ADestructibleObject::ADestructibleObject()
 	RootComponent = Mesh;
 
 	Box = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
-	Box->SetBoxExtent(FVector(120.0f, 120.0f, 200.0f));
 	Box->SetupAttachment(Mesh);
+	Box->SetBoxExtent(FVector(100.0f, 100.0f, 200.0f));
 }
 
 // Called when the game starts or when spawned
