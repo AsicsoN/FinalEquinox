@@ -87,10 +87,12 @@ void ATile::CustomActorBeginCursorOver(UPrimitiveComponent* TouchedComponent)
 				SelectedShip->GetComponents<UStaticMeshComponent>(Components);
 				if (Components.Num())
 				{
-					UStaticMeshComponent* StaticMeshComponent = Components[0];
-					if (StaticMeshComponent) {
-						UStaticMesh* StaticMesh = StaticMeshComponent->GetStaticMesh();
-						StaticMeshComponent->SetWorldLocation(GetActorLocation(), true, nullptr, ETeleportType::TeleportPhysics);
+					for (UStaticMeshComponent* StaticMeshComponent : Components)
+					{
+						if (StaticMeshComponent && StaticMeshComponent->ComponentHasTag(FName("Ship"))) 
+						{
+							StaticMeshComponent->SetWorldLocation(FVector(GetActorLocation().X, GetActorLocation().Y, StaticMeshComponent->GetComponentLocation().Z), true, nullptr, ETeleportType::TeleportPhysics);
+						}
 					}
 				}
 			}
@@ -186,16 +188,12 @@ void ATile::ClearPath()
 		return;
 	}
 
-	//Checks if it is valid at index zero because index zero is always going to exist if the array has any elements
-	if (SplineMeshes.IsValidIndex(0))
+	while (SplineMeshes.Num())
 	{
-		while (SplineMeshes.IsValidIndex(0))
+		USplineMeshComponent* Mesh = SplineMeshes.Pop(true);
+		if (Mesh != nullptr && !Mesh->IsBeingDestroyed())
 		{
-			if (SplineMeshes[0] != nullptr)
-			{
-				SplineMeshes[0]->DestroyComponent();
-				SplineMeshes.RemoveAt(0);
-			}
+			Mesh->DestroyComponent();
 		}
 	}
 
