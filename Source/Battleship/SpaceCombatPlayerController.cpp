@@ -318,22 +318,61 @@ bool ASpaceCombatPlayerController::Fire(AShipPawnBase* TargetShip)
 				if (bFireModeIsLasers)
 				{
 					// Laser Damage
-					Damage = SelectedShip->CalculateLaserDamage(CriticalHit);
+					Damage += SelectedShip->CalculateLaserDamage(CriticalHit);
 				}
 				else
 				{
 					// Missile Damage
-					Damage = SelectedShip->CalculateMissileDamage(CriticalHit);
+					Damage += SelectedShip->CalculateMissileDamage(CriticalHit);
 				}
 
 				// Adjust by Gun Subsystems Status
-				Damage = FMath::FloorToFloat(Damage * SelectedShip->Subsystems.Guns);
+				Damage = FMath::FloorToInt(Damage * SelectedShip->Subsystems.Guns);
 
 				TSubclassOf<UDamageType> const ValidDamageTypeClass = TSubclassOf<UDamageType>(UDamageType::StaticClass());
 				FDamageEvent DamageEvent(ValidDamageTypeClass);
 				
 				// Apply Damage
-				TargetShip->TakeDamage(Damage, DamageEvent, this, SelectedShip);
+				// TODO Change to Damage event?
+				if (!bFireAtSubsystems)
+				{
+					TargetShip->TakeDamage(Damage, DamageEvent, this, SelectedShip);
+				}
+				else
+				{
+					float SubsystemDamage =  float(Damage) / 100.0f;
+					FString Subsystem;
+
+					if (bFireAtScanners)
+					{
+						TargetShip->Subsystems.Scanners -= SubsystemDamage;
+						Subsystem = "Scanners";
+					}
+
+					if (bFireAtGuns)
+					{
+						TargetShip->Subsystems.Guns -= SubsystemDamage;
+						Subsystem = "Guns";
+					}
+
+					if (bFireAtEngines)
+					{
+						TargetShip->Subsystems.Engine -= SubsystemDamage;
+						Subsystem = "Engines";
+					}
+
+					if (bFireAtShields)
+					{
+						TargetShip->Subsystems.ShieldGen -= SubsystemDamage;
+						Subsystem = "Shield Generator";
+					}
+
+					FString AttackerName = SelectedShip->Name;
+					FString DefenderName = TargetShip->Name;
+					FString Result = AttackerName + " damaged " + DefenderName + " " + Subsystem;
+
+					GameMode->WriteToCombatLog(FText::FromString(Result));
+				}
 			}
 			else
 			{
@@ -357,6 +396,8 @@ bool ASpaceCombatPlayerController::Fire(AShipPawnBase* TargetShip)
 			}
 
 			bPreparingToFire = false;
+			bFireAtSubsystems = false;
+			bFireAtScanners = bFireAtGuns = bFireAtEngines = bFireAtShields = false;
 
 			return true;
 		}
@@ -366,8 +407,9 @@ bool ASpaceCombatPlayerController::Fire(AShipPawnBase* TargetShip)
 	return false;
 }
 
-bool ASpaceCombatPlayerController::PrepareToFire(bool FiringLasers)
+bool ASpaceCombatPlayerController::PrepareToFire(bool FiringLasers, bool FireSubsystems)
 {
+	bFireAtSubsystems = FireSubsystems;
 	bFireModeIsLasers = FiringLasers;
 	bPreparingToFire = true;
 	return true;
