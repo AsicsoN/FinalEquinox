@@ -24,6 +24,21 @@ public:
 	bool bFireModeIsLasers = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+	bool bFireAtSubsystems = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+	bool bFireAtScanners = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+	bool bFireAtGuns = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+	bool bFireAtEngines = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+	bool bFireAtShields = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	bool bPreparingToMove = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
@@ -66,7 +81,7 @@ public:
 	bool Fire(AShipPawnBase* TargetShip);
 
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
-	bool PrepareToFire(bool FiringLasers);
+	bool PrepareToFire(bool FiringLasers, bool FireSubsystems = false);
 
 	/***
 	* Utility Functions

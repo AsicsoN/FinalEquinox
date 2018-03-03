@@ -1,4 +1,4 @@
-﻿#Unreal gitignore
+#Unreal gitignore
 Binaries/
 /DerivedDataCache
 Intermediate/

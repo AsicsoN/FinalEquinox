@@ -212,6 +212,7 @@ void ASpaceCombatAiController::CalculateTravelPoint()
 		}
 		else
 		{
+			SelectedShip->CurrentMovementPoints -= FMath::RoundToInt(PathLength);
 			break;
 		}
 	}
@@ -258,21 +259,28 @@ void ASpaceCombatAiController::MoveShip()
 {
 	UWorld* World = GetWorld();
 
-	// Calculate the AI Pathing using the Nav system.
-	EPathFollowingRequestResult::Type Result = MoveToActor(TargetTile, 10.0f);
+	AShipPawnBase* SelectedShip = Cast<AShipPawnBase>(GetPawn());
 
-	if (Result == EPathFollowingRequestResult::AlreadyAtGoal)
+	if (SelectedShip) 
 	{
-		World->GetTimerManager().ClearTimer(AiMoveCycleHandle);
+		bool EnginesOnline = (SelectedShip->Subsystems.Engine != 0.0f);
 
-		UE_LOG(LogTemp, Warning, TEXT("Enemy Ship reached destination"));
-		StopMovement();
+		// Calculate the AI Pathing using the Nav system.
+		EPathFollowingRequestResult::Type Result = MoveToActor(TargetTile, 10.0f);
+		
+		if (!EnginesOnline || Result == EPathFollowingRequestResult::AlreadyAtGoal)
+		{
+			World->GetTimerManager().ClearTimer(AiMoveCycleHandle);
 
-		AttackPlayer();
-	}
-	else
-	{
-		World->GetTimerManager().SetTimer(AiSwapCycleHandle, this, &ASpaceCombatAiController::MoveShip, 0.1f);
+			UE_LOG(LogTemp, Warning, TEXT("Enemy Ship reached destination"));
+			StopMovement();
+
+			AttackPlayer();
+		}
+		else
+		{
+			World->GetTimerManager().SetTimer(AiSwapCycleHandle, this, &ASpaceCombatAiController::MoveShip, 0.1f);
+		}
 	}
 }
 
@@ -283,13 +291,18 @@ void ASpaceCombatAiController::AttackPlayer()
 
 	UE_LOG(LogTemp, Warning, TEXT("Enemy Ship %s ready to attack %s"), *SelectedShip->Name, *Target->Name);
 
-	if (SelectedShip->CurrentActionPoints >= 0)
+	if (SelectedShip->CurrentActionPoints > 0)
 	{
 		ASpaceCombatPlayerController* PlayerController = Cast<ASpaceCombatPlayerController>(World->GetFirstPlayerController());
 
 		PlayerController->PrepareToFire(true);
 
 		UE_LOG(LogTemp, Warning, TEXT("Enemy Ship %s FIRING"), *SelectedShip->Name);
+
+		if (!SelectedShip->Subsystems.Guns)
+		{
+			SelectedShip->CurrentActionPoints = 0;
+		}
 
 		PlayerController->Fire(Target);
 
@@ -308,7 +321,6 @@ void ASpaceCombatAiController::AttackPlayer()
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Enemy Ship %s finished attacking"), *SelectedShip->Name);
-
 		Target = nullptr;
 
 		World->GetTimerManager().SetTimer(AiSwapCycleHandle, this, &ASpaceCombatAiController::SwapShip, 5.0f);
