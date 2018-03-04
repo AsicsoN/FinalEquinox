@@ -199,7 +199,7 @@ public:
 	int32 CalculateMissileDamage(bool CriticalHit);
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Actions")
-	void FireVFX(bool bFireLasers, AShipPawnBase* TargetShip);
+	void FireVFX(AShipPawnBase* TargetShip);
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "TurnSequence")
 	bool ShowThisShipActive();
