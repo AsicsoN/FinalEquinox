@@ -304,6 +304,8 @@ void ASpaceCombatAiController::AttackPlayer()
 			SelectedShip->CurrentActionPoints = 0;
 		}
 
+		SelectedShip->FireVFX(Target);
+
 		PlayerController->Fire(Target);
 
 		if (Target->CurrentHitPoints <= 0)
