@@ -8,6 +8,31 @@
 #include "Tile.h"
 #include "AI/Navigation/NavigationPath.h"
 
+
+void ASpaceCombatAiController::Tick(float DeltaTime)
+{
+	if (bRotate)
+	{
+		AShipPawnBase* SelectedShip = Cast<AShipPawnBase>(GetPawn());
+
+		if (!SelectedShip)
+		{
+			return;
+		}
+
+		FRotator Current = SelectedShip->GetActorRotation();
+
+		UE_LOG(LogTemp, Warning, TEXT("%f"), FMath::Abs<float>(Current.Yaw - Rotation.Yaw));
+
+		if (FMath::Abs<float>(Current.Yaw - Rotation.Yaw) <= 1.0f)
+		{
+			bRotate = false;
+		}
+
+		SelectedShip->SetActorRotation(FMath::RInterpTo(SelectedShip->GetActorRotation(), Rotation, DeltaTime, 3.0f));
+	}
+}
+
 void ASpaceCombatAiController::InitializeAI(ASpaceCombatGameMode* NewGameMode)
 {
 	GameMode = NewGameMode;
@@ -55,6 +80,8 @@ void ASpaceCombatAiController::GenerateTurnInformation()
 
 	// Calculate Travel Point
 	CalculateTravelPoint();
+
+	Rotation = SelectedShip->GetActorRotation();
 
 	UE_LOG(LogTemp, Warning, TEXT("Enemy Ship %s moving to target"), *SelectedShip->Name);
 	MoveShip();
@@ -274,8 +301,10 @@ void ASpaceCombatAiController::MoveShip()
 
 			UE_LOG(LogTemp, Warning, TEXT("Enemy Ship reached destination"));
 			StopMovement();
-
-			AttackPlayer();
+			
+			bRotate = true;
+			
+			World->GetTimerManager().SetTimer(AiAttackCycleHandle, this, &ASpaceCombatAiController::AttackPlayer, 2.0f);
 		}
 		else
 		{

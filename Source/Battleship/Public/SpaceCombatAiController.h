@@ -24,6 +24,9 @@ public:
 	void BeginAiTurn();
 
 protected:
+
+	virtual void Tick(float DeltatTime) override;
+
 	void GenerateTurnInformation();
 
 	void SelectTarget();
@@ -45,6 +48,9 @@ private:
 
 	// Target Tile
 	ATile* TargetTile = nullptr;
+
+	FRotator Rotation;
+	bool bRotate = false;
 
 	// Timer Handles
 	FTimerHandle AiMoveCycleHandle;
