@@ -22,10 +22,27 @@
         </Directory>
       </Directory>
 
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="Final Equinox - The Arrival"/>
+      </Directory>
+
     </Directory>
+
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component Id="ApplicationShortcut" Guid="{BCEBC3A6-7494-4229-B92E-044F57C69508}">
+        <Shortcut Id="ApplicationStartMenuShortcut" Name="Final Equinox - The Arrival" Description="$(var.DisplayName)" Target="[INSTALLDIR]Battleship.exe" WorkingDirectory="INSTALLDIR"/>
+        <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
+        <RegistryValue Root="HKCU" Key="Software\FrozenWastelandEntertainment\FinalEquinoxTheArrival" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+      </Component>
+    </DirectoryRef>
+
+    <ComponentGroup Id="Shortcuts">
+      <ComponentRef Id="ApplicationShortcut"/>
+    </ComponentGroup>
 
     <Feature Id='Complete' Level='1'>
       <ComponentGroupRef Id='UnrealFiles' />
+      <ComponentGroupRef Id='Shortcuts'/>
     </Feature>
   </Product>
 </Wix>
