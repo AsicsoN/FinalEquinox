@@ -166,7 +166,7 @@ function DeployArtifacts
 		New-Item -ItemType Directory -Force -Path $path
 	}
 	
-	Copy-Item "$PSScriptRoot\Installer\Bundle\bin\Release\BattleshipSetup.exe" $path
+	Copy-Item "$PSScriptRoot\Installer\Bundle\bin\Release\FinalEquinoxTheArrivalSetup.exe" $path
 }
 
 function StageUnrealOutput
