@@ -57,5 +57,5 @@ private:
 
 	int32 RequiredMP = 0;
 
-	TArray<USplineMeshComponent*> SplineMeshes;
+	TArray<TWeakObjectPtr<USplineMeshComponent>> SplineMeshes;
 };
