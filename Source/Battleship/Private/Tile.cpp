@@ -145,13 +145,13 @@ void ATile::BuildPath()
 
 		for (int32 Index = 0; Index < Path->GetNumberOfSplinePoints() - 1; Index++)
 		{
-			USplineMeshComponent* Spline = NewObject<USplineMeshComponent>();
+			TWeakObjectPtr<USplineMeshComponent> Spline = NewObject<USplineMeshComponent>();
 
 			FVector pointLocationStart, pointTangentStart, pointLocationEnd, pointTangentEnd;
 			Path->GetLocalLocationAndTangentAtSplinePoint(Index, pointLocationStart, pointTangentStart);
 			Path->GetLocalLocationAndTangentAtSplinePoint(Index + 1, pointLocationEnd, pointTangentEnd);
 
-			if (Spline)
+			if (Spline.IsValid())
 			{
 				Spline->bCastDynamicShadow = false;
 				Spline->SetStaticMesh(Mesh);
@@ -190,8 +190,8 @@ void ATile::ClearPath()
 
 	while (SplineMeshes.Num())
 	{
-		USplineMeshComponent* Mesh = SplineMeshes.Pop(true);
-		if (Mesh != nullptr && !Mesh->IsBeingDestroyed())
+		TWeakObjectPtr<USplineMeshComponent> Mesh = SplineMeshes.Pop(true);
+		if (Mesh.IsValid())
 		{
 			Mesh->DestroyComponent();
 		}

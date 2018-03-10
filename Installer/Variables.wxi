@@ -6,6 +6,6 @@
   <?define Win32SourceDir="$(var.SourceDir)\Win32\WindowsNoEditor\" ?>
 
   <?define CompanyName="Frozen Wasteland Entertainment" ?>
-  <?define DisplayName="Battleship Project" ?>
+  <?define DisplayName="Final Equinox: The Arrival" ?>
 
 </Include>
