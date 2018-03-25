@@ -92,7 +92,7 @@ function BuildUnreal
 	$pathToUAT = "$pathToEngine\Engine\Build\BatchFiles\RunUAT.bat"
 	$parameters = "-ScriptsForProject=`"$PSScriptRoot\Battleship.uproject`"", "BuildCookRun", "-nocompile", "-nocompileeditor", "-installed", "-nop4",
 	 "-project=`"$PSScriptRoot\Battleship.uproject`"", "-cook", "-stage", "-archive", "-archivedirectory=`"$PSScriptRoot\Output\$Platform`"", "-package", 
-	 "-clientconfig=Shipping", "-ue4exe=UE4Editor-Cmd.exe", "-clean", "-pak", "-prereqs", "-distribution", "-nodebuginfo", "-targetplatform=$Platform",
+	 "-clientconfig=Shipping", "-ue4exe=UE4Editor-Cmd.exe", "-clean", "-prereqs", "-distribution", "-nodebuginfo", "-targetplatform=$Platform",
 	 "-build", "-CrashReporter", "-utf8output"
 	$uat = Start-Process -FilePath $pathToUAT -ArgumentList $parameters -PassThru -NoNewWindow
 	
