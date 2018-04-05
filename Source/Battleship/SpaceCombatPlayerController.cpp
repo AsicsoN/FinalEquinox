@@ -8,6 +8,7 @@
 #include "DestructibleObject.h"
 #include "Tile.h"
 #include "Ability.h"
+#include "SpaceCombatDamageType.h"
 
 ASpaceCombatPlayerController::ASpaceCombatPlayerController()
 {
@@ -329,8 +330,16 @@ bool ASpaceCombatPlayerController::Fire(AShipPawnBase* TargetShip)
 				// Adjust by Gun Subsystems Status
 				Damage = FMath::FloorToInt(Damage * SelectedShip->Subsystems.Guns);
 
-				TSubclassOf<UDamageType> const ValidDamageTypeClass = TSubclassOf<UDamageType>(UDamageType::StaticClass());
-				FDamageEvent DamageEvent(ValidDamageTypeClass);
+				FDamageEvent DamageEvent;
+
+				if (TargetShip->CurrentShieldHitPoints > 0)
+				{
+					DamageEvent.DamageTypeClass = ULaserDamage::StaticClass();
+				}
+				else
+				{
+					DamageEvent.DamageTypeClass = UHullDamage::StaticClass();
+				}
 				
 				// Apply Damage
 				// TODO Change to Damage event?

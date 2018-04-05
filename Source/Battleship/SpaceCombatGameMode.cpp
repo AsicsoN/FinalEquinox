@@ -173,7 +173,13 @@ float ASpaceCombatGameMode::CalculateHitChance(AShipPawnBase* TargetShip)
 
 float ASpaceCombatGameMode::CalculateDistance(AShipPawnBase* Ship1, AShipPawnBase* Ship2)
 {
-	float toReturn = 0.0f;
+	float ShipDistance = Ship1->GetDistanceTo(Ship2);
+
+	ShipDistance = FMath::FloorToInt(ShipDistance / 256.0f);
+
+	return ShipDistance;
+
+	/*float toReturn = 0.0f;
 
 	UGridLocation* loc1 = Ship1->FindComponentByClass<UGridLocation>();
 	UGridLocation* loc2 = Ship2->FindComponentByClass<UGridLocation>();
@@ -215,7 +221,7 @@ float ASpaceCombatGameMode::CalculateDistance(AShipPawnBase* Ship1, AShipPawnBas
 
 	toReturn = sqrt(csquared);
 
-	return toReturn;
+	return toReturn;*/
 }
 
 void ASpaceCombatGameMode::RepairShip(AShipPawnBase* Ship, FString Type)
