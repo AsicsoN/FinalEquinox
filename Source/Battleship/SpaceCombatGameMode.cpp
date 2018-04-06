@@ -166,7 +166,14 @@ float ASpaceCombatGameMode::CalculateHitChance(AShipPawnBase* TargetShip)
 
 	// (100 - (DistanceInSquares * 5)) + SpeedDifference + NavigationDifference + (GunneryModifier * 1.5) + Penalty;
 	float HitChance = (100 - (Distance * 5)) + SpeedDifference + NavigationDifference + (GunneryDifference * 1.5);
-	HitChance *= (1.0f + SelectedShip->HitBonus);
+	float HitBonus = SelectedShip->HitBonus;
+	
+	if (SelectedShip->ScannedShips.Contains(TargetShip))
+	{
+		HitBonus += 0.2f;
+	}
+
+	HitChance *= (1.0f + HitBonus);
 	HitChance += Penalty;
 	return HitChance;
 }

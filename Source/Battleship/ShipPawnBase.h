@@ -146,7 +146,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "System Stats")
 	int32 Fighters = -1;
 
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "System Stats")
+	bool bScanned = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "System Stats")
+	TArray<AShipPawnBase*> ScannedShips;	
 
 	//
 	// Rotation Variables

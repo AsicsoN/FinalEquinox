@@ -83,6 +83,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
 	bool PrepareToFire(bool FiringLasers, bool FireSubsystems = false);
 
+	UFUNCTION(BlueprintCallable, Category = "Gameplay")
+	bool ScanShip(AShipPawnBase* TargetShip);
+
 	/***
 	* Utility Functions
 	*/
