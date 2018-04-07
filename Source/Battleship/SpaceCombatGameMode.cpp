@@ -166,14 +166,27 @@ float ASpaceCombatGameMode::CalculateHitChance(AShipPawnBase* TargetShip)
 
 	// (100 - (DistanceInSquares * 5)) + SpeedDifference + NavigationDifference + (GunneryModifier * 1.5) + Penalty;
 	float HitChance = (100 - (Distance * 5)) + SpeedDifference + NavigationDifference + (GunneryDifference * 1.5);
-	HitChance *= (1.0f + SelectedShip->HitBonus);
+	float HitBonus = SelectedShip->HitBonus;
+	
+	if (SelectedShip->ScannedShips.Contains(TargetShip))
+	{
+		HitBonus += 0.2f;
+	}
+
+	HitChance *= (1.0f + HitBonus);
 	HitChance += Penalty;
 	return HitChance;
 }
 
 float ASpaceCombatGameMode::CalculateDistance(AShipPawnBase* Ship1, AShipPawnBase* Ship2)
 {
-	float toReturn = 0.0f;
+	float ShipDistance = Ship1->GetDistanceTo(Ship2);
+
+	ShipDistance = FMath::FloorToInt(ShipDistance / 256.0f);
+
+	return ShipDistance;
+
+	/*float toReturn = 0.0f;
 
 	UGridLocation* loc1 = Ship1->FindComponentByClass<UGridLocation>();
 	UGridLocation* loc2 = Ship2->FindComponentByClass<UGridLocation>();
@@ -215,7 +228,7 @@ float ASpaceCombatGameMode::CalculateDistance(AShipPawnBase* Ship1, AShipPawnBas
 
 	toReturn = sqrt(csquared);
 
-	return toReturn;
+	return toReturn;*/
 }
 
 void ASpaceCombatGameMode::RepairShip(AShipPawnBase* Ship, FString Type)
