@@ -31,6 +31,10 @@
 		{
 			"Name": "UmgRichTextBox",
 			"Enabled": true
+		},
+		{
+			"Name": "ApexDestruction",
+			"Enabled": true
 		}
 	],
 	"TargetPlatforms": [

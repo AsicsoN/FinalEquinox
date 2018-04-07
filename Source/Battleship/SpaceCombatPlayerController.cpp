@@ -8,6 +8,7 @@
 #include "DestructibleObject.h"
 #include "Tile.h"
 #include "Ability.h"
+#include "SpaceCombatDamageType.h"
 
 ASpaceCombatPlayerController::ASpaceCombatPlayerController()
 {
@@ -329,8 +330,16 @@ bool ASpaceCombatPlayerController::Fire(AShipPawnBase* TargetShip)
 				// Adjust by Gun Subsystems Status
 				Damage = FMath::FloorToInt(Damage * SelectedShip->Subsystems.Guns);
 
-				TSubclassOf<UDamageType> const ValidDamageTypeClass = TSubclassOf<UDamageType>(UDamageType::StaticClass());
-				FDamageEvent DamageEvent(ValidDamageTypeClass);
+				FDamageEvent DamageEvent;
+
+				if (TargetShip->CurrentShieldHitPoints > 0)
+				{
+					DamageEvent.DamageTypeClass = ULaserDamage::StaticClass();
+				}
+				else
+				{
+					DamageEvent.DamageTypeClass = UHullDamage::StaticClass();
+				}
 				
 				// Apply Damage
 				// TODO Change to Damage event?
@@ -413,6 +422,89 @@ bool ASpaceCombatPlayerController::PrepareToFire(bool FiringLasers, bool FireSub
 	bFireModeIsLasers = FiringLasers;
 	bPreparingToFire = true;
 	return true;
+}
+
+bool ASpaceCombatPlayerController::ScanShip(AShipPawnBase* TargetShip)
+{
+	if (!bPreparingToScan || !TargetShip)
+	{
+		return false;
+	}
+
+	ASpaceCombatGameMode* GameMode = Cast<ASpaceCombatGameMode>(GetWorld()->GetAuthGameMode());
+
+	if (GameMode)
+	{
+		APlayerShipPawnBase* SelectedShip = (APlayerShipPawnBase*) GameMode->SelectedShip;
+
+		FString SOfficerName = SelectedShip->ScienceOfficer->CrewName;
+		FString DefenderName = TargetShip->Name;
+		FString Result = "";
+
+		// Check Our Scanners are functional
+		if (!SelectedShip || !SelectedShip->Subsystems.Scanners)
+		{
+			Result = SOfficerName + ": We are unable to scan at this time!";
+			GameMode->WriteToCombatLog(FText::FromString(Result));
+			return false;
+		}
+
+		if (SelectedShip->CurrentActionPoints < 8)
+		{
+			Result = SOfficerName + ": We can't afford to scan at this time!";
+			GameMode->WriteToCombatLog(FText::FromString(Result));
+			return false;
+		}
+
+		// Deduct Scan Cost
+		SelectedShip->CurrentActionPoints -= 8;
+
+		// Calculate Scan Resistance
+		float Resistance = (TargetShip->PowerLevel * 5) + TargetShip->CurrentShieldHitPoints;
+
+		// Calculate Scan Hit
+		float X = ((50) - (Resistance)) + ((5 + SelectedShip->Science) * 5);
+
+		float Y = (100 - X) / FMath::RandRange(1, 100);
+
+		if (Y < 1)
+		{
+			// Calculate Scan Crit
+			X = FMath::RandRange(1, 100) / ((5 + SelectedShip->Science) * 5);
+
+			bool bCrit = false;
+			if (X < 1)
+			{
+				bCrit = true;
+			}
+
+			// Set Target Ship to Scanned
+			TargetShip->bScanned = true;
+
+			if (!bCrit)
+			{
+				Result = SOfficerName + ": We have scanned the enemy vessel '" + DefenderName + "'";
+			}
+			else
+			{
+				Result = SOfficerName + ": We have identified weakness in the enemy vessel '" + DefenderName + "'";
+				SelectedShip->ScannedShips.Add(TargetShip);
+			}
+
+			GameMode->WriteToCombatLog(FText::FromString(Result));
+
+			return true;
+		}
+		else
+		{
+			Result = SOfficerName + ": We failed to scan the enemy ship '" + DefenderName + "'";
+
+			GameMode->WriteToCombatLog(FText::FromString(Result));
+
+			return false;
+		}
+	}
+	return false;
 }
 
 bool ASpaceCombatPlayerController::GetFinalRotation()

@@ -27,6 +27,7 @@ void ASpaceCombatAiController::Tick(float DeltaTime)
 		if (FMath::Abs<float>(Current.Yaw - Rotation.Yaw) <= 1.0f)
 		{
 			bRotate = false;
+			SelectedShip->SetActorRotation(Rotation);
 		}
 
 		SelectedShip->SetActorRotation(FMath::RInterpTo(SelectedShip->GetActorRotation(), Rotation, DeltaTime, 3.0f));
@@ -52,6 +53,8 @@ void ASpaceCombatAiController::BeginAiTurn()
 	Possess(SelectedShip);
 
 	UE_LOG(LogTemp, Warning, TEXT("Enemy Ship %s starting turn"), *SelectedShip->Name);
+
+	SelectedShip->ChangeCollision(true);
 
 	// Commence Ai Logic Cycle
 	GenerateTurnInformation();
@@ -366,6 +369,8 @@ void ASpaceCombatAiController::SwapShip()
 	AShipPawnBase* SelectedShip = Cast<AShipPawnBase>(GetPawn());
 
 	UE_LOG(LogTemp, Warning, TEXT("Enemy Ship %s finished turn"), *SelectedShip->Name);
+
+	SelectedShip->ChangeCollision(false);
 
 	UnPossess();
 

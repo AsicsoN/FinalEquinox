@@ -148,7 +148,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "System Stats")
 	int32 Fighters = -1;
 
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "System Stats")
+	bool bScanned = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "System Stats")
+	TArray<AShipPawnBase*> ScannedShips;	
 
 	//
 	// Rotation Variables
@@ -211,11 +215,17 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "TurnSequence")
 	bool ShowThisShipInactive();
 
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "TurnSequence")
+	void ChangeCollision(bool bIsAiTurn);
+
 	UFUNCTION(BlueprintCallable, Category = "Instantiation")
 	virtual void Instantiate();
 
 	UFUNCTION(BlueprintCallable, Category = "Game State")
 	bool IsTurnOver();
+
+	UFUNCTION(BlueprintCallable, Category = "Game State")
+	void ShipDestroyed();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Game State")
 	bool ForceTurnEnd = false;

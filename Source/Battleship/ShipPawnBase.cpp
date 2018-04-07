@@ -58,7 +58,7 @@ float AShipPawnBase::TakeDamage(float Damage, struct FDamageEvent const& DamageE
 
 	bool ShieldsOnline = (Subsystems.ShieldGen != 0.0f);
 
-	if (DamageEvent.DamageTypeClass->GetDefaultObjectName().ToString().Contains("ShieldDamage", ESearchCase::IgnoreCase))
+	if (DamageEvent.DamageTypeClass->GetName().Contains("ShieldDamage", ESearchCase::IgnoreCase))
 	{
 		if (ShieldsOnline && CurrentShieldHitPoints > 0)
 		{
@@ -71,7 +71,7 @@ float AShipPawnBase::TakeDamage(float Damage, struct FDamageEvent const& DamageE
 			GameMode->WriteToCombatLog(FText::Format(LOCTEXT("TakeShieldDamage", "{Name} lost {Damage} shields due to being in an ion cloud."), Arguments));
 		}
 	}
-	else if (DamageEvent.DamageTypeClass->GetDefaultObjectName().ToString().Contains("HullDamage", ESearchCase::IgnoreCase))
+	else if (DamageEvent.DamageTypeClass->GetName().Contains("HullDamage", ESearchCase::IgnoreCase))
 	{
 		CurrentHitPoints = CurrentHitPoints - damage;
 
@@ -90,7 +90,7 @@ float AShipPawnBase::TakeDamage(float Damage, struct FDamageEvent const& DamageE
 			GameMode->WriteToCombatLog(FText::Format(LOCTEXT("HullDamage", "{Damage} damage was dealt to {Name}."), Arguments));
 		}
 	}
-	else if (DamageEvent.DamageTypeClass->GetDefaultObjectName().ToString().Contains("LaserDamage", ESearchCase::IgnoreCase) && ShieldsOnline)
+	else if (DamageEvent.DamageTypeClass->GetName().Contains("LaserDamage", ESearchCase::IgnoreCase) && ShieldsOnline)
 	{
 		CurrentShieldHitPoints = CurrentShieldHitPoints - damage;
 
@@ -140,15 +140,18 @@ float AShipPawnBase::TakeDamage(float Damage, struct FDamageEvent const& DamageE
 
 			GameMode->WriteToCombatLog(FText::Format(LOCTEXT("TakeDamage", "{Name} was dealt {Damage} damage"), Arguments));
 		}
+	}
 
-		if (CurrentHitPoints <= 0)
-		{
-			FFormatNamedArguments Arguments;
-			Arguments.Add(TEXT("Name"), FText::FromString(*Name));
-			GameMode->WriteToCombatLog(FText::Format(LOCTEXT("Destroyed", "{Name} has been destroyed"), Arguments));
+	if (CurrentHitPoints <= 0)
+	{
+		FFormatNamedArguments Arguments;
+		Arguments.Add(TEXT("Name"), FText::FromString(*Name));
+		GameMode->WriteToCombatLog(FText::Format(LOCTEXT("Destroyed", "{Name} has been destroyed"), Arguments));
 
-			GameMode->DestroyPawn(this);
-		}
+		GameMode->DestroyPawn(this);
+
+		FTimerHandle DestroySelf;
+		GetWorld()->GetTimerManager().SetTimer(DestroySelf, this, &AShipPawnBase::ShipDestroyed, 5.0f);
 	}
 
 	return damage;
@@ -182,8 +185,6 @@ int32 AShipPawnBase::CalculateMissileDamage(bool CriticalHit)
 
 bool AShipPawnBase::IsTurnOver()
 {
-	if (CurrentMovementPoints <= 0 && CurrentActionPoints <= 0) return true;
-	
 	return ForceTurnEnd;
 }
 
@@ -234,4 +235,12 @@ void AShipPawnBase::CheckExpiryBuffs()
 		}
 	}
 	Debuffs.Remove(nullptr);
+}
+
+void AShipPawnBase::ShipDestroyed()
+{
+	ASpaceCombatGameMode* GameMode = Cast<ASpaceCombatGameMode>(GetWorld()->GetAuthGameMode());
+
+	GameMode->ShipArray.Remove(this);
+	Destroy();
 }
