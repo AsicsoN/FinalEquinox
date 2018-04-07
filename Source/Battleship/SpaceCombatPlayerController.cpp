@@ -426,6 +426,11 @@ bool ASpaceCombatPlayerController::PrepareToFire(bool FiringLasers, bool FireSub
 
 bool ASpaceCombatPlayerController::ScanShip(AShipPawnBase* TargetShip)
 {
+	if (!bPreparingToScan || !TargetShip)
+	{
+		return false;
+	}
+
 	ASpaceCombatGameMode* GameMode = Cast<ASpaceCombatGameMode>(GetWorld()->GetAuthGameMode());
 
 	if (GameMode)
@@ -433,10 +438,14 @@ bool ASpaceCombatPlayerController::ScanShip(AShipPawnBase* TargetShip)
 		APlayerShipPawnBase* SelectedShip = (APlayerShipPawnBase*) GameMode->SelectedShip;
 
 		// Check Our Scanners are functional
-		if (!SelectedShip || !TargetShip || !SelectedShip->Subsystems.Scanners)
+		if (!SelectedShip || !SelectedShip->Subsystems.Scanners)
 		{
 			return false;
 		}
+
+		FString SOfficerName = SelectedShip->ScienceOfficer->CrewName;
+		FString DefenderName = TargetShip->Name;
+		FString Result = "";
 
 		// Calculate Scan Resistance
 		float Resistance = (TargetShip->PowerLevel * 5) + TargetShip->CurrentShieldHitPoints;
@@ -460,10 +469,6 @@ bool ASpaceCombatPlayerController::ScanShip(AShipPawnBase* TargetShip)
 			// Set Target Ship to Scanned
 			TargetShip->bScanned = true;
 
-			FString SOfficerName = SelectedShip->ScienceOfficer->CrewName;
-			FString DefenderName = TargetShip->Name;
-			FString Result = "";
-
 			if (!bCrit)
 			{
 				Result = SOfficerName + ": We have scanned the enemy vessel '" + DefenderName + "'";
@@ -471,15 +476,22 @@ bool ASpaceCombatPlayerController::ScanShip(AShipPawnBase* TargetShip)
 			else
 			{
 				Result = SOfficerName + ": We have identified weakness in the enemy vessel '" + DefenderName + "'";
-				SelectedShip->ScannedShips.AddUnique(TargetShip);
+				SelectedShip->ScannedShips.Add(TargetShip);
 			}
 
 			GameMode->WriteToCombatLog(FText::FromString(Result));
 
 			return true;
 		}
-	}
+		else
+		{
+			Result = SOfficerName + ": We failed to scan the enemy ship '" + DefenderName + "'";
 
+			GameMode->WriteToCombatLog(FText::FromString(Result));
+
+			return false;
+		}
+	}
 	return false;
 }
 

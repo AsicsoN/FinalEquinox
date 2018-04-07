@@ -42,6 +42,9 @@ public:
 	bool bPreparingToMove = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+	bool bPreparingToScan = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	bool bMoving = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
