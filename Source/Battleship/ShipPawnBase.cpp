@@ -1,5 +1,6 @@
 #include "Battleship.h"
 #include "SpaceCombatGameMode.h"
+#include "ShipInfoBaseWidget.h"
 #include "ShipPawnBase.h"
 
 #define LOCTEXT_NAMESPACE "SpaceCombat" 
@@ -28,6 +29,15 @@ void AShipPawnBase::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
 
+	ShipInfoWidget->Update();
+}
+
+void AShipPawnBase::Destroyed()
+{
+	if (ShipInfoWidget != nullptr)
+	{
+		ShipInfoWidget->RemoveFromParent();
+	}
 }
 
 // Called to bind functionality to input
