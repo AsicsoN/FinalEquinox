@@ -437,15 +437,27 @@ bool ASpaceCombatPlayerController::ScanShip(AShipPawnBase* TargetShip)
 	{
 		APlayerShipPawnBase* SelectedShip = (APlayerShipPawnBase*) GameMode->SelectedShip;
 
-		// Check Our Scanners are functional
-		if (!SelectedShip || !SelectedShip->Subsystems.Scanners)
-		{
-			return false;
-		}
-
 		FString SOfficerName = SelectedShip->ScienceOfficer->CrewName;
 		FString DefenderName = TargetShip->Name;
 		FString Result = "";
+
+		// Check Our Scanners are functional
+		if (!SelectedShip || !SelectedShip->Subsystems.Scanners)
+		{
+			Result = SOfficerName + ": We are unable to scan at this time!";
+			GameMode->WriteToCombatLog(FText::FromString(Result));
+			return false;
+		}
+
+		if (SelectedShip->CurrentActionPoints < 8)
+		{
+			Result = SOfficerName + ": We can't afford to scan at this time!";
+			GameMode->WriteToCombatLog(FText::FromString(Result));
+			return false;
+		}
+
+		// Deduct Scan Cost
+		SelectedShip->CurrentActionPoints -= 8;
 
 		// Calculate Scan Resistance
 		float Resistance = (TargetShip->PowerLevel * 5) + TargetShip->CurrentShieldHitPoints;
