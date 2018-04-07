@@ -5,6 +5,8 @@
 #include "Ability.h"
 #include "ShipPawnBase.generated.h"
 
+class UShipInfoBaseWidget;
+
 UENUM(BlueprintType)
 enum class EFaction : uint8
 {
@@ -183,6 +185,8 @@ public:
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	virtual void Destroyed() override;
 	
 	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
@@ -215,4 +219,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Game State")
 	bool ForceTurnEnd = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UserInterface")
+	UShipInfoBaseWidget* ShipInfoWidget = nullptr;
 };
