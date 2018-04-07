@@ -42,6 +42,9 @@ public:
 	bool bPreparingToMove = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+	bool bPreparingToScan = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	bool bMoving = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
@@ -82,6 +85,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
 	bool PrepareToFire(bool FiringLasers, bool FireSubsystems = false);
+
+	UFUNCTION(BlueprintCallable, Category = "Gameplay")
+	bool ScanShip(AShipPawnBase* TargetShip);
 
 	/***
 	* Utility Functions
