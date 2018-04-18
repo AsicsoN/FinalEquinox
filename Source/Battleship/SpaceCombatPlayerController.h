@@ -80,8 +80,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
 	bool RightTurn();
 
-	UFUNCTION(BlueprintCallable, Category = "Gameplay")
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Gameplay")
 	bool Fire(AShipPawnBase* TargetShip);
+	virtual bool Fire_Implementation(AShipPawnBase* TargetShip);
 
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
 	bool PrepareToFire(bool FiringLasers, bool FireSubsystems = false);

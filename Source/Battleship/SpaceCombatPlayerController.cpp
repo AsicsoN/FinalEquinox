@@ -246,7 +246,7 @@ bool ASpaceCombatPlayerController::RightTurn()
 	return false;
 }
 
-bool ASpaceCombatPlayerController::Fire(AShipPawnBase* TargetShip)
+bool ASpaceCombatPlayerController::Fire_Implementation(AShipPawnBase* TargetShip)
 {
 	ASpaceCombatGameMode* GameMode = Cast<ASpaceCombatGameMode>(GetWorld()->GetAuthGameMode());
 
