@@ -424,7 +424,7 @@ bool ASpaceCombatPlayerController::PrepareToFire(bool FiringLasers, bool FireSub
 	return true;
 }
 
-bool ASpaceCombatPlayerController::ScanShip(AShipPawnBase* TargetShip)
+bool ASpaceCombatPlayerController::ScanShip_Implementation(AShipPawnBase* TargetShip)
 {
 	if (!bPreparingToScan || !TargetShip)
 	{
