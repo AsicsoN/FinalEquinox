@@ -3,6 +3,8 @@
 #include "GameFramework/Character.h"
 #include "Crew.h"
 #include "Ability.h"
+#include "DestructibleComponent.h"
+#include "DestructibleMesh.h"
 #include "ShipPawnBase.generated.h"
 
 class UShipInfoBaseWidget;
@@ -65,6 +67,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
 	UTexture2D* Thumbnail;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UDestructibleComponent* Destructible;
 	
 	//
 	// Ship Stats

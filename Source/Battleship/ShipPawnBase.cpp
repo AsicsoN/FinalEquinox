@@ -11,6 +11,9 @@ AShipPawnBase::AShipPawnBase()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	Destructible = CreateDefaultSubobject<UDestructibleComponent>(TEXT("Destructible Mesh"));
+	Destructible->SetupAttachment(RootComponent);
+	Destructible->bEditableWhenInherited = true;
 }
 
 // Called when the game starts or when spawned
@@ -148,10 +151,10 @@ float AShipPawnBase::TakeDamage(float Damage, struct FDamageEvent const& DamageE
 		Arguments.Add(TEXT("Name"), FText::FromString(*Name));
 		GameMode->WriteToCombatLog(FText::Format(LOCTEXT("Destroyed", "{Name} has been destroyed"), Arguments));
 
-		GameMode->DestroyPawn(this);
+		//GameMode->DestroyPawn(this);
 
 		FTimerHandle DestroySelf;
-		GetWorld()->GetTimerManager().SetTimer(DestroySelf, this, &AShipPawnBase::ShipDestroyed, 5.0f);
+		GetWorld()->GetTimerManager().SetTimer(DestroySelf, this, &AShipPawnBase::ShipDestroyed, 1.0f);
 	}
 
 	return damage;
@@ -242,5 +245,34 @@ void AShipPawnBase::ShipDestroyed()
 	ASpaceCombatGameMode* GameMode = Cast<ASpaceCombatGameMode>(GetWorld()->GetAuthGameMode());
 
 	GameMode->ShipArray.Remove(this);
-	Destroy();
+
+	TArray<UActorComponent*> Meshes = GetComponentsByTag(UStaticMeshComponent::StaticClass(), FName(TEXT("Ship")));
+
+	if (Meshes.IsValidIndex(0))
+	{
+		UStaticMeshComponent* StaticMesh = Cast<UStaticMeshComponent>(Meshes[0]);
+
+		StaticMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		StaticMesh->SetVisibility(false);
+
+		Destructible->SetVisibility(true);
+		Destructible->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+		Destructible->SetCollisionProfileName(FName(TEXT("Destructible")));
+		Destructible->SetSimulatePhysics(true);
+
+		Destructible->ApplyDamage(100.0f, GetActorLocation(), FVector(0.0f), 1000.0f);
+
+		for (const FFractureEffect Effect : Destructible->FractureEffects)
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Effect.ParticleSystem, GetTransform());
+			UGameplayStatics::SpawnSound2D(GetWorld(), Effect.Sound);
+		}
+	}
+
+	if (ShipInfoWidget->IsValidLowLevel())
+	{
+		ShipInfoWidget->RemoveFromParent();
+	}
+
+	//Destroy();
 }
