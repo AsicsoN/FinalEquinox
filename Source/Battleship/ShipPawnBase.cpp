@@ -35,14 +35,6 @@ void AShipPawnBase::Tick( float DeltaTime )
 	ShipInfoWidget->Update();
 }
 
-void AShipPawnBase::Destroyed()
-{
-	if (ShipInfoWidget != nullptr)
-	{
-		ShipInfoWidget->RemoveFromParent();
-	}
-}
-
 // Called to bind functionality to input
 void AShipPawnBase::SetupPlayerInputComponent(class UInputComponent* InputComp)
 {
@@ -150,11 +142,6 @@ float AShipPawnBase::TakeDamage(float Damage, struct FDamageEvent const& DamageE
 		FFormatNamedArguments Arguments;
 		Arguments.Add(TEXT("Name"), FText::FromString(*Name));
 		GameMode->WriteToCombatLog(FText::Format(LOCTEXT("Destroyed", "{Name} has been destroyed"), Arguments));
-
-		//GameMode->DestroyPawn(this);
-
-		FTimerHandle DestroySelf;
-		GetWorld()->GetTimerManager().SetTimer(DestroySelf, this, &AShipPawnBase::ShipDestroyed, 1.0f);
 	}
 
 	return damage;
