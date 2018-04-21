@@ -120,7 +120,7 @@ function BuildInstaller
 	
 	$time = 0
 	while ($msbuild.HasExited -eq $false) {
-		if ($time -gt 600) {
+		if ($time -gt 1200) {
 			Write-Host "Timeout exceeded"
 			exit -1
 		}
