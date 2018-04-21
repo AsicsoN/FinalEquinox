@@ -14,6 +14,10 @@ AShipPawnBase::AShipPawnBase()
 	Destructible = CreateDefaultSubobject<UDestructibleComponent>(TEXT("Destructible Mesh"));
 	Destructible->SetupAttachment(RootComponent);
 	Destructible->bEditableWhenInherited = true;
+	Destructible->SetSimulatePhysics(false);
+	Destructible->SetEnableGravity(false);
+	Destructible->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	Destructible->SetLinearDamping(0.5f);
 }
 
 // Called when the game starts or when spawned
@@ -240,7 +244,7 @@ void AShipPawnBase::ShipDestroyed()
 		UStaticMeshComponent* StaticMesh = Cast<UStaticMeshComponent>(Meshes[0]);
 
 		StaticMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		StaticMesh->SetVisibility(false);
+		StaticMesh->SetVisibility(false, true);
 
 		Destructible->SetVisibility(true);
 		Destructible->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
