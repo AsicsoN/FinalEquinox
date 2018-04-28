@@ -41,6 +41,9 @@ public:
 	virtual bool CheckKey(const TSet<FString> CheckKeys, const FString Key);
 
 	UFUNCTION(BlueprintCallable, Category = "WidgetNavigation")
+	virtual void PopulateLayout(UWidget* Widget, bool bVerticalLayout);
+
+	UFUNCTION(BlueprintCallable, Category = "WidgetNavigation")
 	virtual UButton* NavigateUpDown(int32 Mod);
 
 	UFUNCTION(BlueprintCallable, Category = "WidgetNavigation")
