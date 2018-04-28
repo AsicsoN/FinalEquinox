@@ -37,9 +37,13 @@ void UFEMenuParentWidget::PopulateLayout(UWidget* Widget, bool bVerticalLayout =
 			continue;
 		}
 
-		FVector2D NewPos = Cast<UCanvasPanelSlot>(NewButton->Slot)->GetPosition();
-
-		ButtonOrder.Add(NewButton, NewPos);
+		UCanvasPanelSlot* NewSlot = Cast<UCanvasPanelSlot>(NewButton->Slot);
+		
+		if (NewSlot)
+		{
+			FVector2D NewPos = NewSlot->GetPosition();
+			ButtonOrder.Add(NewButton, NewPos);
+		}
 	}
 
 	ButtonOrder.ValueSort([](FVector2D LPos, FVector2D RPos) {
@@ -78,20 +82,26 @@ void UFEMenuParentWidget::PopulateLayout(UWidget* Widget, bool bVerticalLayout =
 		}
 	}
 	NavigationLayout.Add(NestButtons);
+	NestButtons = FNestedButtons();
 
 	if (NavigationLayout.Num())
 	{
-		UButton* Button = NavigationLayout.GetData()->Buttons[0];
-		Button->SetKeyboardFocus();
-		UE_LOG(LogTemp, Warning, TEXT("Setting Focus: %s"), *Button->GetDisplayLabel());
+		NestButtons = NavigationLayout[0];
+		
+		if (NestButtons.Buttons.Num())
+		{
+			UButton* Button = NestButtons.Buttons[0];
+			Button->SetKeyboardFocus();
+			UE_LOG(LogTemp, Warning, TEXT("Setting Focus: %s"), *Button->GetDisplayLabel());
 
-		FButtonStyle Style = Button->WidgetStyle;
-		FSlateBrush Normal = Style.Normal;
+			FButtonStyle Style = Button->WidgetStyle;
+			FSlateBrush Normal = Style.Normal;
 
-		Style.Normal = Style.Hovered;
-		Style.Hovered = Normal;
+			Style.Normal = Style.Hovered;
+			Style.Hovered = Normal;
 
-		Button->SetStyle(Style);
+			Button->SetStyle(Style);
+		}
 	}
 }
 
