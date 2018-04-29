@@ -91,6 +91,38 @@ void ASpaceCombatGameMode::SelectShip(AShipPawnBase* Ship)
 	SelectedShip = Ship;
 }*/
 
+void ASpaceCombatGameMode::CheckCombatState()
+{
+	int32 PlayerCount = 0;
+	int32 EnemyCount = 0;
+
+	for (const AShipPawnBase* Ship : ShipArray)
+	{
+		if (Ship->Faction == EFaction::Player)
+		{
+			PlayerCount++;
+		}
+		else
+		{
+			EnemyCount++;
+		}
+	}
+
+	if (PlayerCount && EnemyCount)
+	{
+		return;
+	}
+
+	if (!PlayerCount)
+	{
+		EndCombat(false);
+	}
+	else
+	{
+		EndCombat(true);
+	}
+}
+
 void ASpaceCombatGameMode::EndCombat(bool PlayerWon)
 {
 	bDidPlayerWin = PlayerWon;

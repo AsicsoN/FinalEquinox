@@ -265,5 +265,5 @@ void AShipPawnBase::ShipDestroyed()
 		ShipInfoWidget->RemoveFromParent();
 	}
 
-	//Destroy();
+	GameMode->CheckCombatState();
 }
