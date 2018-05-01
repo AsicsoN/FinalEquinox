@@ -1,11 +1,12 @@
 #include "Battleship.h"
 #include "CharacterSheet.h"
 #include "ShipPawnBase.h"
+#include "Stardate.h"
 #include "PlayerShipPawnBase.h"
 
 UCharacterSheet::UCharacterSheet()
 {
-
+	Stardate = NewObject<UStardate>();
 }
 
 FString UCharacterSheet::GetVariableValue(FString variableName)
