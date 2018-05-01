@@ -246,7 +246,7 @@ bool ASpaceCombatPlayerController::RightTurn()
 	return false;
 }
 
-bool ASpaceCombatPlayerController::Fire(AShipPawnBase* TargetShip)
+bool ASpaceCombatPlayerController::Fire_Implementation(AShipPawnBase* TargetShip)
 {
 	ASpaceCombatGameMode* GameMode = Cast<ASpaceCombatGameMode>(GetWorld()->GetAuthGameMode());
 
@@ -424,7 +424,7 @@ bool ASpaceCombatPlayerController::PrepareToFire(bool FiringLasers, bool FireSub
 	return true;
 }
 
-bool ASpaceCombatPlayerController::ScanShip(AShipPawnBase* TargetShip)
+bool ASpaceCombatPlayerController::ScanShip_Implementation(AShipPawnBase* TargetShip)
 {
 	if (!bPreparingToScan || !TargetShip)
 	{
