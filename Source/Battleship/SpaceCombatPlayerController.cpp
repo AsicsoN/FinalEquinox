@@ -518,54 +518,40 @@ bool ASpaceCombatPlayerController::GetFinalRotation()
 
 		if (SelectedShip)
 		{
-			if (MouseX != 0 && (MouseX > 2 || MouseX < -2))
+			if (Tile)
 			{
-				if (Tile)
-				{
-					bAdjustFinalRotation = true;
+				bAdjustFinalRotation = true;
 
-					TArray<UActorComponent*> Components = Tile->GetComponentsByTag(UActorComponent::StaticClass(), FName("Indicator"));
-					UStaticMeshComponent* Indicator = Cast<UStaticMeshComponent>(Components[0]);
-					UStaticMeshComponent* Mesh = SelectedShip->FindComponentByClass<UStaticMeshComponent>();
+				TArray<UActorComponent*> Components = Tile->GetComponentsByTag(UActorComponent::StaticClass(), FName("Indicator"));
+				UStaticMeshComponent* Indicator = Cast<UStaticMeshComponent>(Components[0]);
+				UStaticMeshComponent* Mesh = SelectedShip->FindComponentByClass<UStaticMeshComponent>();
 		
-					FRotator ShipRotation = Mesh->GetComponentRotation();
+				FRotator ShipRotation = Mesh->GetComponentRotation();
 
-					if (MouseX >= 1)
-					{
-						// Rotate Clockwise
-						ShipRotation.Add(0, 90, 0);
-					}
-					else
-					{
-						// Rotate Anti-Clockwise
-						ShipRotation.Add(0, -90, 0);
-					}
+				// Rotate Clockwise
+				ShipRotation.Add(0, 90, 0);
 
-					// Set Updated Rotations
-					Tile->SetActorRotation(ShipRotation);
-					Mesh->SetRelativeRotation(ShipRotation);
+				// Set Updated Rotations
+				Tile->SetActorRotation(ShipRotation);
+				Mesh->SetRelativeRotation(ShipRotation);
 
-					// Set Final Rotation
-					SelectedShip->NewRotation = ShipRotation;
+				// Set Final Rotation
+				SelectedShip->NewRotation = ShipRotation;
 					
-					if (SelectedShip->Type == EType::Large)
-					{
-						Tile->RotCost = 6;
-					}
-					else if (SelectedShip->Type == EType::Medium)
-					{
-						Tile->RotCost = 3;
-					}
-					else
-					{
-						Tile->RotCost = 1;
-					}
-
-					// Refresh MouseX
-					MouseX = 0.0f;
-
-					return true;
+				if (SelectedShip->Type == EType::Large)
+				{
+					Tile->RotCost = 6;
 				}
+				else if (SelectedShip->Type == EType::Medium)
+				{
+					Tile->RotCost = 3;
+				}
+				else
+				{
+					Tile->RotCost = 1;
+				}
+
+				return true;
 			}
 		}
 	}
