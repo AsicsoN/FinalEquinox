@@ -53,6 +53,7 @@ private:
 	bool bRotate = false;
 
 	// Timer Handles
+	FTimerHandle AiTurnInfoHandle;
 	FTimerHandle AiMoveCycleHandle;
 	FTimerHandle AiAttackCycleHandle;
 	FTimerHandle AiSwapCycleHandle;

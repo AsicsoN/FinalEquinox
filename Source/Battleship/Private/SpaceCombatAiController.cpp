@@ -94,34 +94,34 @@ void ASpaceCombatAiController::SelectTarget()
 {
 	AShipPawnBase* SelectedShip = Cast<AShipPawnBase>(GetPawn());
 
-	for (TActorIterator<AShipPawnBase> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+	for (AShipPawnBase* Ship : GameMode->ShipArray)
 	{
-		if (*ActorItr == SelectedShip || ActorItr->Faction == EFaction::Enemy1)
+		if (Ship == SelectedShip || Ship->Faction == EFaction::Enemy1)
 		{
 			continue;
 		}
 
 		if (!Target)
 		{
-			Target = *ActorItr;
+			Target = Ship;
 		} 
 		else
 		{
-			float PotentialDistance = FVector::Distance(SelectedShip->GetActorLocation(), ActorItr->GetActorLocation());
+			float PotentialDistance = FVector::Distance(SelectedShip->GetActorLocation(), Ship->GetActorLocation());
 			float TargetDistance = FVector::Distance(SelectedShip->GetActorLocation(), Target->GetActorLocation());
 			
-			if (SelectedShip->Type == ActorItr->Type)
+			if (SelectedShip->Type == Ship->Type)
 			{
 				if (PotentialDistance <= TargetDistance)
 				{
-					Target = *ActorItr;
+					Target = Ship;
 				}
 			} 
 			else
 			{
 				if (PotentialDistance <= TargetDistance && Target->Type != SelectedShip->Type)
 				{
-					Target = *ActorItr;
+					Target = Ship;
 				}
 			}
 		}
@@ -345,7 +345,7 @@ void ASpaceCombatAiController::AttackPlayer()
 			// Target has died, Look for new Target!
 			Target = nullptr;
 
-			GenerateTurnInformation();
+			World->GetTimerManager().SetTimer(AiTurnInfoHandle, this, &ASpaceCombatAiController::GenerateTurnInformation, 5.0f);
 		}
 		else
 		{

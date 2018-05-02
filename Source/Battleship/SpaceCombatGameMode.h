@@ -53,6 +53,9 @@ public:
 	virtual void Tick(float DeltaSeconds) override;	
 	
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
+	void CheckCombatState();
+
+	UFUNCTION(BlueprintCallable, Category = "Gameplay")
 	void EndCombat(bool PlayerWon);
 
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")

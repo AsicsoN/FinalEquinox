@@ -11,6 +11,13 @@ AShipPawnBase::AShipPawnBase()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	Destructible = CreateDefaultSubobject<UDestructibleComponent>(TEXT("Destructible Mesh"));
+	Destructible->SetupAttachment(RootComponent);
+	Destructible->bEditableWhenInherited = true;
+	Destructible->SetSimulatePhysics(false);
+	Destructible->SetEnableGravity(false);
+	Destructible->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	Destructible->SetLinearDamping(0.5f);
 }
 
 // Called when the game starts or when spawned
@@ -30,14 +37,6 @@ void AShipPawnBase::Tick( float DeltaTime )
 	Super::Tick( DeltaTime );
 
 	ShipInfoWidget->Update();
-}
-
-void AShipPawnBase::Destroyed()
-{
-	if (ShipInfoWidget != nullptr)
-	{
-		ShipInfoWidget->RemoveFromParent();
-	}
 }
 
 // Called to bind functionality to input
@@ -147,11 +146,6 @@ float AShipPawnBase::TakeDamage(float Damage, struct FDamageEvent const& DamageE
 		FFormatNamedArguments Arguments;
 		Arguments.Add(TEXT("Name"), FText::FromString(*Name));
 		GameMode->WriteToCombatLog(FText::Format(LOCTEXT("Destroyed", "{Name} has been destroyed"), Arguments));
-
-		GameMode->DestroyPawn(this);
-
-		FTimerHandle DestroySelf;
-		GetWorld()->GetTimerManager().SetTimer(DestroySelf, this, &AShipPawnBase::ShipDestroyed, 5.0f);
 	}
 
 	return damage;
@@ -242,5 +236,34 @@ void AShipPawnBase::ShipDestroyed()
 	ASpaceCombatGameMode* GameMode = Cast<ASpaceCombatGameMode>(GetWorld()->GetAuthGameMode());
 
 	GameMode->ShipArray.Remove(this);
-	Destroy();
+
+	TArray<UActorComponent*> Meshes = GetComponentsByTag(UStaticMeshComponent::StaticClass(), FName(TEXT("Ship")));
+
+	if (Meshes.IsValidIndex(0))
+	{
+		UStaticMeshComponent* StaticMesh = Cast<UStaticMeshComponent>(Meshes[0]);
+
+		StaticMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		StaticMesh->SetVisibility(false, true);
+
+		Destructible->SetVisibility(true);
+		Destructible->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+		Destructible->SetCollisionProfileName(FName(TEXT("Destructible")));
+		Destructible->SetSimulatePhysics(true);
+
+		Destructible->ApplyDamage(100.0f, GetActorLocation(), FVector(0.0f), 1000.0f);
+
+		for (const FFractureEffect Effect : Destructible->FractureEffects)
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Effect.ParticleSystem, GetTransform());
+			UGameplayStatics::SpawnSound2D(GetWorld(), Effect.Sound);
+		}
+	}
+
+	if (ShipInfoWidget->IsValidLowLevel())
+	{
+		ShipInfoWidget->RemoveFromParent();
+	}
+
+	GameMode->CheckCombatState();
 }
