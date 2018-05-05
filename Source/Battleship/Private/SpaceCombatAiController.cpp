@@ -54,8 +54,6 @@ void ASpaceCombatAiController::BeginAiTurn()
 
 	UE_LOG(LogTemp, Warning, TEXT("Enemy Ship %s starting turn"), *SelectedShip->Name);
 
-	SelectedShip->ChangeCollision(true);
-
 	// Commence Ai Logic Cycle
 	GenerateTurnInformation();
 }
