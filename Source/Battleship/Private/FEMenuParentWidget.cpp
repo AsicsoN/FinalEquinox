@@ -92,7 +92,10 @@ void UFEMenuParentWidget::PopulateLayout(UWidget* Widget, bool bVerticalLayout =
 		{
 			UButton* Button = NestButtons.Buttons[0];
 			Button->SetKeyboardFocus();
+
+			#if WITH_EDITOR
 			UE_LOG(LogTemp, Warning, TEXT("Setting Focus: %s"), *Button->GetDisplayLabel());
+			#endif
 
 			FButtonStyle Style = Button->WidgetStyle;
 			FSlateBrush Normal = Style.Normal;
@@ -135,7 +138,9 @@ UButton* UFEMenuParentWidget::NavigateUpDown(int32 Mod)
 
 			if (Button)
 			{
+				#if WITH_EDITOR
 				UE_LOG(LogTemp, Warning, TEXT("Setting Focus: %s"), *Button->GetDisplayLabel());
+				#endif
 			}
 
 			return Button;
@@ -180,7 +185,9 @@ UButton* UFEMenuParentWidget::NavigateLeftRight(int32 Mod)
 
 	if (Button)
 	{
+		#if WITH_EDITOR
 		UE_LOG(LogTemp, Warning, TEXT("Setting Focus: %s"), *Button->GetDisplayLabel());
+		#endif
 	}
 
 	return Button;
