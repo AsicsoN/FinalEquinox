@@ -135,4 +135,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
 	UStardate* Stardate = nullptr;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
+	int32 Supplies = 20;
+
 };
