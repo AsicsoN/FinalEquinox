@@ -36,7 +36,10 @@ void AShipPawnBase::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
 
-	ShipInfoWidget->Update();
+	if (ShipInfoWidget)
+	{
+		ShipInfoWidget->Update();
+	}
 }
 
 // Called to bind functionality to input
