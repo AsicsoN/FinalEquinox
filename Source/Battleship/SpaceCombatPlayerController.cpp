@@ -569,21 +569,24 @@ bool ASpaceCombatPlayerController::RotatePawn(float DeltaTime)
 
 		if (SelectedShip)
 		{
-			FRotator ShipRotation = SelectedShip->GetActorRotation();
+			if (SelectedShip->Faction == EFaction::Player && Tile) {
 
-			// Rotate Pawn Progressively
-			FRotator NewRotation = FMath::RInterpTo(ShipRotation, SelectedShip->NewRotation, DeltaTime, 2.0f);
-			SelectedShip->SetActorRelativeRotation(NewRotation);
+				FRotator ShipRotation = SelectedShip->GetActorRotation();
 
-			// If nearly complete, snap rotation to fit
-			if (ShipRotation.Equals(SelectedShip->NewRotation, 0.1f))
-			{
-				int32 Z = FMath::RoundToInt(ShipRotation.Yaw);
+				// Rotate Pawn Progressively
+				FRotator NewRotation = FMath::RInterpTo(ShipRotation, SelectedShip->NewRotation, DeltaTime, 2.0f);
+				SelectedShip->SetActorRelativeRotation(NewRotation);
 
-				SelectedShip->SetActorRotation(FRotator(0, Z, 0));
-				Tile->RotCost = 0;
+				// If nearly complete, snap rotation to fit
+				if (ShipRotation.Equals(SelectedShip->NewRotation, 0.1f))
+				{
+					int32 Z = FMath::RoundToInt(ShipRotation.Yaw);
 
-				return true;
+					SelectedShip->SetActorRotation(FRotator(0, Z, 0));
+					Tile->RotCost = 0;
+
+					return true;
+				}
 			}
 		}
 	}
