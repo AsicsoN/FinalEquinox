@@ -17,6 +17,7 @@ enum class ECharacterBackground : uint8
 };
 
 class APlayerShipPawnBase;
+class UStardate;
 
 /**
  * 
@@ -130,5 +131,11 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crew")
 	TArray<UCrew*> UnusedCrew;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
+	UStardate* Stardate = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
+	int32 Supplies = 20;
 
 };
