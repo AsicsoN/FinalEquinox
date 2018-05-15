@@ -31,7 +31,14 @@ void ASpaceCombatGameMode::BeginPlay()
 
 	for (TActorIterator<AShipPawnBase> ActorItr(GetWorld()); ActorItr; ++ActorItr)
 	{
-		ShipArray.Add(*ActorItr);
+		// Add Admiral Exception
+		AShipPawnBase* Ship = *ActorItr;
+		if (Ship->GetClass()->GetName().Contains("Admiral"))
+		{
+			continue;
+		}
+
+		ShipArray.Add(Ship);
 	}
 
 	ShipArray.Sort(SortShipPawnBase);
