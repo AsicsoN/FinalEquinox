@@ -25,14 +25,6 @@ ASpaceCombatPlayerController::ASpaceCombatPlayerController()
 void ASpaceCombatPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	if (bPreparingToMove && bMoving)
-	{
-		float X, Y;
-		GetInputMouseDelta(X, Y);
-
-		MouseX += X;
-	}
 }
 
 bool ASpaceCombatPlayerController::LaunchFighters(TSubclassOf<AShipPawnBase> FighterBlueprint)
@@ -584,6 +576,8 @@ bool ASpaceCombatPlayerController::RotatePawn(float DeltaTime)
 
 					SelectedShip->SetActorRotation(FRotator(0, Z, 0));
 					Tile->RotCost = 0;
+
+					SaveShipLocale();
 
 					return true;
 				}
