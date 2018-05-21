@@ -1,5 +1,6 @@
 #include "Battleship.h"
 #include "SpaceCombatGameMode.h"
+#include "SpaceCombatPlayerController.h"
 #include "ShipInfoBaseWidget.h"
 #include "ShipPawnBase.h"
 
@@ -39,6 +40,11 @@ void AShipPawnBase::Tick( float DeltaTime )
 	if (ShipInfoWidget)
 	{
 		ShipInfoWidget->Update();
+	}
+
+	if (bAdjustRotation)
+	{
+		Rotate(DeltaTime);
 	}
 }
 
@@ -178,6 +184,58 @@ int32 AShipPawnBase::CalculateMissileDamage(bool CriticalHit)
 	}
 
 	return Damage;
+}
+
+void AShipPawnBase::Rotate(float DeltaTime)
+{
+	if (Faction == EFaction::Player) {
+
+		FRotator ShipRotation = GetActorRotation();
+
+		// Rotate Pawn Progressively
+		FRotator Rotation = FMath::RInterpTo(ShipRotation, NewRotation, DeltaTime, 4.0f);
+		SetActorRelativeRotation(Rotation);
+
+		// If nearly complete, snap rotation to fit
+		if (Rotation.Equals(NewRotation, 1.0f))
+		{
+			SetActorRotation(FRotator(0, NewRotation.Yaw, 0));
+			//NewRotation = GetActorRotation();
+
+			bAdjustRotation = false;
+		}
+	}
+}
+
+void AShipPawnBase::CalculateFinalRotation(FVector Destination)
+{
+	FVector Location = GetActorLocation();
+
+	float xDist = FMath::Abs(Location.X - Destination.X);
+	float yDist = FMath::Abs(Location.Y - Destination.Y);
+
+	if (xDist > yDist)
+	{
+		if (Location.X < Destination.X)
+		{
+			NewRotation.Yaw = 0;
+		}
+		else
+		{
+			NewRotation.Yaw = 180.0f;
+		}
+	}
+	else
+	{
+		if (Location.Y < Destination.Y)
+		{
+			NewRotation.Yaw = 90;
+		}
+		else
+		{
+			NewRotation.Yaw = 270.0f;
+		}
+	}
 }
 
 bool AShipPawnBase::IsTurnOver()

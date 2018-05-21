@@ -98,9 +98,6 @@ public:
 	bool GetFinalRotation();
 
 	UFUNCTION(BlueprintCallable, Category = "Utility")
-	bool RotatePawn(float DeltaTime);
-
-	UFUNCTION(BlueprintCallable, Category = "Utility")
 	bool IsColliding();
 
 	UFUNCTION(BlueprintCallable, Category = "Utility")
