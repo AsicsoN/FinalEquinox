@@ -316,30 +316,31 @@ bool ASpaceCombatPlayerController::Fire_Implementation(AShipPawnBase* TargetShip
 					GameMode->WriteToCombatLog(FText::FromString("Critical Hit!"));
 				}
 
+				FDamageEvent DamageEvent;
+
 				if (bFireModeIsLasers)
 				{
 					// Laser Damage
 					Damage += SelectedShip->CalculateLaserDamage(CriticalHit);
+
+					if (TargetShip->Subsystems.ShieldGen && TargetShip->CurrentShieldHitPoints > 0)
+					{
+						DamageEvent.DamageTypeClass = ULaserDamage::StaticClass();
+					}
+					else
+					{
+						DamageEvent.DamageTypeClass = UHullDamage::StaticClass();
+					}
 				}
 				else
 				{
 					// Missile Damage
 					Damage += SelectedShip->CalculateMissileDamage(CriticalHit);
+					DamageEvent.DamageTypeClass = UMissileDamage::StaticClass();
 				}
 
 				// Adjust by Gun Subsystems Status
 				Damage = FMath::FloorToInt(Damage * SelectedShip->Subsystems.Guns);
-
-				FDamageEvent DamageEvent;
-
-				if (TargetShip->CurrentShieldHitPoints > 0)
-				{
-					DamageEvent.DamageTypeClass = ULaserDamage::StaticClass();
-				}
-				else
-				{
-					DamageEvent.DamageTypeClass = UHullDamage::StaticClass();
-				}
 				
 				// Apply Damage
 				// TODO Change to Damage event?
