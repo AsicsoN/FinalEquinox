@@ -188,22 +188,17 @@ int32 AShipPawnBase::CalculateMissileDamage(bool CriticalHit)
 
 void AShipPawnBase::Rotate(float DeltaTime)
 {
-	if (Faction == EFaction::Player) {
+	FRotator ShipRotation = GetActorRotation();
 
-		FRotator ShipRotation = GetActorRotation();
+	// Rotate Pawn Progressively
+	FRotator Rotation = FMath::RInterpTo(ShipRotation, NewRotation, DeltaTime, 4.0f);
+	SetActorRelativeRotation(Rotation);
 
-		// Rotate Pawn Progressively
-		FRotator Rotation = FMath::RInterpTo(ShipRotation, NewRotation, DeltaTime, 4.0f);
-		SetActorRelativeRotation(Rotation);
-
-		// If nearly complete, snap rotation to fit
-		if (Rotation.Equals(NewRotation, 1.0f))
-		{
-			SetActorRotation(FRotator(0, NewRotation.Yaw, 0));
-			//NewRotation = GetActorRotation();
-
-			bAdjustRotation = false;
-		}
+	// If nearly complete, snap rotation to fit
+	if (Rotation.Equals(NewRotation, 1.0f))
+	{
+		SetActorRotation(FRotator(0, NewRotation.Yaw, 0));
+		bAdjustRotation = false;
 	}
 }
 
