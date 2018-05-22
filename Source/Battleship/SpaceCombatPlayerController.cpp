@@ -331,9 +331,12 @@ bool ASpaceCombatPlayerController::Fire_Implementation(AShipPawnBase* TargetShip
 					DamageEvent.DamageTypeClass = UMissileDamage::StaticClass();
 				}
 
+				// Adjust by Ship Position
+				Damage = AddSideModifier(SelectedShip, TargetShip, Damage);
+
 				// Adjust by Gun Subsystems Status
 				Damage = FMath::FloorToInt(Damage * SelectedShip->Subsystems.Guns);
-				
+
 				// Apply Damage
 				// TODO Change to Damage event?
 				if (!bFireAtSubsystems)
@@ -407,6 +410,34 @@ bool ASpaceCombatPlayerController::Fire_Implementation(AShipPawnBase* TargetShip
 
 
 	return false;
+}
+
+float ASpaceCombatPlayerController::AddSideModifier(const AShipPawnBase* SelectedShip, const AShipPawnBase* TargetShip, const float Damage)
+{
+	// Calculate LookAt Rotation
+	FRotator LookRot = (TargetShip->GetActorLocation() - SelectedShip->GetActorLocation()).Rotation();
+
+	UE_LOG(LogTemp, Error, TEXT("Yaw: %f"), LookRot.Yaw);
+
+	// Apply Correct Modifier
+	float Mod;
+	if (LookRot.Yaw > 135.0f)
+	{
+		// Flanking Target (Behind)
+		Mod = 1.7f;
+	}
+	else if (LookRot.Yaw > 45.0f && LookRot.Yaw <= 135.0f)
+	{
+		// Side of Target
+		Mod = 1.3f;
+	}
+	else
+	{
+		// Facing Target
+		Mod = 1.0f;
+	}
+
+	return Damage * Mod;
 }
 
 bool ASpaceCombatPlayerController::PrepareToFire(bool FiringLasers, bool FireSubsystems)
