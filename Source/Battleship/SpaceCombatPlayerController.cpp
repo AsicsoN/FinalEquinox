@@ -55,22 +55,26 @@ bool ASpaceCombatPlayerController::LaunchFighters(TSubclassOf<AShipPawnBase> Fig
 
 			UWorld* World = GetWorld();
 
-			TArray<FHitResult> HitResults;
-			bool Hit = World->LineTraceMultiByChannel(HitResults, SelectedShip->GetActorLocation() * 256.0f, SelectedShip->GetActorForwardVector() * Distance, ECollisionChannel::ECC_Camera);
+			bool Hit = true;
 
-			if (Hit)
+			for (TActorIterator<AActor> ActorItr(World); ActorItr; ++ActorItr)
 			{
-				for (FHitResult HitResult : HitResults)
+				if (FVector::Distance(ActorItr->GetActorLocation(), SelectedShip->GetActorLocation() + (SelectedShip->GetActorForwardVector() * Distance)) < 100.0f)
 				{
-					ATile* IsTile = Cast<ATile>(HitResult.GetActor());
-
-					if (IsTile)
+					if (*ActorItr == SelectedShip || Cast<ATile>(*ActorItr))
 					{
 						Hit = false;
 					}
+					else
+					{
+						UE_LOG(LogTemp, Error, TEXT("Hit: %s"), *ActorItr->GetName());
+
+						Hit = true;
+						break;
+					}
 				}
 			}
-	
+
 			if (!Hit && SelectedShip->Fighters)
 			{
 				FVector Location = SelectedShip->GetActorLocation();
