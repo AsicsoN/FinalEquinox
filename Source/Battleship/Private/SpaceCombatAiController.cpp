@@ -11,27 +11,7 @@
 
 void ASpaceCombatAiController::Tick(float DeltaTime)
 {
-	if (bRotate)
-	{
-		AShipPawnBase* SelectedShip = Cast<AShipPawnBase>(GetPawn());
-
-		if (!SelectedShip)
-		{
-			return;
-		}
-
-		FRotator Current = SelectedShip->GetActorRotation();
-
-		UE_LOG(LogTemp, Warning, TEXT("%f"), FMath::Abs<float>(Current.Yaw - Rotation.Yaw));
-
-		if (FMath::Abs<float>(Current.Yaw - Rotation.Yaw) <= 1.0f)
-		{
-			bRotate = false;
-			SelectedShip->SetActorRotation(Rotation);
-		}
-
-		SelectedShip->SetActorRotation(FMath::RInterpTo(SelectedShip->GetActorRotation(), Rotation, DeltaTime, 3.0f));
-	}
+	
 }
 
 void ASpaceCombatAiController::InitializeAI(ASpaceCombatGameMode* NewGameMode)
@@ -266,6 +246,8 @@ void ASpaceCombatAiController::CalculateTravelPoint()
 	
 	TargetTile = CurTile;
 
+	SelectedShip->CalculateFinalRotation(TargetTile->GetActorLocation());
+
 	#pragma region Debug Logic
 	FColor LineColor = FColor();
 
@@ -303,7 +285,7 @@ void ASpaceCombatAiController::MoveShip()
 			UE_LOG(LogTemp, Warning, TEXT("Enemy Ship reached destination"));
 			StopMovement();
 			
-			bRotate = true;
+			SelectedShip->bAdjustRotation = true;
 			
 			World->GetTimerManager().SetTimer(AiAttackCycleHandle, this, &ASpaceCombatAiController::AttackPlayer, 2.0f);
 		}
@@ -318,6 +300,13 @@ void ASpaceCombatAiController::AttackPlayer()
 {
 	AShipPawnBase* SelectedShip = Cast<AShipPawnBase>(GetPawn());
 	UWorld* World = GetWorld();
+
+	// Wait until rotation is complete
+	if (SelectedShip->bAdjustRotation)
+	{
+		World->GetTimerManager().SetTimer(AiAttackCycleHandle, this, &ASpaceCombatAiController::AttackPlayer, 1.0f);
+		return;
+	}
 
 	UE_LOG(LogTemp, Warning, TEXT("Enemy Ship %s ready to attack %s"), *SelectedShip->Name, *Target->Name);
 
