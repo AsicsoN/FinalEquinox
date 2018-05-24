@@ -127,16 +127,6 @@ float AShipPawnBase::TakeDamage(float Damage, struct FDamageEvent const& DamageE
 	}
 	else
 	{
-		if (CurrentShieldHitPoints > 0)
-		{
-			FFormatNamedArguments Arguments;
-			Arguments.Add(TEXT("Name"), FText::FromString(*Name));
-
-			GameMode->WriteToCombatLog(FText::Format(LOCTEXT("DealShieldDamage", "{Name}'s Shields are still operational! Our damage has been negated!"), Arguments));
-
-			return 0.0f;
-		}
-
 		CurrentHitPoints = CurrentHitPoints - ActualDamage;
 
 		if (DamageCauserPawn != nullptr)
