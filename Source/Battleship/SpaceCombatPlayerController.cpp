@@ -354,25 +354,25 @@ bool ASpaceCombatPlayerController::Fire_Implementation(AShipPawnBase* TargetShip
 
 					if (bFireAtScanners)
 					{
-						TargetShip->Subsystems.Scanners -= SubsystemDamage;
+						TargetShip->Subsystems.Scanners = FMath::Clamp<float>(TargetShip->Subsystems.Scanners - SubsystemDamage, 0.0, 1.0f);
 						Subsystem = "Scanners";
 					}
 
 					if (bFireAtGuns)
 					{
-						TargetShip->Subsystems.Guns -= SubsystemDamage;
+						TargetShip->Subsystems.Guns = FMath::Clamp<float>(TargetShip->Subsystems.Guns - SubsystemDamage, 0.0, 1.0f);
 						Subsystem = "Guns";
 					}
 
 					if (bFireAtEngines)
 					{
-						TargetShip->Subsystems.Engine -= SubsystemDamage;
+						TargetShip->Subsystems.Engine = FMath::Clamp<float>(TargetShip->Subsystems.Engine - SubsystemDamage, 0.0, 1.0f);
 						Subsystem = "Engines";
 					}
 
 					if (bFireAtShields)
 					{
-						TargetShip->Subsystems.ShieldGen -= SubsystemDamage;
+						TargetShip->Subsystems.ShieldGen = FMath::Clamp<float>(TargetShip->Subsystems.ShieldGen - SubsystemDamage, 0.0, 1.0f);
 						Subsystem = "Shield Generator";
 					}
 

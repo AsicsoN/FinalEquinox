@@ -68,7 +68,7 @@ float AShipPawnBase::TakeDamage(float Damage, struct FDamageEvent const& DamageE
 	{
 		if (ShieldsOnline && CurrentShieldHitPoints > 0)
 		{
-			CurrentShieldHitPoints = CurrentShieldHitPoints - ActualDamage;
+			CurrentShieldHitPoints = FMath::Clamp<float>(CurrentShieldHitPoints - ActualDamage, 0.0f, ShieldHitPoints);
 
 			FFormatNamedArguments Arguments;
 			Arguments.Add(TEXT("Name"), FText::FromString(*Name));
@@ -79,7 +79,7 @@ float AShipPawnBase::TakeDamage(float Damage, struct FDamageEvent const& DamageE
 	}
 	else if (DamageEvent.DamageTypeClass->GetName().Contains("HullDamage", ESearchCase::IgnoreCase))
 	{
-		CurrentHitPoints = CurrentHitPoints - ActualDamage;
+		CurrentHitPoints = FMath::Clamp<float>(CurrentHitPoints - ActualDamage, 0.0f, HitPoints);
 
 		FFormatNamedArguments Arguments;
 		Arguments.Add(TEXT("Name"), FText::FromString(*Name));
@@ -98,7 +98,7 @@ float AShipPawnBase::TakeDamage(float Damage, struct FDamageEvent const& DamageE
 	}
 	else if (DamageEvent.DamageTypeClass->GetName().Contains("LaserDamage", ESearchCase::IgnoreCase) && ShieldsOnline)
 	{
-		CurrentShieldHitPoints = CurrentShieldHitPoints - ActualDamage;
+		CurrentShieldHitPoints = FMath::Clamp<float>(CurrentShieldHitPoints - ActualDamage, 0.0f, ShieldHitPoints);
 
 		if (DamageCauserPawn != nullptr)
 		{
@@ -127,7 +127,7 @@ float AShipPawnBase::TakeDamage(float Damage, struct FDamageEvent const& DamageE
 	}
 	else
 	{
-		CurrentHitPoints = CurrentHitPoints - ActualDamage;
+		CurrentHitPoints = FMath::Clamp<float>(CurrentHitPoints - ActualDamage, 0.0f, HitPoints);
 
 		if (DamageCauserPawn != nullptr)
 		{
