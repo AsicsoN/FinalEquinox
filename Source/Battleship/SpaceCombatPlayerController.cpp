@@ -641,7 +641,7 @@ void ASpaceCombatPlayerController::ResetShip()
 			FVector Location = StaticMesh->GetRelativeTransform().GetLocation();
 
 			// Realign Static Mesh to Ship
-			StaticMesh->SetRelativeLocation(FVector(0.0f, 0.0f, Location.Z), false, nullptr, ETeleportType::TeleportPhysics);
+			StaticMesh->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, Location.Z), FRotator::ZeroRotator, false, nullptr, ETeleportType::TeleportPhysics);
 		}
 
 		if (Tile)
