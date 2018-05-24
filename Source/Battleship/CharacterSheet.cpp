@@ -505,7 +505,7 @@ void UCharacterSheet::SetDefaultFleet(TSubclassOf<APlayerShipPawnBase> Battleshi
 		UnusedCrew.Add(crew3);
 
 		APlayerShipPawnBase* flagship = BattleshipPawnClass.GetDefaultObject();
-		flagship->Name = "GCS Odysseus";
+		flagship->Name = "HCS Odysseus";
 		flagship->Type = EType::Large;
 		flagship->Captain = NewObject<UCrew>();
 		flagship->NavigationOfficer = NewObject<UCrew>();
@@ -587,7 +587,7 @@ void UCharacterSheet::SetDefaultFleet(TSubclassOf<APlayerShipPawnBase> Battleshi
 		Fleet.Add(flagship);
 
 		APlayerShipPawnBase* destroyer = DestroyerPawnClass.GetDefaultObject();
-		destroyer->Name = "GCS Selene";
+		destroyer->Name = "HCS Amphion";
 		destroyer->Type = EType::Medium;
 		destroyer->Captain = NewObject<UCrew>();
 		destroyer->NavigationOfficer = NewObject<UCrew>();
@@ -671,5 +671,91 @@ void UCharacterSheet::SetDefaultFleet(TSubclassOf<APlayerShipPawnBase> Battleshi
 		destroyer->Engineer->ShieldRepair = -1;
 
 		Fleet.Add(destroyer);
+
+		APlayerShipPawnBase* destroyer2 = DuplicateObject(destroyer, NULL);
+		destroyer2->Name = "HCS Zethus";
+		destroyer2->Type = EType::Medium;
+		destroyer2->Captain = NewObject<UCrew>();
+		destroyer2->NavigationOfficer = NewObject<UCrew>();
+		destroyer2->TacticsOfficer = NewObject<UCrew>();
+		destroyer2->ScienceOfficer = NewObject<UCrew>();
+		destroyer2->Engineer = NewObject<UCrew>();
+		destroyer2->CAG = NewObject<UCrew>();
+
+		destroyer2->Captain->CrewName = "Ard Kentar";
+		destroyer2->Captain->CrewRace = ERace::Malderian;
+		destroyer2->Captain->IsMale = false;
+		destroyer2->Captain->Portrait = LoadObject<UTexture2D>(crew1, TEXT("/Game/Textures/Crew/CrewPortraitMalderianMale1"), NULL, LOAD_None, NULL);
+		destroyer2->Captain->Leadership = 0;
+		destroyer2->Captain->Navigation = 0;
+		destroyer2->Captain->Gunnery = 0;
+		destroyer2->Captain->Engineering = 0;
+		destroyer2->Captain->Science = 0;
+		destroyer2->Captain->Tactics = 1;
+		destroyer2->Captain->Communication = 1;
+		destroyer2->Captain->SubsystemRepair = -1;
+		destroyer2->Captain->ShieldRepair = -1;
+
+
+		destroyer2->NavigationOfficer->CrewName = "Kevin Sawall";
+		destroyer2->NavigationOfficer->CrewRace = ERace::Human;
+		destroyer2->NavigationOfficer->IsMale = true;
+		destroyer2->NavigationOfficer->Portrait = LoadObject<UTexture2D>(crew1, TEXT("/Game/Textures/Crew/CrewPortraitHumanMale2"), NULL, LOAD_None, NULL);
+		destroyer2->NavigationOfficer->Leadership = 0;
+		destroyer2->NavigationOfficer->Navigation = 2;
+		destroyer2->NavigationOfficer->Gunnery = 0;
+		destroyer2->NavigationOfficer->Engineering = 0;
+		destroyer2->NavigationOfficer->Science = 0;
+		destroyer2->NavigationOfficer->Tactics = 1;
+		destroyer2->NavigationOfficer->Communication = 1;
+		destroyer2->NavigationOfficer->SubsystemRepair = -1;
+		destroyer2->NavigationOfficer->ShieldRepair = -1;
+
+
+		destroyer2->TacticsOfficer->CrewName = "Xiohe Inwei";
+		destroyer2->TacticsOfficer->CrewRace = ERace::Krum;
+		destroyer2->TacticsOfficer->IsMale = false;
+		destroyer2->TacticsOfficer->Portrait = LoadObject<UTexture2D>(crew1, TEXT("/Game/Textures/Crew/CrewPortraitKrumMale1"), NULL, LOAD_None, NULL);
+		destroyer2->TacticsOfficer->Leadership = 0;
+		destroyer2->TacticsOfficer->Navigation = 0;
+		destroyer2->TacticsOfficer->Gunnery = 0;
+		destroyer2->TacticsOfficer->Engineering = 0;
+		destroyer2->TacticsOfficer->Science = 0;
+		destroyer2->TacticsOfficer->Tactics = 3;
+		destroyer2->TacticsOfficer->Communication = 1;
+		destroyer2->TacticsOfficer->SubsystemRepair = -1;
+		destroyer2->TacticsOfficer->ShieldRepair = -1;
+
+
+		destroyer2->ScienceOfficer->CrewName = "Io Ra";
+		destroyer2->ScienceOfficer->CrewRace = ERace::Malderian;
+		destroyer2->ScienceOfficer->IsMale = true;
+		destroyer2->ScienceOfficer->Portrait = LoadObject<UTexture2D>(crew1, TEXT("/Game/Textures/Crew/CrewPortraitMalderianMale1"), NULL, LOAD_None, NULL);
+		destroyer2->ScienceOfficer->Leadership = 0;
+		destroyer2->ScienceOfficer->Navigation = 0;
+		destroyer2->ScienceOfficer->Gunnery = 0;
+		destroyer2->ScienceOfficer->Engineering = 0;
+		destroyer2->ScienceOfficer->Science = 4;
+		destroyer2->ScienceOfficer->Tactics = 1;
+		destroyer2->ScienceOfficer->Communication = 1;
+		destroyer2->ScienceOfficer->SubsystemRepair = -1;
+		destroyer2->ScienceOfficer->ShieldRepair = -1;
+
+
+		destroyer2->Engineer->CrewName = "Sam Samson";
+		destroyer2->Engineer->CrewRace = ERace::Human;
+		destroyer2->Engineer->IsMale = false;
+		destroyer2->Engineer->Portrait = LoadObject<UTexture2D>(crew1, TEXT("/Game/Textures/Crew/CrewPortraitHumanFemale1"), NULL, LOAD_None, NULL);
+		destroyer2->Engineer->Leadership = 0;
+		destroyer2->Engineer->Navigation = 0;
+		destroyer2->Engineer->Gunnery = 0;
+		destroyer2->Engineer->Engineering = 3;
+		destroyer2->Engineer->Science = 0;
+		destroyer2->Engineer->Tactics = 1;
+		destroyer2->Engineer->Communication = 1;
+		destroyer2->Engineer->SubsystemRepair = -1;
+		destroyer2->Engineer->ShieldRepair = -1;
+
+		Fleet.Add(destroyer2);
 	}
 }
