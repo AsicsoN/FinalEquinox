@@ -224,20 +224,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Instantiation")
 	virtual void Instantiate();
 
-	UFUNCTION(BlueprintCallable)
-	void Rotate(float DeltaTime);
-
-	UFUNCTION(BlueprintCallable)
-	void CalculateFinalRotation(FVector Destination);
-
 	UFUNCTION(BlueprintCallable, Category = "Game State")
 	bool IsTurnOver();
 
 	UFUNCTION(BlueprintCallable, Category = "Game State")
 	void ShipDestroyed();
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Actions")
-	bool bAdjustRotation = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Game State")
 	bool ForceTurnEnd = false;

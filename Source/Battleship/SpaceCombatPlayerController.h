@@ -84,8 +84,6 @@ public:
 	bool Fire(AShipPawnBase* TargetShip);
 	virtual bool Fire_Implementation(AShipPawnBase* TargetShip);
 
-	float AddSideModifier(const AShipPawnBase* SelectedShip, const AShipPawnBase* TargetShip, const float Damage);
-
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
 	bool PrepareToFire(bool FiringLasers, bool FireSubsystems = false);
 
@@ -98,6 +96,9 @@ public:
 	*/
 	UFUNCTION(BlueprintCallable, Category = "Utility")
 	bool GetFinalRotation();
+
+	UFUNCTION(BlueprintCallable, Category = "Utility")
+	bool RotatePawn(float DeltaTime);
 
 	UFUNCTION(BlueprintCallable, Category = "Utility")
 	bool IsColliding();
