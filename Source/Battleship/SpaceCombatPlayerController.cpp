@@ -25,14 +25,6 @@ ASpaceCombatPlayerController::ASpaceCombatPlayerController()
 void ASpaceCombatPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	if (bPreparingToMove && bMoving)
-	{
-		float X, Y;
-		GetInputMouseDelta(X, Y);
-
-		MouseX += X;
-	}
 }
 
 bool ASpaceCombatPlayerController::LaunchFighters(TSubclassOf<AShipPawnBase> FighterBlueprint)
@@ -63,22 +55,26 @@ bool ASpaceCombatPlayerController::LaunchFighters(TSubclassOf<AShipPawnBase> Fig
 
 			UWorld* World = GetWorld();
 
-			TArray<FHitResult> HitResults;
-			bool Hit = World->LineTraceMultiByChannel(HitResults, SelectedShip->GetActorLocation() * 256.0f, SelectedShip->GetActorForwardVector() * Distance, ECollisionChannel::ECC_Camera);
+			bool Hit = true;
 
-			if (Hit)
+			for (TActorIterator<AActor> ActorItr(World); ActorItr; ++ActorItr)
 			{
-				for (FHitResult HitResult : HitResults)
+				if (FVector::Distance(ActorItr->GetActorLocation(), SelectedShip->GetActorLocation() + (SelectedShip->GetActorForwardVector() * Distance)) < 100.0f)
 				{
-					ATile* IsTile = Cast<ATile>(HitResult.GetActor());
-
-					if (IsTile)
+					if (*ActorItr == SelectedShip || Cast<ATile>(*ActorItr))
 					{
 						Hit = false;
 					}
+					else
+					{
+						UE_LOG(LogTemp, Error, TEXT("Hit: %s"), *ActorItr->GetName());
+
+						Hit = true;
+						break;
+					}
 				}
 			}
-	
+
 			if (!Hit && SelectedShip->Fighters)
 			{
 				FVector Location = SelectedShip->GetActorLocation();
@@ -339,9 +335,12 @@ bool ASpaceCombatPlayerController::Fire_Implementation(AShipPawnBase* TargetShip
 					DamageEvent.DamageTypeClass = UMissileDamage::StaticClass();
 				}
 
+				// Adjust by Ship Position
+				Damage = AddSideModifier(SelectedShip, TargetShip, Damage);
+
 				// Adjust by Gun Subsystems Status
 				Damage = FMath::FloorToInt(Damage * SelectedShip->Subsystems.Guns);
-				
+
 				// Apply Damage
 				// TODO Change to Damage event?
 				if (!bFireAtSubsystems)
@@ -415,6 +414,34 @@ bool ASpaceCombatPlayerController::Fire_Implementation(AShipPawnBase* TargetShip
 
 
 	return false;
+}
+
+float ASpaceCombatPlayerController::AddSideModifier(const AShipPawnBase* SelectedShip, const AShipPawnBase* TargetShip, const float Damage)
+{
+	// Calculate LookAt Rotation
+	FRotator LookRot = (TargetShip->GetActorLocation() - SelectedShip->GetActorLocation()).Rotation();
+
+	UE_LOG(LogTemp, Error, TEXT("Yaw: %f"), LookRot.Yaw);
+
+	// Apply Correct Modifier
+	float Mod;
+	if (LookRot.Yaw > 135.0f)
+	{
+		// Flanking Target (Behind)
+		Mod = 1.7f;
+	}
+	else if (LookRot.Yaw > 45.0f && LookRot.Yaw <= 135.0f)
+	{
+		// Side of Target
+		Mod = 1.3f;
+	}
+	else
+	{
+		// Facing Target
+		Mod = 1.0f;
+	}
+
+	return Damage * Mod;
 }
 
 bool ASpaceCombatPlayerController::PrepareToFire(bool FiringLasers, bool FireSubsystems)
@@ -560,41 +587,6 @@ bool ASpaceCombatPlayerController::GetFinalRotation()
 	return false;
 }
 
-bool ASpaceCombatPlayerController::RotatePawn(float DeltaTime)
-{
-	ASpaceCombatGameMode* GameMode = Cast<ASpaceCombatGameMode>(GetWorld()->GetAuthGameMode());
-
-	if (GameMode)
-	{
-		AShipPawnBase* SelectedShip = GameMode->SelectedShip;
-
-		if (SelectedShip)
-		{
-			if (SelectedShip->Faction == EFaction::Player && Tile) {
-
-				FRotator ShipRotation = SelectedShip->GetActorRotation();
-
-				// Rotate Pawn Progressively
-				FRotator NewRotation = FMath::RInterpTo(ShipRotation, SelectedShip->NewRotation, DeltaTime, 2.0f);
-				SelectedShip->SetActorRelativeRotation(NewRotation);
-
-				// If nearly complete, snap rotation to fit
-				if (ShipRotation.Equals(SelectedShip->NewRotation, 0.1f))
-				{
-					int32 Z = FMath::RoundToInt(ShipRotation.Yaw);
-
-					SelectedShip->SetActorRotation(FRotator(0, Z, 0));
-					Tile->RotCost = 0;
-
-					return true;
-				}
-			}
-		}
-	}
-
-	return false;
-}
-
 bool ASpaceCombatPlayerController::IsColliding()
 {
 	ASpaceCombatGameMode* GameMode = Cast<ASpaceCombatGameMode>(GetWorld()->GetAuthGameMode());
@@ -650,9 +642,6 @@ void ASpaceCombatPlayerController::ResetShip()
 
 			// Realign Static Mesh to Ship
 			StaticMesh->SetRelativeLocation(FVector(0.0f, 0.0f, Location.Z), false, nullptr, ETeleportType::TeleportPhysics);
-			StaticMesh->SetRelativeRotation(SelectedShip->StartRotation);
-		
-		
 		}
 
 		if (Tile)
