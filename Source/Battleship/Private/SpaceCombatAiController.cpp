@@ -275,9 +275,14 @@ void ASpaceCombatAiController::MoveShip()
 	{
 		bool EnginesOnline = (SelectedShip->Subsystems.Engine != 0.0f);
 
+		EPathFollowingRequestResult::Type Result = EPathFollowingRequestResult::RequestSuccessful;
+
 		// Calculate the AI Pathing using the Nav system.
-		EPathFollowingRequestResult::Type Result = MoveToActor(TargetTile, 10.0f);
-		
+		if (GetMoveStatus() != EPathFollowingStatus::Moving)
+		{
+			Result = MoveToActor(TargetTile, 20.0f);
+		}
+
 		if (!EnginesOnline || Result == EPathFollowingRequestResult::AlreadyAtGoal)
 		{
 			World->GetTimerManager().ClearTimer(AiMoveCycleHandle);
