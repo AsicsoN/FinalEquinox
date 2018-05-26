@@ -91,7 +91,9 @@ void ATile::CustomActorBeginCursorOver(UPrimitiveComponent* TouchedComponent)
 					{
 						if (StaticMeshComponent && StaticMeshComponent->ComponentHasTag(FName("Ship"))) 
 						{
+							SelectedShip->CalculateFinalRotation(GetActorLocation());
 							StaticMeshComponent->SetWorldLocation(FVector(GetActorLocation().X, GetActorLocation().Y, StaticMeshComponent->GetComponentLocation().Z), true, nullptr, ETeleportType::TeleportPhysics);
+							StaticMeshComponent->SetWorldRotation(SelectedShip->NewRotation);
 						}
 					}
 				}
