@@ -10,7 +10,8 @@ enum class ERace : uint8
 {
 	Human UMETA(DisplayName = "Human"),
 	Malderian UMETA(DisplayName = "Malderian"),
-	Krum UMETA(DisplayName = "Krum")
+	Krum UMETA(DisplayName = "Krum"),
+	Barkhomi UMETA(DisplayName = "Barkhomi")
 };
 
 /**
