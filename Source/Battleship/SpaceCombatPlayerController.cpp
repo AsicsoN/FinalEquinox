@@ -477,7 +477,7 @@ bool ASpaceCombatPlayerController::ScanShip_Implementation(AShipPawnBase* Target
 			return false;
 		}
 
-		if (SelectedShip->CurrentActionPoints < 8)
+		if (SelectedShip->CurrentActionPoints < 5)
 		{
 			Result = SOfficerName + ": We can't afford to scan at this time!";
 			GameMode->WriteToCombatLog(FText::FromString(Result));
@@ -485,7 +485,7 @@ bool ASpaceCombatPlayerController::ScanShip_Implementation(AShipPawnBase* Target
 		}
 
 		// Deduct Scan Cost
-		SelectedShip->CurrentActionPoints -= 8;
+		SelectedShip->CurrentActionPoints -= 5;
 
 		// Calculate Scan Resistance
 		float Resistance = (TargetShip->PowerLevel * 5) + TargetShip->CurrentShieldHitPoints;
