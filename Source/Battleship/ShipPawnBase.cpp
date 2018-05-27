@@ -12,6 +12,7 @@ AShipPawnBase::AShipPawnBase()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	// Setup Destructible
 	Destructible = CreateDefaultSubobject<UDestructibleComponent>(TEXT("Destructible Mesh"));
 	Destructible->SetupAttachment(RootComponent);
 	Destructible->bEditableWhenInherited = true;
@@ -19,6 +20,11 @@ AShipPawnBase::AShipPawnBase()
 	Destructible->SetEnableGravity(false);
 	Destructible->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	Destructible->SetLinearDamping(0.5f);
+
+	// Setup Movement
+	MovementSound = CreateDefaultSubobject<UAudioComponent>(TEXT("Movement Sound"));
+	MovementSound->SetupAttachment(RootComponent);
+	MovementSound->bAutoActivate = false;
 }
 
 // Called when the game starts or when spawned
@@ -197,6 +203,10 @@ void AShipPawnBase::Rotate(float DeltaTime)
 	{
 		SetActorRotation(FRotator(0, NewRotation.Yaw, 0));
 		bAdjustRotation = false;
+		if (MovementSound->IsPlaying())
+		{
+			MovementSound->FadeOut(0.5f, 0.0f);
+		}
 	}
 }
 
