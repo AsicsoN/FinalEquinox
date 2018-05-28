@@ -38,6 +38,12 @@ void AAbility::Execute(AShipPawnBase* TargetShip)
 {
 	AShipPawnBase* SelectedShip = Cast<AShipPawnBase>(Instigator);
 
+	if (!SelectedShip)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("BANGBANG"));
+		return;
+	}
+
 	// Check we have the Action Points
 	if (SelectedShip->CurrentActionPoints >= Info.ActionCost)
 	{
@@ -123,12 +129,18 @@ void AAbility::AoeAbility()
 				if (Info.Type == EAbilityType::BUFF)
 				{
 					BoostStats(Ship);
-					Ship->Buffs.Add(this);
+					if (Info.NumberTurns > 1)
+					{
+						Ship->Buffs.Add(this);
+					}
 				}
 				else
 				{
 					ReduceStats(Ship);
-					Ship->Debuffs.Add(this);
+					if (Info.NumberTurns > 1)
+					{
+						Ship->Debuffs.Add(this);
+					}
 				}
 			}
 		}

@@ -179,10 +179,10 @@ public:
 	TArray<FAbilityStruct> Abilities;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Abilities")
-	TSet<AAbility*> Buffs;
+	TArray<AAbility*> Buffs;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Abilities")
-	TSet<AAbility*> Debuffs;
+	TArray<AAbility*> Debuffs;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Abilities")
 	float AttackBonus;
