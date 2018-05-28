@@ -246,6 +246,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UserInterface")
 	UShipInfoBaseWidget* ShipInfoWidget = nullptr;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UserInterface")
+	UUserWidget* ShipIconWidget = nullptr;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Actions")
 	UAudioComponent* MovementSound = nullptr;
 };
