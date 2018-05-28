@@ -138,4 +138,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
 	int32 Supplies = 20;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sentana")
+	bool SentanaTutorialCompleted = false;
+
 };
