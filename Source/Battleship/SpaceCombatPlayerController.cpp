@@ -96,7 +96,6 @@ bool ASpaceCombatPlayerController::LaunchFighters(TSubclassOf<AShipPawnBase> Fig
 					// Take AP from Parent Ship
 					SelectedShip->CurrentActionPoints -= 8;
 
-
 					//FString OfficerName = Fighter->NavigationOfficer->CrewName;
 					FString Result = Fighter->Name + " have launched successfully, Admiral";
 
@@ -140,6 +139,7 @@ bool ASpaceCombatPlayerController::CollectFighter()
 				{
 					Distance = Distance * 4;
 				}
+
 				float ShipDistance = FVector::Dist(Fighter->GetActorLocation(), Parent->GetActorLocation());
 
 				// If within distance and still alive, collect the fighter
@@ -421,19 +421,17 @@ float ASpaceCombatPlayerController::AddSideModifier(const AShipPawnBase* Selecte
 	// Calculate LookAt Rotation
 	FRotator LookRot = (TargetShip->GetActorLocation() - SelectedShip->GetActorLocation()).Rotation();
 
-	UE_LOG(LogTemp, Error, TEXT("Yaw: %f"), LookRot.Yaw);
-
 	// Apply Correct Modifier
 	float Mod;
 	if (LookRot.Yaw > 135.0f)
 	{
 		// Flanking Target (Behind)
-		Mod = 1.7f;
+		Mod = 1.3f;
 	}
 	else if (LookRot.Yaw > 45.0f && LookRot.Yaw <= 135.0f)
 	{
 		// Side of Target
-		Mod = 1.3f;
+		Mod = 1.1f;
 	}
 	else
 	{
