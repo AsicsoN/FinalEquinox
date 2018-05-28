@@ -461,7 +461,7 @@ bool ASpaceCombatPlayerController::ScanShip_Implementation(AShipPawnBase* Target
 
 	if (GameMode)
 	{
-		APlayerShipPawnBase* SelectedShip = (APlayerShipPawnBase*) GameMode->SelectedShip;
+		APlayerShipPawnBase* SelectedShip = Cast<APlayerShipPawnBase>(GameMode->SelectedShip);
 
 		FString SOfficerName = SelectedShip->ScienceOfficer->CrewName;
 		FString DefenderName = TargetShip->Name;
