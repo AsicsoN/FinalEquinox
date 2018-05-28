@@ -237,6 +237,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Game State")
 	void ShipDestroyed();
 
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Game State")
+	inline bool IsDestroyed() { return CurrentHitPoints <= 0; }
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Actions")
 	bool bAdjustRotation = false;
 
@@ -245,6 +248,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UserInterface")
 	UShipInfoBaseWidget* ShipInfoWidget = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UserInterface")
+	UUserWidget* ShipIconWidget = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Actions")
 	UAudioComponent* MovementSound = nullptr;
