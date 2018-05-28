@@ -22,7 +22,7 @@ void APlayerShipPawnBase::Instantiate()
 	if (Type != EType::Small)
 	{
 		// Normal Ship Calculations
-		ActionPoints = Tactics + FMath::RandRange(1, 8) + PowerLevel + Leadership + 4;
+		ActionPoints = 5 + Tactics + FMath::RandRange(1, 8) + PowerLevel + Leadership + 4;
 		ActionPoints = FMath::Clamp(ActionPoints, 0, 40);
 
 		MovementPoints = Navigation + PowerLevel + FMath::RandRange(1, 8) + 4 + Tactics;
