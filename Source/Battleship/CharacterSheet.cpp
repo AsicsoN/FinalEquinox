@@ -2,6 +2,7 @@
 #include "CharacterSheet.h"
 #include "ShipPawnBase.h"
 #include "Stardate.h"
+#include "PlayerCrewObject.h"
 #include "PlayerShipPawnBase.h"
 
 UCharacterSheet::UCharacterSheet()
@@ -492,28 +493,16 @@ void UCharacterSheet::SetDefaultFleet(TSubclassOf<APlayerShipPawnBase> Battleshi
 		APlayerShipPawnBase* flagship = BattleshipPawnClass.GetDefaultObject();
 		flagship->Name = "HCS Odysseus";
 		flagship->Type = EType::Large;
-		flagship->Captain = NewObject<UCrew>();
+		PlayerCrewObject = NewObject<UPlayerCrewObject>();
+		flagship->Captain = PlayerCrewObject;
 		flagship->NavigationOfficer = NewObject<UCrew>();
 		flagship->TacticsOfficer = NewObject<UCrew>();
 		flagship->ScienceOfficer = NewObject<UCrew>();
 		flagship->Engineer = NewObject<UCrew>();
 		flagship->CAG = NewObject<UCrew>();
 
-		flagship->Captain->CrewName = "Nobody";
-		flagship->Captain->CrewRace = ERace::Human;
-		flagship->Captain->IsMale = true;
-		flagship->Captain->Portrait = LoadObject<UTexture2D>(crew1, TEXT("/Game/Textures/Crew/CrewPortraitUnknown"), NULL, LOAD_None, NULL);
-		flagship->Captain->Leadership = 0;
-		flagship->Captain->Navigation = 0;
-		flagship->Captain->Gunnery = 0;
-		flagship->Captain->Engineering = 0;
-		flagship->Captain->Science = 0;
-		flagship->Captain->Tactics = 0;
-		flagship->Captain->Communication = 0;
-		flagship->Captain->SubsystemRepair = 0;
-		flagship->Captain->ShieldRepair = 0;
-
 		flagship->NavigationOfficer->CrewName = "Sam Baker";
+		flagship->NavigationOfficer->IsLocked = true;
 		flagship->NavigationOfficer->CrewRace = ERace::Human;
 		flagship->NavigationOfficer->IsMale = true;
 		flagship->NavigationOfficer->Portrait = LoadObject<UTexture2D>(crew1, TEXT("/Game/Textures/Crew/CrewPortraitSamBaker"), NULL, LOAD_None, NULL);
@@ -542,6 +531,7 @@ void UCharacterSheet::SetDefaultFleet(TSubclassOf<APlayerShipPawnBase> Battleshi
 		flagship->TacticsOfficer->ShieldRepair = -4;
 
 		flagship->ScienceOfficer->CrewName = "Mar-Tun";
+		flagship->ScienceOfficer->IsLocked = true;
 		flagship->ScienceOfficer->CrewRace = ERace::Malderian;
 		flagship->ScienceOfficer->IsMale = false;
 		flagship->ScienceOfficer->Portrait = LoadObject<UTexture2D>(crew1, TEXT("/Game/Textures/Crew/CrewPortraitMarTun"), NULL, LOAD_None, NULL);

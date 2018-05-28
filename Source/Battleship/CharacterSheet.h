@@ -18,6 +18,7 @@ enum class ECharacterBackground : uint8
 
 class APlayerShipPawnBase;
 class UStardate;
+class UPlayerCrewObject;
 
 /**
  * 
@@ -140,5 +141,14 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sentana")
 	bool SentanaTutorialCompleted = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Repair")
+	int32 ShieldRepair = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Repair")
+	int32 SubsystemRepair = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player")
+	UPlayerCrewObject* PlayerCrewObject = nullptr;
 
 };
