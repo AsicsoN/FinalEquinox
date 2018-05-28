@@ -237,6 +237,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Game State")
 	void ShipDestroyed();
 
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Game State")
+	inline bool IsDestroyed() { return CurrentHitPoints <= 0; }
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Actions")
 	bool bAdjustRotation = false;
 
