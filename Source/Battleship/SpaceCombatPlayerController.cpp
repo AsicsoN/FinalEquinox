@@ -426,17 +426,17 @@ float ASpaceCombatPlayerController::AddSideModifier(const AShipPawnBase* Selecte
 	if (LookRot.Yaw > 135.0f)
 	{
 		// Flanking Target (Behind)
-		Mod = 1.3f;
+		Mod = RearDamageMod;
 	}
 	else if (LookRot.Yaw > 45.0f && LookRot.Yaw <= 135.0f)
 	{
 		// Side of Target
-		Mod = 1.1f;
+		Mod = SideDamageMod;
 	}
 	else
 	{
 		// Facing Target
-		Mod = 1.0f;
+		Mod = FrontDamageMod;
 	}
 
 	return Damage * Mod;
