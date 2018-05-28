@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameFramework/Character.h"
+#include "Components/AudioComponent.h"
 #include "Crew.h"
 #include "Ability.h"
 #include "DestructibleComponent.h"
@@ -244,4 +245,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UserInterface")
 	UShipInfoBaseWidget* ShipInfoWidget = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Actions")
+	UAudioComponent* MovementSound = nullptr;
 };

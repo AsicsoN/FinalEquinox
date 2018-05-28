@@ -281,6 +281,10 @@ void ASpaceCombatAiController::MoveShip()
 		if (GetMoveStatus() != EPathFollowingStatus::Moving)
 		{
 			Result = MoveToActor(TargetTile, 20.0f);
+			if (!SelectedShip->MovementSound->IsPlaying())
+			{
+				SelectedShip->MovementSound->FadeIn(2.0f);
+			}
 		}
 
 		if (!EnginesOnline || Result == EPathFollowingRequestResult::AlreadyAtGoal)
@@ -291,6 +295,10 @@ void ASpaceCombatAiController::MoveShip()
 			StopMovement();
 			
 			SelectedShip->bAdjustRotation = true;
+			if (!SelectedShip->MovementSound->IsPlaying())
+			{
+				SelectedShip->MovementSound->FadeOut(1.0f, 0.0f);
+			}
 			
 			World->GetTimerManager().SetTimer(AiAttackCycleHandle, this, &ASpaceCombatAiController::AttackPlayer, 2.0f);
 		}
