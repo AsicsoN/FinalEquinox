@@ -31,6 +31,12 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Settings")
 	static void SetUIVolume(float value);
+
+	UFUNCTION(BlueprintCallable, Category = "Settings")
+	static bool IsFirstTimeRun();
+
+	UFUNCTION(BlueprintCallable, Category = "Settings")
+	static void SetFirstTimeRun(bool value);
 	
 private:
 
