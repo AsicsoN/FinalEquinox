@@ -44,7 +44,7 @@ public:
 	FString GetVariableValue(FString variableName);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
-	FString Name = "Player";
+	FString Name = "You";
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
 	ERace Race = ERace::Human;
