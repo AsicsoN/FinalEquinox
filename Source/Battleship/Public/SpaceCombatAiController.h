@@ -9,6 +9,7 @@
 class AShipPawnBase;
 class ASpaceCombatGameMode;
 class ATile;
+class ASpaceCombatCameraBase;
 
 /**
  * 

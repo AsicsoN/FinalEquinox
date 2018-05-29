@@ -65,6 +65,15 @@ public:
 	UPROPERTY(EditAnywhere)
 	class UStaticMesh* LineMesh = nullptr;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Balance")
+	float FrontDamageMod = 1.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Balance")
+	float SideDamageMod = 1.1f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Balance")
+	float RearDamageMod = 1.3f;
+
 	/***
 	* Gameplay Functions
 	*/

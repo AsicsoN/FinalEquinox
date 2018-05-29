@@ -16,6 +16,9 @@ class BATTLESHIP_API UCrew : public UObject
 	
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
+	bool IsLocked = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
 	FString CrewName = "Player";
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")

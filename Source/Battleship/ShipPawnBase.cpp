@@ -329,5 +329,10 @@ void AShipPawnBase::ShipDestroyed()
 		ShipInfoWidget->RemoveFromParent();
 	}
 
+	if (ShipIconWidget->IsValidLowLevel())
+	{
+		ShipIconWidget->RemoveFromParent();
+	}
+
 	GameMode->CheckCombatState();
 }

@@ -6,6 +6,7 @@
 #include "SpaceCombatPlayerController.h"
 #include "SpaceCombatGameMode.h"
 #include "Tile.h"
+#include "SpaceCombatCamerabase.h"
 #include "AI/Navigation/NavigationPath.h"
 
 
@@ -280,6 +281,12 @@ void ASpaceCombatAiController::MoveShip()
 		// Calculate the AI Pathing using the Nav system.
 		if (GetMoveStatus() != EPathFollowingStatus::Moving)
 		{
+			for (TActorIterator<ASpaceCombatCameraBase> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("StartFollowingShip"));
+				ActorItr->StartFollowingShip(SelectedShip);
+			}
+			
 			Result = MoveToActor(TargetTile, 20.0f);
 			if (!SelectedShip->MovementSound->IsPlaying())
 			{
@@ -293,6 +300,12 @@ void ASpaceCombatAiController::MoveShip()
 
 			UE_LOG(LogTemp, Warning, TEXT("Enemy Ship reached destination"));
 			StopMovement();
+
+			for (TActorIterator<ASpaceCombatCameraBase> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("StopFollowingShip"));
+				ActorItr->StopFollowingShip();
+			}
 			
 			SelectedShip->bAdjustRotation = true;
 			if (!SelectedShip->MovementSound->IsPlaying())

@@ -115,3 +115,27 @@ void USettingsHelper::SetUIVolume(float value)
 {
 	SetFloat(FString("UIVolume"), value);
 }
+
+bool USettingsHelper::IsFirstTimeRun()
+{
+	// TODO - This is hacky... fix later
+	float value = USettingsHelper::GetFloat(FString("FirstTimeRun"));
+	if (value > 0.5f)
+	{
+		return false;
+	}
+	return true;
+}
+
+void USettingsHelper::SetFirstTimeRun(bool value)
+{
+	// TODO - This is hacky... fix later
+	if (value)
+	{
+		SetFloat(FString("FirstTimeRun"), 0.4f);
+	}
+	else
+	{
+		SetFloat(FString("FirstTimeRun"), 1.0f);
+	}
+}

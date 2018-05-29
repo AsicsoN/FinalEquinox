@@ -18,6 +18,7 @@ enum class ECharacterBackground : uint8
 
 class APlayerShipPawnBase;
 class UStardate;
+class UPlayerCrewObject;
 
 /**
  * 
@@ -43,7 +44,7 @@ public:
 	FString GetVariableValue(FString variableName);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
-	FString Name = "Player";
+	FString Name = "You";
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
 	ERace Race = ERace::Human;
@@ -136,6 +137,18 @@ public:
 	UStardate* Stardate = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
-	int32 Supplies = 20;
+	int32 Supplies = 30;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sentana")
+	bool SentanaTutorialCompleted = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Repair")
+	int32 ShieldRepair = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Repair")
+	int32 SubsystemRepair = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player")
+	UPlayerCrewObject* PlayerCrewObject = nullptr;
 
 };
