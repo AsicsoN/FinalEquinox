@@ -214,6 +214,12 @@ float ASpaceCombatGameMode::CalculateHitChance(AShipPawnBase* TargetShip)
 
 	HitChance *= (1.0f + HitBonus);
 	HitChance += Penalty;
+
+	if (HitChance > 99.4f)
+	{
+		HitChance = 99.4f;
+	}
+
 	return HitChance;
 }
 
