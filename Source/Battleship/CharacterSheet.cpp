@@ -269,7 +269,7 @@ void UCharacterSheet::SetCharacterOption(FString option)
 	{
 		Background = ECharacterBackground::Outerworlds;
 		Barter++;
-		ProjectileWeapons++;
+		Gunnery++;
 	}
 	else if (option == "background_innerworlds")
 	{
@@ -294,10 +294,10 @@ void UCharacterSheet::SetCharacterOption(FString option)
 		Background = ECharacterBackground::Trader;
 		Barter += 2;
 	}
-	else if (option == "option_gunnery")
+	else if (option == "option_Tactics")
 	{
-		Gunnery += 2;
-		Explosives++;
+		Tactics += 2;
+		Gunnery++;
 	}
 	else if (option == "option_communications")
 	{
@@ -305,12 +305,17 @@ void UCharacterSheet::SetCharacterOption(FString option)
 		Deception++;
 		Persuasion++;
 	}
-	else if (option == "option_Navigation")
+	else if (option == "option_Science")
+	{
+		Science += 2;
+		Engineering++;
+	}
+	else if (option == "option_Piloting")
 	{
 		Pilot += 2;
 		Gunnery++;
 	}
-	else if (option == "option_navigation")
+	else if (option == "option_Navigation")
 	{
 		Navigation += 2;
 		Tactics++;
@@ -318,7 +323,7 @@ void UCharacterSheet::SetCharacterOption(FString option)
 	else if (option == "option_Engineering")
 	{
 		Engineering += 2;
-		Engineering++;
+		SubsystemRepair++;
 	}
 	else if (option == "option_workedhard")
 	{
