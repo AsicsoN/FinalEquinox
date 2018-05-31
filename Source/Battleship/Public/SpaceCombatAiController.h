@@ -44,6 +44,9 @@ protected:
 
 	bool CheckFacing(FVector MoveLocation);
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Conditionals")
+	int FacingAttempts = 100;
+
 private:
 	// Target Ship
 	AShipPawnBase* Target = nullptr;

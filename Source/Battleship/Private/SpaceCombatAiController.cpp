@@ -127,6 +127,8 @@ void ASpaceCombatAiController::CalculateTravelPoint()
 
 	float FactionEngageDistance = 0.0f;
 
+	int CurrentFacingAttempts = 0;
+
 	// Knock off Faction Bonus
 	if (SelectedShip->Faction == EFaction::Enemy1)
 	{
@@ -137,6 +139,7 @@ void ASpaceCombatAiController::CalculateTravelPoint()
 	if (TotalDistance < FactionEngageDistance)
 	{
 		TotalDistance = FactionEngageDistance * 3;
+		CurrentFacingAttempts = FacingAttempts;
 	}
 	
 	UNavigationSystem* NavSys = UNavigationSystem::GetCurrent(GetWorld());
@@ -224,7 +227,6 @@ void ASpaceCombatAiController::CalculateTravelPoint()
 
 		if (SelectedShip->CurrentMovementPoints < FMath::RoundToInt(PathLength))
 		{
-			UE_LOG(LogTemp, Error, TEXT("Ship Movement: %d Required: %d"), SelectedShip->CurrentMovementPoints, FMath::RoundToInt(PathLength));
 			FactionEngageDistance = FactionEngageDistance + 256.0f;
 		}
 		else
@@ -235,13 +237,16 @@ void ASpaceCombatAiController::CalculateTravelPoint()
 			// Check Enemy is not Colliding
 			if (!CheckCollision(End))
 			{
-				SelectedShip->CurrentMovementPoints -= FMath::RoundToInt(PathLength);
-				break;
-
 				// Check Enemy is Facing Target
-				/*if (CheckFacing(End))
-				{*/
-				//}
+				if (CheckFacing(End) || CurrentFacingAttempts >= FacingAttempts)
+				{
+					SelectedShip->CurrentMovementPoints -= FMath::RoundToInt(PathLength);
+					break;
+				}
+				else
+				{
+					CurrentFacingAttempts++;
+				}
 			}
 		}
 	}
@@ -454,11 +459,13 @@ bool ASpaceCombatAiController::CheckCollision(FVector MoveLocation)
 
 bool ASpaceCombatAiController::CheckFacing(FVector MoveLocation)
 {
-	if (Target)
-	{
-		FRotator LookRot = (Target->GetActorLocation() - MoveLocation).Rotation();
+	AShipPawnBase* SelectedShip = Cast<AShipPawnBase>(GetPawn());
 
-		if (LookRot.Yaw > 45.0f)
+	if (SelectedShip && Target)
+	{
+		FRotator LookRot = (Target->GetActorLocation() - MoveLocation).Rotation() - SelectedShip->NewRotation;
+
+		if (FMath::Abs(LookRot.Yaw) > 45.0f)
 		{
 			// Not Facing
 			return false;
