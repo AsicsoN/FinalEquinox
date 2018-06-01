@@ -229,13 +229,33 @@ void ASpaceCombatAiController::CalculateTravelPoint()
 		}
 		else
 		{
+			ATile* CurTile = nullptr;
+
+			// Calculate our target tile
+			for (TActorIterator<ATile> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+			{
+				if (!CurTile)
+				{
+					CurTile = *ActorItr;
+				}
+
+				float CurrentDistance = FVector::Distance(CurTile->GetActorLocation(), End);
+				float NewDistance = FVector::Distance(ActorItr->GetActorLocation(), End);
+
+				if (NewDistance < CurrentDistance)
+				{
+					CurTile = *ActorItr;
+				}
+			}
+
 			// Calculate the Final Rotation for the Enemy
-			SelectedShip->CalculateFinalRotation(End);
+			SelectedShip->CalculateFinalRotation(CurTile->GetActorLocation());
 			
 			// Check Enemy is not Colliding
-			if (!CheckCollision(End))
+			if (!CheckCollision(CurTile->GetActorLocation()))
 			{
 				SelectedShip->CurrentMovementPoints -= FMath::RoundToInt(PathLength);
+				TargetTile = CurTile;
 				break;
 
 				// Check Enemy is Facing Target
@@ -245,27 +265,6 @@ void ASpaceCombatAiController::CalculateTravelPoint()
 			}
 		}
 	}
-
-	ATile* CurTile = nullptr;
-
-	// Calculate our target tile
-	for (TActorIterator<ATile> ActorItr(GetWorld()); ActorItr; ++ActorItr)
-	{
-		if (!CurTile)
-		{
-			CurTile = *ActorItr;
-		}
-
-		float CurrentDistance = FVector::Distance(CurTile->GetActorLocation(), End);
-		float NewDistance = FVector::Distance(ActorItr->GetActorLocation(), End);
-
-		if (NewDistance < CurrentDistance)
-		{
-			CurTile = *ActorItr;
-		}
-	}
-	
-	TargetTile = CurTile;
 
 	#pragma region Debug Logic
 	FColor LineColor = FColor();
@@ -426,7 +425,7 @@ bool ASpaceCombatAiController::CheckCollision(FVector MoveLocation)
 		FVector StartLoc = Mesh->RelativeLocation;
 		FRotator StartRot = Mesh->RelativeRotation;
 
-		Mesh->SetRelativeLocationAndRotation(MoveLocation, SelectedShip->NewRotation);
+		Mesh->SetRelativeLocationAndRotation(MoveLocation, SelectedShip->NewRotation, false, nullptr, ETeleportType::TeleportPhysics);
 		
 		TArray<AActor*> OverlappingActors;
 		Mesh->GetOverlappingActors(OverlappingActors, ADestructibleObject::StaticClass());
