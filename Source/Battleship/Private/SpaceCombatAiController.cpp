@@ -142,15 +142,17 @@ void ASpaceCombatAiController::CalculateTravelPoint()
 	UNavigationSystem* NavSys = UNavigationSystem::GetCurrent(GetWorld());
 
 	// Calculate the AI Pathing using the Nav system.
+	int32 MaxTravesals = 100;
 	FVector End;
-	while (true)
+	while (MaxTravesals)
 	{
 		// Grab random point around Ship within distance
-		End = NavSys->GetRandomPointInNavigableRadius(GetWorld(), SelectedShip->GetActorLocation(), FactionEngageDistance, NavSys->MainNavData);
+		End = NavSys->GetRandomPointInNavigableRadius(GetWorld(), Start, FactionEngageDistance, NavSys->MainNavData);
 
 		// Make sure that AI is moving towards target
 		if (FVector::Dist(Target->GetActorLocation(), End) > TotalDistance || FVector::Dist(Target->GetActorLocation(), End) < 2000.0f)
 		{
+			MaxTravesals--;
 			continue;
 		}
 
@@ -159,6 +161,7 @@ void ASpaceCombatAiController::CalculateTravelPoint()
 
 		if (NavResult == nullptr)
 		{
+			MaxTravesals--;
 			continue;
 		}
 
@@ -237,6 +240,33 @@ void ASpaceCombatAiController::CalculateTravelPoint()
 				//}*/
 			}
 		}
+
+		MaxTravesals--;
+	}
+
+	if (MaxTravesals == 0)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Max Nav Attempts Reached -- Not Moving to Current Location"));
+		ATile* CurTile = nullptr;
+
+		// Calculate our target tile
+		for (TActorIterator<ATile> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+		{
+			if (!CurTile)
+			{
+				CurTile = *ActorItr;
+			}
+
+			float CurrentDistance = FVector::Distance(CurTile->GetActorLocation(), Start);
+			float NewDistance = FVector::Distance(ActorItr->GetActorLocation(), Start);
+
+			if (NewDistance < CurrentDistance)
+			{
+				CurTile = *ActorItr;
+			}
+		}
+
+		TargetTile = CurTile;
 	}
 
 	#pragma region Debug Logic
