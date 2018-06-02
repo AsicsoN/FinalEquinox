@@ -10,6 +10,7 @@
 #include "SpaceCombatCamerabase.h"
 #include "AI/Navigation/NavigationPath.h"
 
+#define LOCTEXT_NAMESPACE "SpaceCombat" 
 
 void ASpaceCombatAiController::Tick(float DeltaTime)
 {
@@ -36,8 +37,24 @@ void ASpaceCombatAiController::BeginAiTurn()
 
 	UE_LOG(LogTemp, Warning, TEXT("Enemy Ship %s starting turn"), *SelectedShip->Name);
 
-	// Commence Ai Logic Cycle
-	GenerateTurnInformation();
+	if (SelectedShip->CurrentHitPoints <= 0)
+	{
+		// Ship should be destroyed, initiate self destruct
+		FFormatNamedArguments Arguments;
+		Arguments.Add(TEXT("Name"), FText::FromString(*SelectedShip->Name));
+		GameMode->WriteToCombatLog(FText::Format(LOCTEXT("Destroyed", "{Name} has suffered a critical reactor failure!"), Arguments));
+
+		GameMode->SelectedPawnIndex = GameMode->SelectedPawnIndex - 1;
+
+		SelectedShip->ShipDestroyed();
+
+		GetWorld()->GetTimerManager().SetTimer(AiSwapCycleHandle, this, &ASpaceCombatAiController::SwapShip, 5.0f);
+	}
+	else
+	{
+		// Commence Ai Logic Cycle
+		GenerateTurnInformation();
+	}
 }
 
 void ASpaceCombatAiController::GenerateTurnInformation()

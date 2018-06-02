@@ -44,6 +44,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	TArray<AShipPawnBase*> ShipArray;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+	int32 SelectedPawnIndex = 0;
+
 	ASpaceCombatGameMode();
 
 	// Called when the game starts or when spawned
