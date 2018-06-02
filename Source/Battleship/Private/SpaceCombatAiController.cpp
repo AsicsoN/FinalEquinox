@@ -155,33 +155,6 @@ void ASpaceCombatAiController::CalculateTravelPoint()
 			continue;
 		}
 
-		bool isOverlapping = false;
-		for (TActorIterator<AActor> ActorItr(GetWorld()); ActorItr; ++ActorItr)
-		{
-			AShipPawnBase *Ship = Cast<AShipPawnBase>(*ActorItr);
-
-			if (!Ship)
-			{
-				continue;
-			}
-
-			if (Ship->Faction != EFaction::Player)
-			{
-				continue;
-			}
-
-			if (FVector::Dist(Ship->GetActorLocation(), End) <= 600.0f)
-			{
-				isOverlapping = true;
-				break;
-			}
-		}
-
-		if (isOverlapping)
-		{
-			continue;
-		}
-
 		// Find Path to the Target Location
 		UNavigationPath *NavResult = NavSys->FindPathToLocationSynchronously(GetWorld(), Start, End, SelectedShip);
 
@@ -256,6 +229,7 @@ void ASpaceCombatAiController::CalculateTravelPoint()
 			{
 				SelectedShip->CurrentMovementPoints -= FMath::RoundToInt(PathLength);
 				TargetTile = CurTile;
+				UE_LOG(LogTemp, Error, TEXT("%s"), *TargetTile->GetName());
 				break;
 
 				// Check Enemy is Facing Target
