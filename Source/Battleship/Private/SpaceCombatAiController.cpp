@@ -60,6 +60,12 @@ void ASpaceCombatAiController::BeginAiTurn()
 void ASpaceCombatAiController::GenerateTurnInformation()
 {
 	AShipPawnBase* SelectedShip = Cast<AShipPawnBase>(GetPawn());
+
+	if (!SelectedShip)
+	{
+		return;
+	}
+
 	UWorld* World = GetWorld();
 
 	UE_LOG(LogTemp, Warning, TEXT("Enemy Ship %s entering loop"), *SelectedShip->Name);
@@ -137,6 +143,11 @@ void ASpaceCombatAiController::SelectTarget()
 void ASpaceCombatAiController::CalculateTravelPoint() 
 {
 	AShipPawnBase* SelectedShip = Cast<AShipPawnBase>(GetPawn());
+
+	if (!SelectedShip || !Target)
+	{
+		return;
+	}
 
 	FVector Start = SelectedShip->GetActorLocation();
 
@@ -362,6 +373,12 @@ void ASpaceCombatAiController::MoveShip()
 void ASpaceCombatAiController::AttackPlayer()
 {
 	AShipPawnBase* SelectedShip = Cast<AShipPawnBase>(GetPawn());
+
+	if (!SelectedShip || !Target)
+	{
+		return;
+	}
+
 	UWorld* World = GetWorld();
 
 	// Wait until rotation is complete
@@ -417,6 +434,11 @@ void ASpaceCombatAiController::SwapShip()
 	World->GetTimerManager().ClearAllTimersForObject(this);
 
 	AShipPawnBase* SelectedShip = Cast<AShipPawnBase>(GetPawn());
+
+	if (!SelectedShip)
+	{
+		return;
+	}
 
 	UE_LOG(LogTemp, Warning, TEXT("Enemy Ship %s finished turn"), *SelectedShip->Name);
 
