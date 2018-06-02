@@ -175,8 +175,34 @@ function StageUnrealOutput
 	
 	Move-Item "$PSScriptRoot\Output\Win64\WindowsNoEditor\Engine\Extras\Redist\en-us\UE4PrereqSetup_x64.exe" "$PSScriptRoot\Output\Win64\"
 	Move-Item "$PSScriptRoot\Output\Win32\WindowsNoEditor\Engine\Extras\Redist\en-us\UE4PrereqSetup_x86.exe" "$PSScriptRoot\Output\Win32\"
-	Move-Item "$PSScriptRoot\Output\Win64\WindowsNoEditor\Manifest_NonUFSFiles_Win64.txt" "$PSScriptRoot\Output\Win64\"
-	Move-Item "$PSScriptRoot\Output\Win32\WindowsNoEditor\Manifest_NonUFSFiles_Win32.txt" "$PSScriptRoot\Output\Win32\"
+	Move-Item "$PSScriptRoot\Output\Win64\WindowsNoEditor\Manifest_NonUFSFiles_Win64.txt" "$PSScriptRoot\Output\"
+	Move-Item "$PSScriptRoot\Output\Win64\WindowsNoEditor\Manifest_UFSFiles_Win64.txt" "$PSScriptRoot\Output\"
+	Move-Item "$PSScriptRoot\Output\Win32\WindowsNoEditor\Manifest_NonUFSFiles_Win32.txt" "$PSScriptRoot\Output\"
+	Move-Item "$PSScriptRoot\Output\Win32\WindowsNoEditor\Manifest_UFSFiles_Win32.txt" "$PSScriptRoot\Output\"
+	
+	Move-Item "$PSScriptRoot\Output\Win64\WindowsNoEditor" "$PSScriptRoot\Output\Win64\Battleship"
+	Move-Item "$PSScriptRoot\Output\Win32\WindowsNoEditor" "$PSScriptRoot\Output\Win32\Battleship"
+}
+
+function CreateZipFiles
+{
+	Compress-Archive -LiteralPath "$PSScriptRoot\Output\Win64\UE4PrereqSetup_x64.exe", "$PSScriptRoot\Output\Win64\Battleship\" -CompressionLevel Optimal -DestinationPath "$PSScriptRoot\Output\FinalEquinox64bit.zip"
+	Compress-Archive -LiteralPath "$PSScriptRoot\Output\Win64\UE4PrereqSetup_x86.exe", "$PSScriptRoot\Output\Win32\Battleship\" -CompressionLevel Optimal -DestinationPath "$PSScriptRoot\Output\FinalEquinox32bit.zip"
+}
+
+function DeployZipFiles
+{
+	Write-Host "SECTION DeployZipFiles"
+	$version = $env:FULL_BUILD_NUMBER
+	
+	$path = "E:\GoogleDrive\Frozen Wasteland Entertainment\Battleship\Builds\$version"
+	if(!(test-path $path))
+	{
+		New-Item -ItemType Directory -Force -Path $path
+	}
+	
+	Copy-Item "$PSScriptRoot\Output\FinalEquinox64bit.zip" $path
+	Copy-Item "$PSScriptRoot\Output\FinalEquinox32bit.zip" $path
 }
 
 #Clean up output from previous build
@@ -194,8 +220,8 @@ BuildUnreal "Win64"
 BuildVisualStudioSolution "Win32"
 BuildUnreal "Win32"
 StageUnrealOutput
-BuildInstaller $version
-DeployArtifacts
+CreateZipFiles
+DeployZipFiles
 
 #Set the number back so source control doesn't see a change
 SetUnrealBuildNumber "1.0.0.9999"
