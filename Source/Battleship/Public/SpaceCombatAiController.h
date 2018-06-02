@@ -40,6 +40,10 @@ protected:
 
 	void SwapShip();
 
+	bool CheckCollision(FVector MoveLocation);
+
+	bool CheckFacing(FVector MoveLocation);
+
 private:
 	// Target Ship
 	AShipPawnBase* Target = nullptr;

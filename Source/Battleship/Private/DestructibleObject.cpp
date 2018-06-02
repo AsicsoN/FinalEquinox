@@ -2,6 +2,7 @@
 
 #include "Battleship.h"
 #include "DestructibleObject.h"
+#include "AI/Navigation/NavAreas/NavArea_Null.h"
 
 
 // Sets default values
@@ -12,12 +13,16 @@ ADestructibleObject::ADestructibleObject()
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(RootComponent);
+	Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Mesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 
 	RootComponent = Mesh;
 
 	Box = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
 	Box->SetupAttachment(Mesh);
-	Box->SetBoxExtent(FVector(100.0f, 100.0f, 200.0f));
+	Box->SetBoxExtent(FVector(10.0f, 10.0f, 200.0f));
+	Box->bDynamicObstacle = true;
+	Box->AreaClass = UNavArea_Null::StaticClass();
 }
 
 // Called when the game starts or when spawned

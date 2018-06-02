@@ -595,25 +595,29 @@ bool ASpaceCombatPlayerController::IsColliding()
 
 		if (SelectedShip)
 		{
+			TArray<UActorComponent*> Meshes = SelectedShip->GetComponentsByTag(UStaticMeshComponent::StaticClass(), FName("Ship"));
+
+			if (!Meshes.Num())
+			{
+				return false;
+			}
+
+			UStaticMeshComponent* Mesh = Cast<UStaticMeshComponent>(Meshes[0]);
+
 			TArray<AActor*> OverlappingActors;
-			SelectedShip->GetOverlappingActors(OverlappingActors);
+			Mesh->GetOverlappingActors(OverlappingActors, ADestructibleObject::StaticClass());
+
+			TArray<AActor*> OverlappingShips;
+			Mesh->GetOverlappingActors(OverlappingShips, AShipPawnBase::StaticClass());
+			if (OverlappingShips.Contains(SelectedShip))
+			{
+				OverlappingShips.Remove(SelectedShip);
+			}
 
 			bool isOverlapping = false;
-
-			for (AActor* Actor : OverlappingActors)
+			if (OverlappingActors.Num() || OverlappingShips.Num())
 			{
-				if (Cast<AShipPawnBase>(Actor))
-				{
-					// Overlapping Ship
-					isOverlapping = true;
-					break;
-				}
-				if (Cast<ADestructibleObject>(Actor))
-				{
-					// Overlapping Object
-					isOverlapping = true;
-					break;
-				}
+				isOverlapping = true;
 			}
 
 			return isOverlapping;

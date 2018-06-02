@@ -6,6 +6,7 @@
 #include "SpaceCombatPlayerController.h"
 #include "SpaceCombatGameMode.h"
 #include "Tile.h"
+#include "DestructibleObject.h"
 #include "SpaceCombatCamerabase.h"
 #include "AI/Navigation/NavigationPath.h"
 
@@ -131,6 +132,12 @@ void ASpaceCombatAiController::CalculateTravelPoint()
 	{
 		FactionEngageDistance = 256.0f * 10;
 	}
+
+	// If Total Distance is at or below engagement distance, we need to move away
+	if (TotalDistance < FactionEngageDistance)
+	{
+		TotalDistance = FactionEngageDistance * 3;
+	}
 	
 	UNavigationSystem* NavSys = UNavigationSystem::GetCurrent(GetWorld());
 
@@ -139,38 +146,11 @@ void ASpaceCombatAiController::CalculateTravelPoint()
 	while (true)
 	{
 
-		// Grab random point around target
-		End = NavSys->GetRandomPointInNavigableRadius(GetWorld(), Target->GetActorLocation(), FactionEngageDistance, NavSys->MainNavData);
+		// Grab random point around Ship within distance
+		End = NavSys->GetRandomPointInNavigableRadius(GetWorld(), SelectedShip->GetActorLocation(), FactionEngageDistance, NavSys->MainNavData);
 
-		// Make sure that our enemies keep a fixed minimum distance away.
-		if (FVector::Dist(Target->GetActorLocation(), End) < 512.0f)
-		{
-			continue;
-		}
-
-		bool isOverlapping = false;
-		for (TActorIterator<AActor> ActorItr(GetWorld()); ActorItr; ++ActorItr)
-		{
-			AShipPawnBase *Ship = Cast<AShipPawnBase>(*ActorItr);
-
-			if (!Ship)
-			{
-				continue;
-			}
-
-			if (Ship->Faction != EFaction::Player)
-			{
-				continue;
-			}
-
-			if (FVector::Dist(Ship->GetActorLocation(), End) <= 600.0f)
-			{
-				isOverlapping = true;
-				break;
-			}
-		}
-
-		if (isOverlapping)
+		// Make sure that AI is moving towards target
+		if (FVector::Dist(Target->GetActorLocation(), End) > TotalDistance || FVector::Dist(Target->GetActorLocation(), End) < 2000.0f)
 		{
 			continue;
 		}
@@ -211,43 +191,54 @@ void ASpaceCombatAiController::CalculateTravelPoint()
 		}
 		#pragma endregion
 
+		// Calculate Path Cost
 		float PathLength = NavResult->GetPathLength();
-
 		PathLength = PathLength / 256;
 
 		if (SelectedShip->CurrentMovementPoints < FMath::RoundToInt(PathLength))
 		{
+			UE_LOG(LogTemp, Error, TEXT("Ship Movement: %d Required: %d"), SelectedShip->CurrentMovementPoints, FMath::RoundToInt(PathLength));
 			FactionEngageDistance = FactionEngageDistance + 256.0f;
 		}
 		else
 		{
-			SelectedShip->CurrentMovementPoints -= FMath::RoundToInt(PathLength);
-			break;
+			ATile* CurTile = nullptr;
+
+			// Calculate our target tile
+			for (TActorIterator<ATile> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+			{
+				if (!CurTile)
+				{
+					CurTile = *ActorItr;
+				}
+
+				float CurrentDistance = FVector::Distance(CurTile->GetActorLocation(), End);
+				float NewDistance = FVector::Distance(ActorItr->GetActorLocation(), End);
+
+				if (NewDistance < CurrentDistance)
+				{
+					CurTile = *ActorItr;
+				}
+			}
+
+			// Calculate the Final Rotation for the Enemy
+			SelectedShip->CalculateFinalRotation(CurTile->GetActorLocation());
+			
+			// Check Enemy is not Colliding
+			if (!CheckCollision(CurTile->GetActorLocation()))
+			{
+				SelectedShip->CurrentMovementPoints -= FMath::RoundToInt(PathLength);
+				TargetTile = CurTile;
+				UE_LOG(LogTemp, Error, TEXT("%s"), *TargetTile->GetName());
+				break;
+
+				// Check Enemy is Facing Target
+				/*if (CheckFacing(End))
+				{*/
+				//}
+			}
 		}
 	}
-
-	ATile* CurTile = nullptr;
-
-	// Calculate our target tile
-	for (TActorIterator<ATile> ActorItr(GetWorld()); ActorItr; ++ActorItr)
-	{
-		if (!CurTile)
-		{
-			CurTile = *ActorItr;
-		}
-
-		float CurrentDistance = FVector::Distance(CurTile->GetActorLocation(), End);
-		float NewDistance = FVector::Distance(ActorItr->GetActorLocation(), End);
-
-		if (NewDistance < CurrentDistance)
-		{
-			CurTile = *ActorItr;
-		}
-	}
-	
-	TargetTile = CurTile;
-
-	SelectedShip->CalculateFinalRotation(TargetTile->GetActorLocation());
 
 	#pragma region Debug Logic
 	FColor LineColor = FColor();
@@ -389,4 +380,68 @@ void ASpaceCombatAiController::SwapShip()
 
 	// Call GameMode to SwapPawn()
 	SelectedShip->ForceTurnEnd = true;
+}
+
+bool ASpaceCombatAiController::CheckCollision(FVector MoveLocation)
+{
+	AShipPawnBase* SelectedShip = GameMode->SelectedShip;
+
+	if (SelectedShip)
+	{
+		TArray<UActorComponent*> Meshes = SelectedShip->GetComponentsByTag(UStaticMeshComponent::StaticClass(), FName("Ship"));
+
+		if (!Meshes.Num())
+		{
+			return false;
+		}
+
+		UStaticMeshComponent* Mesh = Cast<UStaticMeshComponent>(Meshes[0]);
+		FVector StartLoc = Mesh->RelativeLocation;
+		FRotator StartRot = Mesh->RelativeRotation;
+
+		Mesh->SetRelativeLocationAndRotation(MoveLocation, SelectedShip->NewRotation, false, nullptr, ETeleportType::TeleportPhysics);
+		
+		TArray<AActor*> OverlappingActors;
+		Mesh->GetOverlappingActors(OverlappingActors, ADestructibleObject::StaticClass());
+
+		TArray<AActor*> OverlappingShips;
+		Mesh->GetOverlappingActors(OverlappingShips, AShipPawnBase::StaticClass());
+		if (OverlappingShips.Contains(SelectedShip))
+		{
+			OverlappingShips.Remove(SelectedShip);
+		}
+
+		Mesh->SetRelativeLocationAndRotation(StartLoc, StartRot, false, nullptr, ETeleportType::TeleportPhysics);
+
+		bool isOverlapping = false;
+		if (OverlappingActors.Num() || OverlappingShips.Num())
+		{
+			isOverlapping = true;
+		}
+
+		return isOverlapping;
+	}
+
+	return true;
+}
+
+bool ASpaceCombatAiController::CheckFacing(FVector MoveLocation)
+{
+	if (Target)
+	{
+		FRotator LookRot = (Target->GetActorLocation() - MoveLocation).Rotation();
+
+		if (LookRot.Yaw > 45.0f)
+		{
+			// Not Facing
+			return false;
+		}
+		else
+		{
+			// Facing Target
+			return true;
+		}
+	}
+
+	return false;
 }
