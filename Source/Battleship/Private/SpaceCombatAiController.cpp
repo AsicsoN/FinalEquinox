@@ -138,14 +138,13 @@ void ASpaceCombatAiController::CalculateTravelPoint()
 	{
 		TotalDistance = FactionEngageDistance * 3;
 	}
-	
+
 	UNavigationSystem* NavSys = UNavigationSystem::GetCurrent(GetWorld());
 
 	// Calculate the AI Pathing using the Nav system.
 	FVector End;
 	while (true)
 	{
-
 		// Grab random point around Ship within distance
 		End = NavSys->GetRandomPointInNavigableRadius(GetWorld(), SelectedShip->GetActorLocation(), FactionEngageDistance, NavSys->MainNavData);
 
@@ -234,8 +233,8 @@ void ASpaceCombatAiController::CalculateTravelPoint()
 
 				// Check Enemy is Facing Target
 				/*if (CheckFacing(End))
-				{*/
-				//}
+				{
+				//}*/
 			}
 		}
 	}
@@ -396,30 +395,38 @@ bool ASpaceCombatAiController::CheckCollision(FVector MoveLocation)
 		}
 
 		UStaticMeshComponent* Mesh = Cast<UStaticMeshComponent>(Meshes[0]);
-		FVector StartLoc = Mesh->RelativeLocation;
-		FRotator StartRot = Mesh->RelativeRotation;
 
-		Mesh->SetRelativeLocationAndRotation(MoveLocation, SelectedShip->NewRotation, false, nullptr, ETeleportType::TeleportPhysics);
-		
-		TArray<AActor*> OverlappingActors;
-		Mesh->GetOverlappingActors(OverlappingActors, ADestructibleObject::StaticClass());
-
-		TArray<AActor*> OverlappingShips;
-		Mesh->GetOverlappingActors(OverlappingShips, AShipPawnBase::StaticClass());
-		if (OverlappingShips.Contains(SelectedShip))
+		if (Mesh->IsValidLowLevel())
 		{
-			OverlappingShips.Remove(SelectedShip);
+			FVector StartLoc = Mesh->RelativeLocation;
+			FRotator StartRot = Mesh->RelativeRotation;
+
+			Mesh->SetRelativeRotation(SelectedShip->NewRotation);
+
+			FVector MoveLoc = FVector(MoveLocation.X, MoveLocation.Y, StartLoc.Z);
+			Mesh->SetWorldLocation(MoveLoc, false, nullptr, ETeleportType::TeleportPhysics);
+
+			TArray<AActor*> OverlappingActors;
+			Mesh->GetOverlappingActors(OverlappingActors, ADestructibleObject::StaticClass());
+
+			TArray<AActor*> OverlappingShips;
+			Mesh->GetOverlappingActors(OverlappingShips, AShipPawnBase::StaticClass());
+			if (OverlappingShips.Contains(SelectedShip))
+			{
+				OverlappingShips.Remove(SelectedShip);
+			}
+
+			Mesh->SetRelativeLocationAndRotation(StartLoc, StartRot, false, nullptr, ETeleportType::TeleportPhysics);
+
+			bool isOverlapping = false;
+			if (OverlappingActors.Num() || OverlappingShips.Num())
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Overlapped: Asteroids %d Ships %d"), OverlappingActors.Num(), OverlappingShips.Num());
+				isOverlapping = true;
+			}
+
+			return isOverlapping;
 		}
-
-		Mesh->SetRelativeLocationAndRotation(StartLoc, StartRot, false, nullptr, ETeleportType::TeleportPhysics);
-
-		bool isOverlapping = false;
-		if (OverlappingActors.Num() || OverlappingShips.Num())
-		{
-			isOverlapping = true;
-		}
-
-		return isOverlapping;
 	}
 
 	return true;
