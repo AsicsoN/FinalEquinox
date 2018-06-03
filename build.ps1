@@ -173,21 +173,21 @@ function StageUnrealOutput
 {
 	Write-Host "SECTION StageUnrealOutput"
 	
-	Move-Item "$PSScriptRoot\Output\Win64\WindowsNoEditor\Engine\Extras\Redist\en-us\UE4PrereqSetup_x64.exe" "$PSScriptRoot\Output\Win64\"
-	Move-Item "$PSScriptRoot\Output\Win32\WindowsNoEditor\Engine\Extras\Redist\en-us\UE4PrereqSetup_x86.exe" "$PSScriptRoot\Output\Win32\"
+	Move-Item "$PSScriptRoot\Output\Win64\WindowsNoEditor\Engine\Extras\Redist\en-us\UE4PrereqSetup_x64.exe" "$PSScriptRoot\Output\Win64\FinalEquinox64bit"
+	Move-Item "$PSScriptRoot\Output\Win32\WindowsNoEditor\Engine\Extras\Redist\en-us\UE4PrereqSetup_x86.exe" "$PSScriptRoot\Output\Win32\FinalEquinox32bit"
 	Move-Item "$PSScriptRoot\Output\Win64\WindowsNoEditor\Manifest_NonUFSFiles_Win64.txt" "$PSScriptRoot\Output\"
 	Move-Item "$PSScriptRoot\Output\Win64\WindowsNoEditor\Manifest_UFSFiles_Win64.txt" "$PSScriptRoot\Output\"
 	Move-Item "$PSScriptRoot\Output\Win32\WindowsNoEditor\Manifest_NonUFSFiles_Win32.txt" "$PSScriptRoot\Output\"
 	Move-Item "$PSScriptRoot\Output\Win32\WindowsNoEditor\Manifest_UFSFiles_Win32.txt" "$PSScriptRoot\Output\"
 	
-	Move-Item "$PSScriptRoot\Output\Win64\WindowsNoEditor" "$PSScriptRoot\Output\Win64\Battleship"
-	Move-Item "$PSScriptRoot\Output\Win32\WindowsNoEditor" "$PSScriptRoot\Output\Win32\Battleship"
+	Move-Item "$PSScriptRoot\Output\Win64\WindowsNoEditor" "$PSScriptRoot\Output\Win64\FinalEquinox64bit\Battleship"
+	Move-Item "$PSScriptRoot\Output\Win32\WindowsNoEditor" "$PSScriptRoot\Output\Win32\FinalEquinox32bit\Battleship"
 }
 
 function CreateZipFiles
 {
-	Compress-Archive -LiteralPath "$PSScriptRoot\Output\Win64\UE4PrereqSetup_x64.exe", "$PSScriptRoot\Output\Win64\Battleship\" -CompressionLevel Optimal -DestinationPath "$PSScriptRoot\Output\FinalEquinox64bit.zip"
-	Compress-Archive -LiteralPath "$PSScriptRoot\Output\Win64\UE4PrereqSetup_x86.exe", "$PSScriptRoot\Output\Win32\Battleship\" -CompressionLevel Optimal -DestinationPath "$PSScriptRoot\Output\FinalEquinox32bit.zip"
+	Compress-Archive -LiteralPath "$PSScriptRoot\Output\Win64\FinalEquinox64bit\Battleship\" -CompressionLevel Optimal -DestinationPath "$PSScriptRoot\Output\FinalEquinox64bit.zip"
+	Compress-Archive -LiteralPath "$PSScriptRoot\Output\Win32\FinalEquinox32bit\Battleship\" -CompressionLevel Optimal -DestinationPath "$PSScriptRoot\Output\FinalEquinox32bit.zip"
 }
 
 function DeployZipFiles
