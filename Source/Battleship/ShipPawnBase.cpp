@@ -248,11 +248,22 @@ bool AShipPawnBase::IsTurnOver()
 
 void AShipPawnBase::CheckExpiryBuffs()
 {
+	int32 Size = 0;
+
 	// Check if any buffs have expired
-	for (auto Buff : Buffs)
+	Size = Buffs.Num();
+	for (int32 i = 0; i < Size; i++)
 	{
+		if (!Buffs.IsValidIndex(i))
+		{
+			Buffs.RemoveAt(i);
+			continue;
+		}
+
+		AAbility* Buff = Buffs[i];
+
 		// Check for nullptr, remove from set
-		if (!Buff)
+		if (!Buff->IsValidLowLevel())
 		{
 			continue;
 		}
@@ -260,6 +271,7 @@ void AShipPawnBase::CheckExpiryBuffs()
 		if (!Buff->Info.NumberTurns)
 		{
 			Buff->Cleanup(this);
+			Buffs.RemoveAt(i);
 		}
 		else
 		{
@@ -269,13 +281,21 @@ void AShipPawnBase::CheckExpiryBuffs()
 			}
 		}
 	}
-	Buffs.Remove(nullptr);
 
 	// Check if any buffs have expired
-	for (auto Debuff : Debuffs)
+	Size = Debuffs.Num();
+	for (int32 i = 0; i < Size; i++)
 	{
+		if (!Debuffs.IsValidIndex(i))
+		{
+			Debuffs.RemoveAt(i);
+			continue;
+		}
+
+		AAbility* Debuff = Debuffs[i];
+
 		// Check for nullptr, remove from set
-		if (!Debuff)
+		if (!Debuff->IsValidLowLevel())
 		{
 			continue;
 		}
@@ -283,6 +303,7 @@ void AShipPawnBase::CheckExpiryBuffs()
 		if (!Debuff->Info.NumberTurns)
 		{
 			Debuff->Cleanup(this);
+			Debuffs.RemoveAt(i);
 		}
 		else
 		{
@@ -292,7 +313,6 @@ void AShipPawnBase::CheckExpiryBuffs()
 			}
 		}
 	}
-	Debuffs.Remove(nullptr);
 }
 
 void AShipPawnBase::ShipDestroyed()
