@@ -13,14 +13,14 @@ ADestructibleObject::ADestructibleObject()
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(RootComponent);
-	Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	Mesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	Mesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	Mesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
 
 	RootComponent = Mesh;
 
 	Box = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
 	Box->SetupAttachment(Mesh);
-	Box->SetBoxExtent(FVector(10.0f, 10.0f, 200.0f));
+	Box->SetBoxExtent(FVector(10.0f, 10.0f, 400.0f));
 	Box->bDynamicObstacle = true;
 	Box->AreaClass = UNavArea_Null::StaticClass();
 }

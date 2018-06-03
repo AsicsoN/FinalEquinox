@@ -17,7 +17,7 @@ FAbilityStruct::FAbilityStruct()
 AAbility::AAbility()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 }
 
 // Called when the game starts or when spawned
@@ -79,12 +79,18 @@ void AAbility::TargettedAbility(AShipPawnBase* TargetShip)
 	if (Info.Type == EAbilityType::BUFF)
 	{
 		BoostStats(TargetShip);
-		TargetShip->Buffs.Add(this);
+		if (Info.NumberTurns > 1)
+		{
+			TargetShip->Buffs.Add(this);
+		}
 	}
 	else
 	{
 		ReduceStats(TargetShip);
-		TargetShip->Debuffs.Add(this);
+		if (Info.NumberTurns > 1)
+		{
+			TargetShip->Debuffs.Add(this);
+		}
 	}
 }
 

@@ -10,6 +10,7 @@
 #include "SpaceCombatCamerabase.h"
 #include "AI/Navigation/NavigationPath.h"
 
+#define LOCTEXT_NAMESPACE "SpaceCombat" 
 
 void ASpaceCombatAiController::Tick(float DeltaTime)
 {
@@ -36,13 +37,35 @@ void ASpaceCombatAiController::BeginAiTurn()
 
 	UE_LOG(LogTemp, Warning, TEXT("Enemy Ship %s starting turn"), *SelectedShip->Name);
 
-	// Commence Ai Logic Cycle
-	GenerateTurnInformation();
+	if (SelectedShip->CurrentHitPoints <= 0)
+	{
+		// Ship should be destroyed, initiate self destruct
+		FFormatNamedArguments Arguments;
+		Arguments.Add(TEXT("Name"), FText::FromString(*SelectedShip->Name));
+		GameMode->WriteToCombatLog(FText::Format(LOCTEXT("Destroyed", "{Name} has suffered a critical reactor failure!"), Arguments));
+
+		GameMode->SelectedPawnIndex = GameMode->SelectedPawnIndex - 1;
+
+		SelectedShip->ShipDestroyed();
+
+		GetWorld()->GetTimerManager().SetTimer(AiSwapCycleHandle, this, &ASpaceCombatAiController::SwapShip, 5.0f);
+	}
+	else
+	{
+		// Commence Ai Logic Cycle
+		GenerateTurnInformation();
+	}
 }
 
 void ASpaceCombatAiController::GenerateTurnInformation()
 {
 	AShipPawnBase* SelectedShip = Cast<AShipPawnBase>(GetPawn());
+
+	if (!SelectedShip)
+	{
+		return;
+	}
+
 	UWorld* World = GetWorld();
 
 	UE_LOG(LogTemp, Warning, TEXT("Enemy Ship %s entering loop"), *SelectedShip->Name);
@@ -121,6 +144,11 @@ void ASpaceCombatAiController::CalculateTravelPoint()
 {
 	AShipPawnBase* SelectedShip = Cast<AShipPawnBase>(GetPawn());
 
+	if (!SelectedShip || !Target)
+	{
+		return;
+	}
+
 	FVector Start = SelectedShip->GetActorLocation();
 
 	float TotalDistance = FVector::Distance(Start, Target->GetActorLocation());
@@ -138,20 +166,21 @@ void ASpaceCombatAiController::CalculateTravelPoint()
 	{
 		TotalDistance = FactionEngageDistance * 3;
 	}
-	
+
 	UNavigationSystem* NavSys = UNavigationSystem::GetCurrent(GetWorld());
 
 	// Calculate the AI Pathing using the Nav system.
+	int32 MaxTravesals = 100;
 	FVector End;
-	while (true)
+	while (MaxTravesals)
 	{
-
 		// Grab random point around Ship within distance
-		End = NavSys->GetRandomPointInNavigableRadius(GetWorld(), SelectedShip->GetActorLocation(), FactionEngageDistance, NavSys->MainNavData);
+		End = NavSys->GetRandomPointInNavigableRadius(GetWorld(), Start, FactionEngageDistance, NavSys->MainNavData);
 
 		// Make sure that AI is moving towards target
 		if (FVector::Dist(Target->GetActorLocation(), End) > TotalDistance || FVector::Dist(Target->GetActorLocation(), End) < 2000.0f)
 		{
+			MaxTravesals--;
 			continue;
 		}
 
@@ -160,6 +189,7 @@ void ASpaceCombatAiController::CalculateTravelPoint()
 
 		if (NavResult == nullptr)
 		{
+			MaxTravesals--;
 			continue;
 		}
 
@@ -234,10 +264,37 @@ void ASpaceCombatAiController::CalculateTravelPoint()
 
 				// Check Enemy is Facing Target
 				/*if (CheckFacing(End))
-				{*/
-				//}
+				{
+				//}*/
 			}
 		}
+
+		MaxTravesals--;
+	}
+
+	if (MaxTravesals == 0)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Max Nav Attempts Reached -- Not Moving to Current Location"));
+		ATile* CurTile = nullptr;
+
+		// Calculate our target tile
+		for (TActorIterator<ATile> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+		{
+			if (!CurTile)
+			{
+				CurTile = *ActorItr;
+			}
+
+			float CurrentDistance = FVector::Distance(CurTile->GetActorLocation(), Start);
+			float NewDistance = FVector::Distance(ActorItr->GetActorLocation(), Start);
+
+			if (NewDistance < CurrentDistance)
+			{
+				CurTile = *ActorItr;
+			}
+		}
+
+		TargetTile = CurTile;
 	}
 
 	#pragma region Debug Logic
@@ -316,6 +373,12 @@ void ASpaceCombatAiController::MoveShip()
 void ASpaceCombatAiController::AttackPlayer()
 {
 	AShipPawnBase* SelectedShip = Cast<AShipPawnBase>(GetPawn());
+
+	if (!SelectedShip || !Target)
+	{
+		return;
+	}
+
 	UWorld* World = GetWorld();
 
 	// Wait until rotation is complete
@@ -372,6 +435,11 @@ void ASpaceCombatAiController::SwapShip()
 
 	AShipPawnBase* SelectedShip = Cast<AShipPawnBase>(GetPawn());
 
+	if (!SelectedShip)
+	{
+		return;
+	}
+
 	UE_LOG(LogTemp, Warning, TEXT("Enemy Ship %s finished turn"), *SelectedShip->Name);
 
 	SelectedShip->ChangeCollision(false);
@@ -396,30 +464,38 @@ bool ASpaceCombatAiController::CheckCollision(FVector MoveLocation)
 		}
 
 		UStaticMeshComponent* Mesh = Cast<UStaticMeshComponent>(Meshes[0]);
-		FVector StartLoc = Mesh->RelativeLocation;
-		FRotator StartRot = Mesh->RelativeRotation;
 
-		Mesh->SetRelativeLocationAndRotation(MoveLocation, SelectedShip->NewRotation, false, nullptr, ETeleportType::TeleportPhysics);
-		
-		TArray<AActor*> OverlappingActors;
-		Mesh->GetOverlappingActors(OverlappingActors, ADestructibleObject::StaticClass());
-
-		TArray<AActor*> OverlappingShips;
-		Mesh->GetOverlappingActors(OverlappingShips, AShipPawnBase::StaticClass());
-		if (OverlappingShips.Contains(SelectedShip))
+		if (Mesh->IsValidLowLevel())
 		{
-			OverlappingShips.Remove(SelectedShip);
+			FVector StartLoc = Mesh->RelativeLocation;
+			FRotator StartRot = Mesh->RelativeRotation;
+
+			Mesh->SetRelativeRotation(SelectedShip->NewRotation);
+
+			FVector MoveLoc = FVector(MoveLocation.X, MoveLocation.Y, StartLoc.Z);
+			Mesh->SetWorldLocation(MoveLoc, false, nullptr, ETeleportType::TeleportPhysics);
+
+			TArray<AActor*> OverlappingActors;
+			Mesh->GetOverlappingActors(OverlappingActors, ADestructibleObject::StaticClass());
+
+			TArray<AActor*> OverlappingShips;
+			Mesh->GetOverlappingActors(OverlappingShips, AShipPawnBase::StaticClass());
+			if (OverlappingShips.Contains(SelectedShip))
+			{
+				OverlappingShips.Remove(SelectedShip);
+			}
+
+			Mesh->SetRelativeLocationAndRotation(StartLoc, StartRot, false, nullptr, ETeleportType::TeleportPhysics);
+
+			bool isOverlapping = false;
+			if (OverlappingActors.Num() || OverlappingShips.Num())
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Overlapped: Asteroids %d Ships %d"), OverlappingActors.Num(), OverlappingShips.Num());
+				isOverlapping = true;
+			}
+
+			return isOverlapping;
 		}
-
-		Mesh->SetRelativeLocationAndRotation(StartLoc, StartRot, false, nullptr, ETeleportType::TeleportPhysics);
-
-		bool isOverlapping = false;
-		if (OverlappingActors.Num() || OverlappingShips.Num())
-		{
-			isOverlapping = true;
-		}
-
-		return isOverlapping;
 	}
 
 	return true;
