@@ -1,3 +1,5 @@
+Add-Type -Assembly "System.IO.Compression.FileSystem"
+
 function PrepUnreal
 {
 	Write-Host "SECTION PrepUnreal"
@@ -198,8 +200,8 @@ function StageUnrealOutput
 
 function CreateZipFiles
 {
-	Compress-Archive -LiteralPath "$PSScriptRoot\Output\Win64\FinalEquinox64bit\" -CompressionLevel Optimal -DestinationPath "$PSScriptRoot\Output\FinalEquinox64bit.zip"
-	Compress-Archive -LiteralPath "$PSScriptRoot\Output\Win32\FinalEquinox32bit\" -CompressionLevel Optimal -DestinationPath "$PSScriptRoot\Output\FinalEquinox32bit.zip"
+	[IO.Compression.ZipFile]::CreateFromDirectory("$PSScriptRoot\Output\Win64\FinalEquinox64bit\", "$PSScriptRoot\Output\FinalEquinox64bit.zip")
+	[IO.Compression.ZipFile]::CreateFromDirectory("$PSScriptRoot\Output\Win32\FinalEquinox32bit\", "$PSScriptRoot\Output\FinalEquinox32bit.zip")
 }
 
 function DeployZipFiles
