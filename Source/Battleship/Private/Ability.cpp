@@ -361,6 +361,6 @@ void AAbility::Cleanup(AShipPawnBase* Ship)
 
 	if (!AffectedShips.Num())
 	{
-		Destroy();
+		SetLifeSpan(3.0f);
 	}
 }
