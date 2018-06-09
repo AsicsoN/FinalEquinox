@@ -252,7 +252,7 @@ void AShipPawnBase::CheckExpiryBuffs()
 
 	// Check if any buffs have expired
 	Size = Buffs.Num();
-	for (int32 i = 0; i < Size; i++)
+	for (int32 i = Size - 1; i >= 0; i--)
 	{
 		if (!Buffs.IsValidIndex(i))
 		{
@@ -284,7 +284,7 @@ void AShipPawnBase::CheckExpiryBuffs()
 
 	// Check if any buffs have expired
 	Size = Debuffs.Num();
-	for (int32 i = 0; i < Size; i++)
+	for (int32 i = Size - 1; i >= 0; i--)
 	{
 		if (!Debuffs.IsValidIndex(i))
 		{
