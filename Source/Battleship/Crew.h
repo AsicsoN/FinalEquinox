@@ -29,6 +29,8 @@ class BATTLESHIP_API UCrew : public UObject
 	GENERATED_BODY()
 	
 public:
+	UCrew();
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
 	bool IsLocked = false;
 

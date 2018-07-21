@@ -3,6 +3,11 @@
 #include "Battleship.h"
 #include "Crew.h"
 
+UCrew::UCrew()
+{
+	Morale.General = 6;
+}
+
 int32 UCrew::GetCurrentMorale()
 {
 	TArray<int32> MoraleLevels;
