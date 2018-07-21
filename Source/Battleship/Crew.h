@@ -6,6 +6,20 @@
 #include "Race.h"
 #include "Crew.generated.h"
 
+USTRUCT(BlueprintType)
+struct BATTLESHIP_API FCrewMorale {
+	GENERATED_BODY();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
+	int32 General = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Morale")
+	int32 Fear = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Morale")
+	int32 Respect = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Morale")
+	int32 Love = 0;
+};
+
 /**
  * 
  */
@@ -65,4 +79,13 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
 	int32 ExperiencePoints = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
+	FCrewMorale Morale;
+
+	UFUNCTION(BlueprintCallable)
+	int32 GetCurrentMorale();
+
+	UFUNCTION(BlueprintCallable)
+	FString GetMoraleDescriptor(int32 MoraleLevel);
 };
