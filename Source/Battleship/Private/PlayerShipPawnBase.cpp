@@ -44,3 +44,41 @@ void APlayerShipPawnBase::Instantiate()
 	CurrentHitPoints = HitPoints;
 	CurrentShieldHitPoints = ShieldHitPoints;
 }
+
+const TArray<UCrew*> APlayerShipPawnBase::GetCrew()
+{
+	TArray<UCrew*> Crew;
+
+	if (Captain->IsValidLowLevelFast())
+	{
+		Crew.Push(Captain);
+	}
+
+	if (NavigationOfficer->IsValidLowLevelFast())
+	{
+		Crew.Push(NavigationOfficer);
+	}
+
+	if (TacticsOfficer->IsValidLowLevelFast())
+	{
+		Crew.Push(TacticsOfficer);
+	}
+
+	if (ScienceOfficer->IsValidLowLevelFast())
+	{
+		Crew.Push(ScienceOfficer);
+	}
+
+	if (Engineer->IsValidLowLevelFast())
+	{
+		Crew.Push(Engineer);
+	}
+
+	if (CAG->IsValidLowLevelFast())
+	{
+		Crew.Push(CAG);
+	}
+
+
+	return Crew;
+}

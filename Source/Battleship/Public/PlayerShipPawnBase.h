@@ -38,4 +38,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Instantiation")
 	virtual void Instantiate() override;
 	
+	UFUNCTION(BlueprintCallable, Category = "Crew")
+	const TArray<UCrew*> GetCrew();
+
 };
