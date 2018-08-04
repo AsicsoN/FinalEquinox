@@ -1,9 +1,6 @@
-
-
 #include "Battleship.h"
 #include "DestructibleObject.h"
-#include "AI/Navigation/NavAreas/NavArea_Null.h"
-
+#include "NavigationSystem/Public/NavAreas/NavArea_Null.h"
 
 // Sets default values
 ADestructibleObject::ADestructibleObject()
@@ -22,7 +19,7 @@ ADestructibleObject::ADestructibleObject()
 	Box->SetupAttachment(Mesh);
 	Box->SetBoxExtent(FVector(10.0f, 10.0f, 400.0f));
 	Box->bDynamicObstacle = true;
-	Box->AreaClass = UNavArea_Null::StaticClass();
+	//Box->AreaClass = UNavArea_Null::StaticClass();
 }
 
 // Called when the game starts or when spawned

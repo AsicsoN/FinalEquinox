@@ -1,15 +1,12 @@
-
-
 #include "Battleship.h"
 #include "Tile.h"
 #include "GridLocation.h"
 #include "SpaceCombatPlayerController.h"
 #include "SpaceCombatGameMode.h"
 #include "ShipPawnBase.h"
-#include "AI/Navigation/NavigationPath.h"
+#include "NavigationSystem/Public/NavigationPath.h"
 #include "Classes/Components/SplineComponent.h"
 #include "Classes/Components/SplineMeshComponent.h"
-
 
 // Sets default values
 ATile::ATile()
@@ -129,13 +126,14 @@ void ATile::BuildPath()
 	FVector Start = SelectedShip->GetActorLocation();
 	FVector End = GetActorLocation();
 
-	UNavigationSystem* NavSys = UNavigationSystem::GetCurrent(GetWorld());
+	//UNavigationSystem* NavSys = UNavigationSystem::GetCurrent(GetWorld());
 
 	// Calculate the AI Pathing using the Nav system.
-	UNavigationPath *NavResult = NavSys->FindPathToLocationSynchronously(GetWorld(), Start, End, SelectedShip);
+	//UNavigationPath *NavResult = NavSys->FindPathToLocationSynchronously(GetWorld(), Start, End, SelectedShip);
+	//UNavigationPath *NavResult = nullptr;
 
 	// If not null, draw the path using the nav points provided
-	if (NavResult != nullptr)
+	/*if (NavResult != nullptr)
 	{
 		USplineComponent* Path = PlayerController->PathSpline;
 		UStaticMesh* Mesh = PlayerController->LineMesh;
@@ -143,7 +141,7 @@ void ATile::BuildPath()
 		FColor LineColor = FColor();
 		float PathLength = NavResult->GetPathLength();
 
-		Path->SetSplinePoints(NavResult->PathPoints, ESplineCoordinateSpace::Type::Local, true);
+		//Path->SetSplinePoints(NavResult->PathPoints, ESplineCoordinateSpace::Type::Local, true);
 
 		for (int32 Index = 0; Index < Path->GetNumberOfSplinePoints() - 1; Index++)
 		{
@@ -171,7 +169,7 @@ void ATile::BuildPath()
 		{
 			RequiredMP = RequiredMP * 2;
 		}
-	}
+	}*/
 }
 
 void ATile::ClearPath()
