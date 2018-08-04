@@ -36,7 +36,7 @@ TSharedRef<SWidget> URichTextBox::RebuildWidget()
     {
         if (Decorator)
         {
-            //CreatedDecorators.Add(Decorator->CreateDecorator(Font, Color));
+            CreatedDecorators.Add(Decorator->CreateDecorator(Font, Color));
         }
     }
 
