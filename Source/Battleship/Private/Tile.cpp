@@ -141,7 +141,7 @@ void ATile::BuildPath()
 		FColor LineColor = FColor();
 		float PathLength = NavResult->GetPathLength();
 
-		//Path->SetSplinePoints(NavResult->PathPoints, ESplineCoordinateSpace::Type::Local, true);
+		Path->SetSplinePoints(NavResult->PathPoints, ESplineCoordinateSpace::Type::Local, true);
 
 		for (int32 Index = 0; Index < Path->GetNumberOfSplinePoints() - 1; Index++)
 		{
