@@ -6,7 +6,8 @@
 #include "Tile.h"
 #include "DestructibleObject.h"
 #include "SpaceCombatCameraBase.h"
-#include "NavigationSystem/Public/NavigationPath.h"
+#include "NavigationPath.h"
+#include "Runtime/NavigationSystem/Public/NavigationSystem.h"
 
 #define LOCTEXT_NAMESPACE "SpaceCombat" 
 
@@ -165,7 +166,7 @@ void ASpaceCombatAiController::CalculateTravelPoint()
 		TotalDistance = FactionEngageDistance * 3;
 	}
 
-	//UNavigationSystem* NavSys = UNavigationSystem::GetCurrent(GetWorld());
+	UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
 
 	// Calculate the AI Pathing using the Nav system.
 	int32 MaxTravesals = 100;
@@ -173,7 +174,7 @@ void ASpaceCombatAiController::CalculateTravelPoint()
 	while (MaxTravesals)
 	{
 		// Grab random point around Ship within distance
-		//End = NavSys->GetRandomPointInNavigableRadius(GetWorld(), Start, FactionEngageDistance, NavSys->MainNavData);
+		End = NavSys->GetRandomPointInNavigableRadius(GetWorld(), Start, FactionEngageDistance, NavSys->MainNavData);
 
 		// Make sure that AI is moving towards target
 		if (FVector::Dist(Target->GetActorLocation(), End) > TotalDistance || FVector::Dist(Target->GetActorLocation(), End) < 2000.0f)
@@ -183,8 +184,8 @@ void ASpaceCombatAiController::CalculateTravelPoint()
 		}
 
 		// Find Path to the Target Location
-		//UNavigationPath *NavResult = NavSys->FindPathToLocationSynchronously(GetWorld(), Start, End, SelectedShip);
-		UNavigationPath *NavResult = nullptr;
+		UNavigationPath *NavResult = NavSys->FindPathToLocationSynchronously(GetWorld(), Start, End, SelectedShip);
+		//UNavigationPath *NavResult = nullptr;
 
 		if (NavResult == nullptr)
 		{
@@ -195,7 +196,7 @@ void ASpaceCombatAiController::CalculateTravelPoint()
 		#pragma region Debug Logic
 		FColor LineColor = FColor();
 
-		/*for (int32 Index = 0; Index < NavResult->PathPoints.Num(); Index++)
+		for (int32 Index = 0; Index < NavResult->PathPoints.Num(); Index++)
 		{
 			int32 NextIndex = Index + 1;
 			bool bIsEven = (NextIndex % 2 > 0) ? true : false;
@@ -217,7 +218,7 @@ void ASpaceCombatAiController::CalculateTravelPoint()
 					10.0f
 				);
 			}
-		}*/
+		}
 		#pragma endregion
 
 		// Calculate Path Cost
