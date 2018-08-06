@@ -20,7 +20,6 @@ ADestructibleObject::ADestructibleObject()
 	Box->SetBoxExtent(FVector(10.0f, 10.0f, 400.0f));
 	Box->bDynamicObstacle = true;
 	Box->AreaClass = UNavArea_Null::StaticClass();
-	//Box->AreaClass = this->GetClass();
 }
 
 // Called when the game starts or when spawned
