@@ -353,3 +353,5 @@ void ASpaceCombatGameMode::RepairShip(AShipPawnBase* Ship, FString Type)
 
 	WriteToCombatLog(FText::Format(LOCTEXT("Repair", "{Name} repaired {RepairAmount} {Type} hit points"), Arguments));
 }
+
+#undef LOCTEXT_NAMESPACE

@@ -520,3 +520,5 @@ bool ASpaceCombatAiController::CheckFacing(FVector MoveLocation)
 
 	return false;
 }
+
+#undef LOCTEXT_NAMESPACE
