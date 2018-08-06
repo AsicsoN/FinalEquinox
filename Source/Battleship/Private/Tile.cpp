@@ -131,7 +131,6 @@ void ATile::BuildPath()
 
 	// Calculate the AI Pathing using the Nav system.
 	UNavigationPath *NavResult = NavSys->FindPathToLocationSynchronously(GetWorld(), Start, End, SelectedShip);
-	//UNavigationPath *NavResult = nullptr;
 
 	// If not null, draw the path using the nav points provided
 	if (NavResult != nullptr)
