@@ -23,10 +23,6 @@
 			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/847aa65dc3024a37ae83ed89307524bd"
 		},
 		{
-			"Name": "RichText",
-			"Enabled": true
-		},
-		{
 			"Name": "ApexDestruction",
 			"Enabled": true
 		}
