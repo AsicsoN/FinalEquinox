@@ -185,7 +185,6 @@ void ASpaceCombatAiController::CalculateTravelPoint()
 
 		// Find Path to the Target Location
 		UNavigationPath *NavResult = NavSys->FindPathToLocationSynchronously(GetWorld(), Start, End, SelectedShip);
-		//UNavigationPath *NavResult = nullptr;
 
 		if (NavResult == nullptr)
 		{
