@@ -356,3 +356,5 @@ void AShipPawnBase::ShipDestroyed()
 
 	GameMode->CheckCombatState();
 }
+
+#undef LOCTEXT_NAMESPACE

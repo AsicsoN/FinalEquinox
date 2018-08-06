@@ -72,3 +72,5 @@ void UStardate::AddDays(int32 days)
 		Month = Month - 7;
 	}
 }
+
+#undef LOCTEXT_NAMESPACE
