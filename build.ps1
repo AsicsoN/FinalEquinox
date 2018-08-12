@@ -187,6 +187,12 @@ function StageUnrealOutput
 		New-Item -ItemType Directory -Force -Path $path
 	}
 	
+	$path = "$PSScriptRoot\Output\Linux\FinalEquinoxLinux"
+	if(!(test-path $path))
+	{
+		New-Item -ItemType Directory -Force -Path $path
+	}
+	
 	Move-Item "$PSScriptRoot\Output\Win64\WindowsNoEditor\Engine\Extras\Redist\en-us\UE4PrereqSetup_x64.exe" "$PSScriptRoot\Output\Win64\FinalEquinox64bit\UE4PrereqSetup_x64.exe"
 	Move-Item "$PSScriptRoot\Output\Win32\WindowsNoEditor\Engine\Extras\Redist\en-us\UE4PrereqSetup_x86.exe" "$PSScriptRoot\Output\Win32\FinalEquinox32bit\UE4PrereqSetup_x86.exe"
 	Move-Item "$PSScriptRoot\Output\Win64\WindowsNoEditor\Manifest_NonUFSFiles_Win64.txt" "$PSScriptRoot\Output\"
@@ -196,12 +202,14 @@ function StageUnrealOutput
 	
 	Move-Item "$PSScriptRoot\Output\Win64\WindowsNoEditor" "$PSScriptRoot\Output\Win64\FinalEquinox64bit\Battleship"
 	Move-Item "$PSScriptRoot\Output\Win32\WindowsNoEditor" "$PSScriptRoot\Output\Win32\FinalEquinox32bit\Battleship"
+	Move-Item "$PSScriptRoot\Output\Linux\LinuxNoEditor" "$PSScriptRoot\Output\Linux\FinalEquinoxLinux"
 }
 
 function CreateZipFiles
 {
 	[IO.Compression.ZipFile]::CreateFromDirectory("$PSScriptRoot\Output\Win64\FinalEquinox64bit\", "$PSScriptRoot\Output\FinalEquinox64bit.zip")
 	[IO.Compression.ZipFile]::CreateFromDirectory("$PSScriptRoot\Output\Win32\FinalEquinox32bit\", "$PSScriptRoot\Output\FinalEquinox32bit.zip")
+	[IO.Compression.ZipFile]::CreateFromDirectory("$PSScriptRoot\Output\Linux\FinalEquinoxLinux\", "$PSScriptRoot\Output\FinalEquinoxLinux.zip")
 }
 
 function DeployZipFiles
@@ -233,6 +241,7 @@ BuildUnrealPlugins "Win64"
 BuildUnreal "Win64"
 BuildVisualStudioSolution "Win32"
 BuildUnreal "Win32"
+BuildUnreal "Linux"
 StageUnrealOutput
 CreateZipFiles
 DeployZipFiles
