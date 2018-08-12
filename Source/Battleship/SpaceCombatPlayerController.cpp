@@ -1,6 +1,7 @@
 #include "Battleship.h"
 #include "SpaceCombatPlayerController.h"
 #include "Runtime/AIModule/Classes/AIController.h"
+#include "Runtime/NavigationSystem/Public/NavigationSystem.h"
 #include "Classes/Components/SplineComponent.h"
 #include "SpaceCombatGameMode.h"
 #include "ShipPawnBase.h"
@@ -193,7 +194,7 @@ bool ASpaceCombatPlayerController::LeftTurn()
 				// Rotate anti-clockwise around existing axis 
 				Location = Location.RotateAngleAxis(-90.0f, FVector(0.0f, 0.0f, 1.0f));
 
-				UNavigationSystem* NavSys = GetWorld()->GetNavigationSystem();
+				UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
 
 				// Set Ai to move player ship
 				NavSys->SimpleMoveToLocation(AiController, Location);
@@ -229,7 +230,7 @@ bool ASpaceCombatPlayerController::RightTurn()
 				Location = Location.RotateAngleAxis(-90.0f, FVector(0.0f, 0.0f, 1.0f));
 
 				// Set Ai to move player ship
-				UNavigationSystem::SimpleMoveToLocation(AiController, Location);
+				UNavigationSystemV1::SimpleMoveToLocation(AiController, Location);
 
 				// Update End Rotation of Ship
 				SelectedShip->NewRotation = SelectedShip->NewRotation.Add(0, 90, 0);

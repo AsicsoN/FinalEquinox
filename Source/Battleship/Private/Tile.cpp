@@ -1,15 +1,13 @@
-
-
 #include "Battleship.h"
 #include "Tile.h"
 #include "GridLocation.h"
 #include "SpaceCombatPlayerController.h"
 #include "SpaceCombatGameMode.h"
 #include "ShipPawnBase.h"
-#include "AI/Navigation/NavigationPath.h"
+#include "NavigationPath.h"
 #include "Classes/Components/SplineComponent.h"
 #include "Classes/Components/SplineMeshComponent.h"
-
+#include "Runtime/NavigationSystem/Public/NavigationSystem.h"
 
 // Sets default values
 ATile::ATile()
@@ -129,7 +127,7 @@ void ATile::BuildPath()
 	FVector Start = SelectedShip->GetActorLocation();
 	FVector End = GetActorLocation();
 
-	UNavigationSystem* NavSys = UNavigationSystem::GetCurrent(GetWorld());
+	UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
 
 	// Calculate the AI Pathing using the Nav system.
 	UNavigationPath *NavResult = NavSys->FindPathToLocationSynchronously(GetWorld(), Start, End, SelectedShip);

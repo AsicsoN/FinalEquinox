@@ -1,9 +1,6 @@
-
-
 #include "Battleship.h"
 #include "DestructibleObject.h"
-#include "AI/Navigation/NavAreas/NavArea_Null.h"
-
+#include "NavAreas/NavArea_Null.h"
 
 // Sets default values
 ADestructibleObject::ADestructibleObject()
