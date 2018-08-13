@@ -13,7 +13,7 @@ function PrepUnreal
 	
 	$time = 0
 	while ($ubt.HasExited -eq $false) {
-		if ($time -gt 600) {
+		if ($time -gt 1800) {
 			Write-Host "Timeout exceeded"
 			exit -1
 		}
@@ -35,7 +35,7 @@ function BuildVisualStudioSolution
 	
 	$time = 0
 	while ($msbuild.HasExited -eq $false) {
-		if ($time -gt 600) {
+		if ($time -gt 1800) {
 			Write-Host "Timeout exceeded"
 			exit -1
 		}
@@ -59,7 +59,7 @@ function BuildUnrealPlugins
 	
 	$time = 0
 	while ($ubt.HasExited -eq $false) {
-		if ($time -gt 600) {
+		if ($time -gt 1800) {
 			Write-Host "Timeout exceeded"
 			exit -1
 		}
@@ -83,7 +83,7 @@ function BuildUnreal
 	
 	$time = 0
 	while ($ue.HasExited -eq $false) {
-		if ($time -gt 900) {
+		if ($time -gt 1800) {
 			Write-Host "Timeout exceeded"
 			exit -1
 		}
@@ -122,7 +122,7 @@ function BuildInstaller
 	
 	$time = 0
 	while ($msbuild.HasExited -eq $false) {
-		if ($time -gt 1200) {
+		if ($time -gt 1800) {
 			Write-Host "Timeout exceeded"
 			exit -1
 		}
