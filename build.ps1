@@ -54,7 +54,7 @@ function BuildUnrealPlugins
 	$pathToEngine = (Get-Item env:unreal_$engineVersion).Value
 	
 	$pathToUBT = "$pathToEngine\Engine\Binaries\DotNET\UnrealBuildTool.exe"
-	$parameters = "Battleship", "Development", "$Platform", "-project=`"$PSScriptRoot\Battleship.uproject`"", "-editorrecompile",  "-progress", "-NoHotReloadFromIDE"
+	$parameters = "Development", "$Platform", "-Project=`"$PSScriptRoot\Battleship.uproject`"", "-TargetType=Editor",  "-Progress", "-NoHotReloadFromIDE"
 	$ubt = Start-Process -FilePath $pathToUBT -ArgumentList $parameters -PassThru -NoNewWindow
 	
 	$time = 0
