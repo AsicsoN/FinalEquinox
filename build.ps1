@@ -100,7 +100,7 @@ function BuildUnreal
 	
 	$time = 0
 	while ($uat.HasExited -eq $false) {
-		if ($time -gt 1800) {
+		if ($time -gt 3600) {
 			Write-Host "Timeout exceeded"
 			exit -1
 		}
