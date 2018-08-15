@@ -217,7 +217,7 @@ function DeployZipFiles
 	Write-Host "SECTION DeployZipFiles"
 	$version = $env:FULL_BUILD_NUMBER
 	
-	$path = "E:\GoogleDrive\Frozen Wasteland Entertainment\Battleship\Builds\$version"
+	$path = "E:\BattleshipBuilds\$version"
 	if(!(test-path $path))
 	{
 		New-Item -ItemType Directory -Force -Path $path
@@ -225,6 +225,7 @@ function DeployZipFiles
 	
 	Copy-Item "$PSScriptRoot\Output\FinalEquinox64bit.zip" $path
 	Copy-Item "$PSScriptRoot\Output\FinalEquinox32bit.zip" $path
+	Copy-Item "$PSScriptRoot\Output\FinalEquinoxLinux.zip" $path
 }
 
 #Clean up output from previous build
