@@ -209,7 +209,34 @@ function CreateZipFiles
 {
 	[IO.Compression.ZipFile]::CreateFromDirectory("$PSScriptRoot\Output\Win64\FinalEquinox64bit\", "$PSScriptRoot\Output\FinalEquinox64bit.zip")
 	[IO.Compression.ZipFile]::CreateFromDirectory("$PSScriptRoot\Output\Win32\FinalEquinox32bit\", "$PSScriptRoot\Output\FinalEquinox32bit.zip")
-	[IO.Compression.ZipFile]::CreateFromDirectory("$PSScriptRoot\Output\Linux\FinalEquinoxLinux\", "$PSScriptRoot\Output\FinalEquinoxLinux.zip")
+	
+	$pathTo7Zip = "C:\Program Files\7-Zip\7z.exe"
+	
+	$parameters = "a", "-ttar", "$PSScriptRoot\Output\FinalEquinoxLinux.tar", "$PSScriptRoot\Output\Linux\FinalEquinoxLinux\LinuxNoEditor\*"
+	$process = Start-Process -FilePath $pathTo7Zip -ArgumentList $parameters -PassThru -NoNewWindow
+	
+	$time = 0
+	while ($process.HasExited -eq $false) {
+		if ($time -gt 1800) {
+			Write-Host "Timeout exceeded"
+			exit -1
+		}
+		$time = $time + 10
+		Start-Sleep -s 10
+	}
+	
+	$parameters = "a", "-tgzip", "$PSScriptRoot\Output\FinalEquinoxLinux.tar.gz", "$PSScriptRoot\Output\FinalEquinoxLinux.tar"
+	$process = Start-Process -FilePath $pathTo7Zip -ArgumentList $parameters -PassThru -NoNewWindow
+	
+	$time = 0
+	while ($process.HasExited -eq $false) {
+		if ($time -gt 1800) {
+			Write-Host "Timeout exceeded"
+			exit -1
+		}
+		$time = $time + 10
+		Start-Sleep -s 10
+	}
 }
 
 function DeployZipFiles
@@ -225,7 +252,7 @@ function DeployZipFiles
 	
 	Copy-Item "$PSScriptRoot\Output\FinalEquinox64bit.zip" $path
 	Copy-Item "$PSScriptRoot\Output\FinalEquinox32bit.zip" $path
-	Copy-Item "$PSScriptRoot\Output\FinalEquinoxLinux.zip" $path
+	Copy-Item "$PSScriptRoot\Output\FinalEquinoxLinux.tar.gz" $path
 }
 
 #Clean up output from previous build
