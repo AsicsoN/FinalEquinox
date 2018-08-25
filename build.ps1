@@ -22,6 +22,33 @@ function PrepUnreal
 	}
 }
 
+function BuildMaps
+{
+	$pathToEngine = GetUnrealPath
+
+	Get-ChildItem -Path Content\*.umap -Recurse -Force | ForEach-Object {
+		$Base = "$PSScriptRoot\Content\"
+		$MapPath = $_.FullName.Replace($Base, "\Game\").Replace(".umap", "").Replace("\", "/")
+		Write-Host "MapPath: $MapPath"
+		
+		$pathToEditor= "$pathToEngine\Engine\Binaries\Win64\UE4Editor-Cmd.exe"
+		$parameters = "$PSScriptRoot\Battleship.uproject", "-run=resavepackages", "-buildlighting", "-allowcommandletrendering", "-map=$MapPath"
+		$ue = Start-Process -FilePath $pathToEditor -ArgumentList $parameters -PassThru -NoNewWindow
+
+		$time = 0
+		while ($ue.HasExited -eq $false) {
+			if ($time -gt 7200) {
+				Write-Host "Timeout exceeded"
+				exit -1
+			}
+			$time = $time + 10
+			Start-Sleep -s 10
+		}
+		
+		Start-Sleep -s 30
+	}
+}
+
 function BuildVisualStudioSolution
 {
 	param([string]$Platform)
@@ -157,6 +184,14 @@ function GetUnrealVersion
 	return $battleship.EngineAssociation
 }
 
+function GetUnrealPath
+{
+	$engineVersion = GetUnrealVersion
+	$pathToEngine = (Get-Item env:unreal_$engineVersion).Value
+	
+	return $pathToEngine
+}
+
 function DeployArtifacts
 {
 	Write-Host "SECTION DeployArtifacts"
@@ -266,6 +301,7 @@ SetUnrealBuildNumber $version
 PrepUnreal
 BuildVisualStudioSolution "Win64"
 BuildUnrealPlugins "Win64"
+BuildMaps
 BuildUnreal "Win64"
 BuildVisualStudioSolution "Win32"
 BuildUnreal "Win32"
