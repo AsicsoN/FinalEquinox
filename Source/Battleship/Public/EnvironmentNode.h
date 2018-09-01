@@ -6,7 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "EnvironmentNode.generated.h"
 
-//class Environment;
+//class UEnvironment;
 
 /**
  * User Display on Map Blueprint of individual LevelEnvironments
@@ -16,8 +16,21 @@ class BATTLESHIP_API UEnvironmentNode : public UUserWidget
 {
 	GENERATED_BODY()
 
+	UPROPERTY(EditAnywhere)
 	FString Name;
+
+	UPROPERTY(EditAnywhere)
 	FString Description;
-	//Environment EnvironmentInfo;
+
+	UPROPERTY(EditAnywhere)
+	UTexture2D* Image;
+
+	UFUNCTION(BlueprintCallable)
+	void SetImage(UTexture2D* NewImage); 
+
+	UFUNCTION(BlueprintCallable)
+	UTexture2D* GetImage();
+
+	//UEnvironment EnvironmentInfo;
 	
 };
