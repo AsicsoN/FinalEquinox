@@ -18,3 +18,8 @@ TArray<UEnvironmentNode*> UEnvironmentNode::GetChildren()
 {
 	return Children;
 }
+
+FString UEnvironmentNode::GetLaunchLevel()
+{
+	return LaunchLevel;
+}
