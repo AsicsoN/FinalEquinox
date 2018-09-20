@@ -25,11 +25,17 @@ class BATTLESHIP_API UEnvironmentNode : public UUserWidget
 	UPROPERTY(EditAnywhere)
 	UTexture2D* Image;
 
+	UPROPERTY(EditAnywhere)
+	TArray<UEnvironmentNode*> Children;
+
 	UFUNCTION(BlueprintCallable)
 	void SetImage(UTexture2D* NewImage); 
 
 	UFUNCTION(BlueprintCallable)
 	UTexture2D* GetImage();
+
+	UFUNCTION(BlueprintCallable)
+	TArray<UEnvironmentNode*> GetChildren();
 
 	//UEnvironment EnvironmentInfo;
 	

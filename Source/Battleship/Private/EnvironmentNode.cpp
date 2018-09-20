@@ -13,3 +13,8 @@ UTexture2D* UEnvironmentNode::GetImage()
 {
 	return Image;
 }
+
+TArray<UEnvironmentNode*> UEnvironmentNode::GetChildren()
+{
+	return Children;
+}
