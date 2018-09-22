@@ -1,5 +1,6 @@
 #include "Battleship.h"
 #include "SpaceCombatGameMode.h"
+#include "ShipPawnBase.h"
 #include "SpaceCombatAiController.h"
 
 #define LOCTEXT_NAMESPACE "SpaceCombat" 

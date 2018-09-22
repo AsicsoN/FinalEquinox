@@ -1,12 +1,12 @@
 #pragma once
 
 #include "GameFramework/GameMode.h"
-#include "ShipPawnBase.h"
 #include "GridController.h"
 #include "Crew.h"
 #include "SpawnLocation.h"
 #include "SpaceCombatGameMode.generated.h"
 
+class AShipPawnBase;
 class ASpaceCombatAiController;
 
 UENUM(BlueprintType)
