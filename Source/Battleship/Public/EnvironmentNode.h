@@ -31,6 +31,9 @@ class BATTLESHIP_API UEnvironmentNode : public UUserWidget
 	UPROPERTY(EditAnywhere)
 	FString LaunchLevel;
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UUserWidget> LaunchWidget;
+
 	UFUNCTION(BlueprintCallable)
 	void SetImage(UTexture2D* NewImage); 
 
@@ -42,6 +45,9 @@ class BATTLESHIP_API UEnvironmentNode : public UUserWidget
 
 	UFUNCTION(BlueprintCallable)
 	FString GetLaunchLevel();
+
+	UFUNCTION(BlueprintCallable)
+	TSubclassOf<UUserWidget> GetLaunchWidget();
 
 	//UEnvironment EnvironmentInfo;
 	

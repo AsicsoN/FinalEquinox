@@ -23,3 +23,8 @@ FString UEnvironmentNode::GetLaunchLevel()
 {
 	return LaunchLevel;
 }
+
+TSubclassOf<UUserWidget> UEnvironmentNode::GetLaunchWidget()
+{
+	return LaunchWidget;
+}
