@@ -2,10 +2,10 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
-#include "CharacterSheet.h"
 #include "BattleshipGameInstance.generated.h"
 
 class UAbilityLibrary;
+class UCharacterSheet;
 
 /**
  * 
@@ -23,6 +23,9 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AbilityLibrary")
 	UAbilityLibrary* AbilityLibrary;
+
+	UFUNCTION(BlueprintCallable, Category = "Testing")
+	UCharacterSheet* CreateDefaultCharacterSheet();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CharacterId")
 	FString CharacterId;

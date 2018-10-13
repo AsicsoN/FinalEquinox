@@ -19,6 +19,7 @@ enum class ECharacterBackground : uint8
 class APlayerShipPawnBase;
 class UStardate;
 class UPlayerCrewObject;
+class UEnvironmentNode;
 
 /**
  * 
@@ -151,4 +152,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player")
 	UPlayerCrewObject* PlayerCrewObject = nullptr;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Information")
+	UEnvironmentNode* CurrentLocation = nullptr;
 };

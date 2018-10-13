@@ -4,6 +4,7 @@
 #include "Stardate.h"
 #include "PlayerCrewObject.h"
 #include "PlayerShipPawnBase.h"
+#include "EnvironmentNode.h"
 
 UCharacterSheet::UCharacterSheet()
 {
