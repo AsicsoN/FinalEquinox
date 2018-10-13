@@ -36,7 +36,7 @@ void MoraleSystem::ApplyDialogueMorale(EMoraleType PositiveType, EMoraleType Neg
 	}
 }
 
-void MoraleSystem::ApplyTravelMoraleLoss(const TArray<AShipPawnBase*>& Ships)
+void MoraleSystem::ApplyTravelMoraleLoss(const TArray<APlayerShipPawnBase*>& Ships)
 {
 	// Randomly Generate the Morale Loss
 	int32 Chance = FMath::RandRange(1, 20);
@@ -55,21 +55,19 @@ void MoraleSystem::ApplyTravelMoraleLoss(const TArray<AShipPawnBase*>& Ships)
 	// Apply Modifier if we have lost morale
 	if (Loss)
 	{
-		for (AShipPawnBase* Ship : Ships)
+		for (APlayerShipPawnBase* Ship : Ships)
 		{
-			APlayerShipPawnBase* PlayerShip = Cast<APlayerShipPawnBase>(Ship);
-
-			if (!PlayerShip)
+			if (!Ship)
 			{
 				continue;
 			}
 
-			ReduceShipMorale(EMoraleType::GENERAL, PlayerShip, Loss);
+			ReduceShipMorale(EMoraleType::GENERAL, Ship, Loss);
 		}
 	}
 }
 
-void MoraleSystem::ApplyShipMoraleLoss(const TArray<AShipPawnBase*>& Ships)
+void MoraleSystem::ApplyShipMoraleLoss(const TArray<APlayerShipPawnBase*>& Ships)
 {
 	// Randomly Generate the Morale Loss
 	int32 Loss = (FMath::RandRange(1, 20) <= 8) ? 1 : 0;
@@ -77,21 +75,19 @@ void MoraleSystem::ApplyShipMoraleLoss(const TArray<AShipPawnBase*>& Ships)
 	// Apply Modifier if we have lost morale
 	if (Loss)
 	{
-		for (AShipPawnBase* Ship : Ships)
+		for (APlayerShipPawnBase* Ship : Ships)
 		{
-			APlayerShipPawnBase* PlayerShip = Cast<APlayerShipPawnBase>(Ship);
-
-			if (!PlayerShip)
+			if (!Ship)
 			{
 				continue;
 			}
 
-			ReduceShipMorale(EMoraleType::GENERAL, PlayerShip, Loss);
+			ReduceShipMorale(EMoraleType::GENERAL, Ship, Loss);
 		}
 	}
 }
 
-void MoraleSystem::ApplyShipMoraleGain(const TArray<AShipPawnBase*>& Ships)
+void MoraleSystem::ApplyShipMoraleGain(const TArray<APlayerShipPawnBase*>& Ships)
 {
 	// Randomly Generate the Morale Gain
 	int32 Gain = (FMath::RandRange(1, 20) >= 16) ? 1 : 0;
@@ -99,16 +95,14 @@ void MoraleSystem::ApplyShipMoraleGain(const TArray<AShipPawnBase*>& Ships)
 	// Apply Modifier if we have gained morale
 	if (Gain)
 	{
-		for (AShipPawnBase* Ship : Ships)
+		for (APlayerShipPawnBase* Ship : Ships)
 		{
-			APlayerShipPawnBase* PlayerShip = Cast<APlayerShipPawnBase>(Ship);
-
-			if (!PlayerShip)
+			if (!Ship)
 			{
 				continue;
 			}
 
-			ImproveShipMorale(EMoraleType::GENERAL, PlayerShip, Gain);
+			ImproveShipMorale(EMoraleType::GENERAL, Ship, Gain);
 		}
 	}
 }
@@ -217,4 +211,77 @@ void MoraleSystem::ImproveCrewMorale(EMoraleType Type, UCrew* Crew, const int32 
 	{
 		UE_LOG(LogTemp, Warning, TEXT("MoraleSystem::ReduceCrewMorale: We have attempted to modify morale without a type - please double check"));
 	}
+}
+
+FString MoraleSystem::GetShipMoraleDescriptor(APlayerShipPawnBase* Ship)
+{
+	int MoraleValue = GetShipMoraleValue(Ship);
+
+	return GetMoraleDescriptor(MoraleValue);
+}
+
+int32 MoraleSystem::GetShipMoraleValue(APlayerShipPawnBase* Ship)
+{
+	const TArray<UCrew*> Crew = Ship->GetCrew();
+
+	int MoraleValue = 0;
+
+	for (UCrew* Member : Crew)
+	{
+		if (!Member)
+		{
+			continue;
+		}
+
+		MoraleValue += Member->GetCurrentMorale();
+	}
+
+	return MoraleValue / Crew.Num();
+}
+
+FString MoraleSystem::GetFleetMoraleDescriptor(const TArray<APlayerShipPawnBase*>& Ships)
+{
+	int MoraleValue = GetFleetMoraleValue(Ships);
+
+	return GetMoraleDescriptor(MoraleValue);
+}
+
+int32 MoraleSystem::GetFleetMoraleValue(const TArray<APlayerShipPawnBase*>& Ships)
+{
+	int MoraleValue = 0;
+
+	for (APlayerShipPawnBase* Ship : Ships)
+	{
+		if (!Ship)
+		{
+			continue;
+		}
+
+		MoraleValue += GetShipMoraleValue(Ship);
+	}
+
+	return MoraleValue / Ships.Num();
+}
+
+FString MoraleSystem::GetMoraleDescriptor(int32 MoraleValue)
+{
+	FString Description;
+	if (MoraleValue <= 20 && MoraleValue > 15)
+	{
+		Description = "Content";
+	}
+	else if (MoraleValue <= 15 && MoraleValue > 10)
+	{
+		Description = "Disgruntled";
+	}
+	else if (MoraleValue <= 10 && MoraleValue > 5)
+	{
+		Description = "Upset";
+	}
+	else
+	{
+		Description = "Furious";
+	}
+
+	return Description;
 }

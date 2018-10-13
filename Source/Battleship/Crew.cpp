@@ -2,6 +2,7 @@
 
 #include "Battleship.h"
 #include "Crew.h"
+#include "MoraleSystem.h"
 
 UCrew::UCrew()
 {
@@ -26,24 +27,5 @@ int32 UCrew::GetCurrentMorale()
 
 FString UCrew::GetMoraleDescriptor(int32 MoraleLevel)
 {
-	FString Description;
-	if (MoraleLevel <= 20 && MoraleLevel > 15)
-	{
-		Description = "Content";
-	}
-	else if (MoraleLevel <= 15 && MoraleLevel > 10)
-	{
-		Description = "Disgruntled";
-	}
-	else if (MoraleLevel <= 10 && MoraleLevel > 5)
-	{
-		Description = "Upset";
-	}
-	else
-	{
-		Description = "Furious";
-	}
-
-	return Description;
+	return MoraleSystem::GetMoraleDescriptor(MoraleLevel);
 }
-
