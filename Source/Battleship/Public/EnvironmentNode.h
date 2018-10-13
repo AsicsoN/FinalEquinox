@@ -26,6 +26,9 @@ class BATTLESHIP_API UEnvironmentNode : public UUserWidget
 	UTexture2D* Image;
 
 	UPROPERTY(EditAnywhere)
+	int32 TravelCost = 1;
+
+	UPROPERTY(EditAnywhere)
 	TArray<UEnvironmentNode*> Children;
 
 	UPROPERTY(EditAnywhere)
@@ -33,6 +36,9 @@ class BATTLESHIP_API UEnvironmentNode : public UUserWidget
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UUserWidget> LaunchWidget;
+
+	UFUNCTION(BlueprintCallable)
+	inline int32 GetTravelCost() { return TravelCost; }
 
 	UFUNCTION(BlueprintCallable)
 	void SetImage(UTexture2D* NewImage); 
