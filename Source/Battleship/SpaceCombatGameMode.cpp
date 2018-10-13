@@ -1,5 +1,6 @@
 #include "Battleship.h"
 #include "SpaceCombatGameMode.h"
+#include "ShipPawnBase.h"
 #include "SpaceCombatAiController.h"
 
 #define LOCTEXT_NAMESPACE "SpaceCombat" 
@@ -353,3 +354,5 @@ void ASpaceCombatGameMode::RepairShip(AShipPawnBase* Ship, FString Type)
 
 	WriteToCombatLog(FText::Format(LOCTEXT("Repair", "{Name} repaired {RepairAmount} {Type} hit points"), Arguments));
 }
+
+#undef LOCTEXT_NAMESPACE

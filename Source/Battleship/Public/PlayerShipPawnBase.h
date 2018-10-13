@@ -35,7 +35,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crew")
 	UCrew* CAG = nullptr;
 	
-	UFUNCTION(BlueprintCallable, Category = "Instantiation")
 	virtual void Instantiate() override;
 	
 	UFUNCTION(BlueprintCallable, Category = "Crew")

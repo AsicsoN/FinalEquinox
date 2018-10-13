@@ -8,7 +8,7 @@ namespace UnrealBuildTool.Rules
         {
             PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 
-            PublicIncludePaths.AddRange(new string[] { "DialoguePluginEditor/Public" });
+            //PublicIncludePaths.AddRange(new string[] { "DialoguePluginEditor/Public" });
 
             PrivateIncludePaths.AddRange(new string[] { "DialoguePluginEditor/Private" });
 			

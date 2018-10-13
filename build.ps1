@@ -13,12 +13,39 @@ function PrepUnreal
 	
 	$time = 0
 	while ($ubt.HasExited -eq $false) {
-		if ($time -gt 600) {
+		if ($time -gt 1800) {
 			Write-Host "Timeout exceeded"
 			exit -1
 		}
 		$time = $time + 10
 		Start-Sleep -s 10
+	}
+}
+
+function BuildMaps
+{
+	$pathToEngine = GetUnrealPath
+
+	Get-ChildItem -Path Content\*.umap -Recurse -Force | ForEach-Object {
+		$Base = "$PSScriptRoot\Content\"
+		$MapPath = $_.FullName.Replace($Base, "\Game\").Replace(".umap", "").Replace("\", "/")
+		Write-Host "MapPath: $MapPath"
+		
+		$pathToEditor= "$pathToEngine\Engine\Binaries\Win64\UE4Editor-Cmd.exe"
+		$parameters = "$PSScriptRoot\Battleship.uproject", "-run=resavepackages", "-buildlighting", "-allowcommandletrendering", "-map=$MapPath"
+		$ue = Start-Process -FilePath $pathToEditor -ArgumentList $parameters -PassThru -NoNewWindow
+
+		$time = 0
+		while ($ue.HasExited -eq $false) {
+			if ($time -gt 7200) {
+				Write-Host "Timeout exceeded"
+				exit -1
+			}
+			$time = $time + 10
+			Start-Sleep -s 10
+		}
+		
+		Start-Sleep -s 30
 	}
 }
 
@@ -35,7 +62,7 @@ function BuildVisualStudioSolution
 	
 	$time = 0
 	while ($msbuild.HasExited -eq $false) {
-		if ($time -gt 600) {
+		if ($time -gt 1800) {
 			Write-Host "Timeout exceeded"
 			exit -1
 		}
@@ -54,12 +81,12 @@ function BuildUnrealPlugins
 	$pathToEngine = (Get-Item env:unreal_$engineVersion).Value
 	
 	$pathToUBT = "$pathToEngine\Engine\Binaries\DotNET\UnrealBuildTool.exe"
-	$parameters = "Battleship", "Development", "$Platform", "-project=`"$PSScriptRoot\Battleship.uproject`"", "-editorrecompile",  "-progress", "-NoHotReloadFromIDE"
+	$parameters = "Development", "$Platform", "-Project=`"$PSScriptRoot\Battleship.uproject`"", "-TargetType=Editor",  "-Progress", "-NoHotReloadFromIDE"
 	$ubt = Start-Process -FilePath $pathToUBT -ArgumentList $parameters -PassThru -NoNewWindow
 	
 	$time = 0
 	while ($ubt.HasExited -eq $false) {
-		if ($time -gt 600) {
+		if ($time -gt 1800) {
 			Write-Host "Timeout exceeded"
 			exit -1
 		}
@@ -83,7 +110,7 @@ function BuildUnreal
 	
 	$time = 0
 	while ($ue.HasExited -eq $false) {
-		if ($time -gt 900) {
+		if ($time -gt 7200) {
 			Write-Host "Timeout exceeded"
 			exit -1
 		}
@@ -100,7 +127,7 @@ function BuildUnreal
 	
 	$time = 0
 	while ($uat.HasExited -eq $false) {
-		if ($time -gt 1800) {
+		if ($time -gt 7200) {
 			Write-Host "Timeout exceeded"
 			exit -1
 		}
@@ -122,7 +149,7 @@ function BuildInstaller
 	
 	$time = 0
 	while ($msbuild.HasExited -eq $false) {
-		if ($time -gt 1200) {
+		if ($time -gt 1800) {
 			Write-Host "Timeout exceeded"
 			exit -1
 		}
@@ -157,6 +184,14 @@ function GetUnrealVersion
 	return $battleship.EngineAssociation
 }
 
+function GetUnrealPath
+{
+	$engineVersion = GetUnrealVersion
+	$pathToEngine = (Get-Item env:unreal_$engineVersion).Value
+	
+	return $pathToEngine
+}
+
 function DeployArtifacts
 {
 	Write-Host "SECTION DeployArtifacts"
@@ -187,6 +222,12 @@ function StageUnrealOutput
 		New-Item -ItemType Directory -Force -Path $path
 	}
 	
+	$path = "$PSScriptRoot\Output\Linux\FinalEquinoxLinux"
+	if(!(test-path $path))
+	{
+		New-Item -ItemType Directory -Force -Path $path
+	}
+	
 	Move-Item "$PSScriptRoot\Output\Win64\WindowsNoEditor\Engine\Extras\Redist\en-us\UE4PrereqSetup_x64.exe" "$PSScriptRoot\Output\Win64\FinalEquinox64bit\UE4PrereqSetup_x64.exe"
 	Move-Item "$PSScriptRoot\Output\Win32\WindowsNoEditor\Engine\Extras\Redist\en-us\UE4PrereqSetup_x86.exe" "$PSScriptRoot\Output\Win32\FinalEquinox32bit\UE4PrereqSetup_x86.exe"
 	Move-Item "$PSScriptRoot\Output\Win64\WindowsNoEditor\Manifest_NonUFSFiles_Win64.txt" "$PSScriptRoot\Output\"
@@ -196,12 +237,41 @@ function StageUnrealOutput
 	
 	Move-Item "$PSScriptRoot\Output\Win64\WindowsNoEditor" "$PSScriptRoot\Output\Win64\FinalEquinox64bit\Battleship"
 	Move-Item "$PSScriptRoot\Output\Win32\WindowsNoEditor" "$PSScriptRoot\Output\Win32\FinalEquinox32bit\Battleship"
+	Move-Item "$PSScriptRoot\Output\Linux\LinuxNoEditor" "$PSScriptRoot\Output\Linux\FinalEquinoxLinux"
 }
 
 function CreateZipFiles
 {
 	[IO.Compression.ZipFile]::CreateFromDirectory("$PSScriptRoot\Output\Win64\FinalEquinox64bit\", "$PSScriptRoot\Output\FinalEquinox64bit.zip")
 	[IO.Compression.ZipFile]::CreateFromDirectory("$PSScriptRoot\Output\Win32\FinalEquinox32bit\", "$PSScriptRoot\Output\FinalEquinox32bit.zip")
+	
+	$pathTo7Zip = "C:\Program Files\7-Zip\7z.exe"
+	
+	$parameters = "a", "-ttar", "$PSScriptRoot\Output\FinalEquinoxLinux.tar", "$PSScriptRoot\Output\Linux\FinalEquinoxLinux\LinuxNoEditor\*"
+	$process = Start-Process -FilePath $pathTo7Zip -ArgumentList $parameters -PassThru -NoNewWindow
+	
+	$time = 0
+	while ($process.HasExited -eq $false) {
+		if ($time -gt 1800) {
+			Write-Host "Timeout exceeded"
+			exit -1
+		}
+		$time = $time + 10
+		Start-Sleep -s 10
+	}
+	
+	$parameters = "a", "-tgzip", "$PSScriptRoot\Output\FinalEquinoxLinux.tar.gz", "$PSScriptRoot\Output\FinalEquinoxLinux.tar"
+	$process = Start-Process -FilePath $pathTo7Zip -ArgumentList $parameters -PassThru -NoNewWindow
+	
+	$time = 0
+	while ($process.HasExited -eq $false) {
+		if ($time -gt 1800) {
+			Write-Host "Timeout exceeded"
+			exit -1
+		}
+		$time = $time + 10
+		Start-Sleep -s 10
+	}
 }
 
 function DeployZipFiles
@@ -209,7 +279,7 @@ function DeployZipFiles
 	Write-Host "SECTION DeployZipFiles"
 	$version = $env:FULL_BUILD_NUMBER
 	
-	$path = "E:\GoogleDrive\Frozen Wasteland Entertainment\Battleship\Builds\$version"
+	$path = "E:\BattleshipBuilds\$version"
 	if(!(test-path $path))
 	{
 		New-Item -ItemType Directory -Force -Path $path
@@ -217,6 +287,7 @@ function DeployZipFiles
 	
 	Copy-Item "$PSScriptRoot\Output\FinalEquinox64bit.zip" $path
 	Copy-Item "$PSScriptRoot\Output\FinalEquinox32bit.zip" $path
+	Copy-Item "$PSScriptRoot\Output\FinalEquinoxLinux.tar.gz" $path
 }
 
 #Clean up output from previous build
@@ -230,9 +301,11 @@ SetUnrealBuildNumber $version
 PrepUnreal
 BuildVisualStudioSolution "Win64"
 BuildUnrealPlugins "Win64"
+BuildMaps
 BuildUnreal "Win64"
 BuildVisualStudioSolution "Win32"
 BuildUnreal "Win32"
+BuildUnreal "Linux"
 StageUnrealOutput
 CreateZipFiles
 DeployZipFiles

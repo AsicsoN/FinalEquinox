@@ -65,7 +65,7 @@ public:
 		if (MyButton.IsValid()) (static_cast<SAdvancedButton*>(MyButton.Get()))->SetAdvancedHitAlpha(AdvancedHitAlpha);
 	}
 
-	UAdvancedButton(const FObjectInitializer& ObjectInitializer) : AdvancedHitTexture(NULL), AdvancedHitAlpha(NULL), Super(ObjectInitializer) {}
+	UAdvancedButton(const FObjectInitializer& ObjectInitializer) : AdvancedHitTexture(NULL), AdvancedHitAlpha(0), Super(ObjectInitializer) {}
 
 	virtual void SynchronizeProperties() override;
 	virtual TSharedRef<SWidget> RebuildWidget() override;

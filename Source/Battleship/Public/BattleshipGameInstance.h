@@ -23,4 +23,10 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AbilityLibrary")
 	UAbilityLibrary* AbilityLibrary;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CharacterId")
+	FString CharacterId;
+
+	UFUNCTION(BlueprintCallable, Category = "SaveGame")
+	void Initialize();
 };

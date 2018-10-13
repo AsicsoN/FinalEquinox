@@ -15,8 +15,9 @@ class BATTLESHIP_API UStardate : public UObject
 public:
 
 	UStardate();
-
-	UStardate(int32 Year, int32 Month, int32 Day);
+	
+	UFUNCTION(BlueprintCallable, Category = "Stardate")
+	void SetStardate(int32 Year, int32 Month, int32 Day);
 
 	UFUNCTION(BlueprintCallable, Category = "Stardate")
 	FText GetFormattedDate();
@@ -26,6 +27,15 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Stardate")
 	void AddDays(int32 days);
+
+	UFUNCTION(BlueprintCallable, Category = "Stardate")
+	int32 GetYear();
+
+	UFUNCTION(BlueprintCallable, Category = "Stardate")
+	int32 GetMonth();
+
+	UFUNCTION(BlueprintCallable, Category = "Stardate")
+	int32 GetDay();
 
 private:
 

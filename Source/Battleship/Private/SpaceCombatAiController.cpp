@@ -1,5 +1,3 @@
-
-
 #include "Battleship.h"
 #include "SpaceCombatAiController.h"
 #include "ShipPawnBase.h"
@@ -7,8 +5,9 @@
 #include "SpaceCombatGameMode.h"
 #include "Tile.h"
 #include "DestructibleObject.h"
-#include "SpaceCombatCamerabase.h"
-#include "AI/Navigation/NavigationPath.h"
+#include "SpaceCombatCameraBase.h"
+#include "NavigationPath.h"
+#include "Runtime/NavigationSystem/Public/NavigationSystem.h"
 
 #define LOCTEXT_NAMESPACE "SpaceCombat" 
 
@@ -167,7 +166,7 @@ void ASpaceCombatAiController::CalculateTravelPoint()
 		TotalDistance = FactionEngageDistance * 3;
 	}
 
-	UNavigationSystem* NavSys = UNavigationSystem::GetCurrent(GetWorld());
+	UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
 
 	// Calculate the AI Pathing using the Nav system.
 	int32 MaxTravesals = 100;
@@ -521,3 +520,5 @@ bool ASpaceCombatAiController::CheckFacing(FVector MoveLocation)
 
 	return false;
 }
+
+#undef LOCTEXT_NAMESPACE
