@@ -28,5 +28,5 @@ FString ALoadGameState::runLoadGame() {
 
 ALoadGameState::ALoadGameState()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Welcome to MySaveState!!"));
+	//UE_LOG(LogTemp, Warning, TEXT("Welcome to MySaveState!!"));
 }

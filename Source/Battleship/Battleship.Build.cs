@@ -6,7 +6,7 @@ public class Battleship : ModuleRules
 {
 	public Battleship(ReadOnlyTargetRules Target) : base(Target)
     {
-        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "AIModule", "UMG", "ApexDestruction" });
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "AIModule", "UMG", "ApexDestruction", "Json", "JsonUtilities" });
 
         PrivateDependencyModuleNames.AddRange(new string[] {  });
         

@@ -26,4 +26,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Testing")
 	UCharacterSheet* CreateDefaultCharacterSheet();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CharacterId")
+	FString CharacterId;
+
+	UFUNCTION(BlueprintCallable, Category = "SaveGame")
+	void Initialize();
 };

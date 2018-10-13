@@ -8,7 +8,7 @@ UStardate::UStardate()
 
 }
 
-UStardate::UStardate(int32 Year, int32 Month, int32 Day)
+void UStardate::SetStardate(int32 Year, int32 Month, int32 Day)
 {
 	this->Year = Year;
 	this->Month = Month;
@@ -71,6 +71,21 @@ void UStardate::AddDays(int32 days)
 		Year++;
 		Month = Month - 7;
 	}
+}
+
+int32 UStardate::GetYear()
+{
+	return Year;
+}
+
+int32 UStardate::GetMonth()
+{
+	return Month;
+}
+
+int32 UStardate::GetDay()
+{
+	return Day;
 }
 
 #undef LOCTEXT_NAMESPACE
